@@ -4,6 +4,7 @@ import React from 'react';
 // components
 import PolarChart from './PolarChart';
 import CartesianChart from './CartesianChart';
+import ChartControls from './ChartControls';
 
 function Editor() {
 
@@ -16,7 +17,6 @@ function Editor() {
             <div id = 'charts'>
 
                 <PolarChart />
-
                 <CartesianChart />
 
             </div>

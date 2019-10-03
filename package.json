@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "d3-ease": "^1.0.5",
     "node-sass": "^4.12.0",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",

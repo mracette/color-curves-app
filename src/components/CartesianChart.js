@@ -1,8 +1,8 @@
 // libs
 import React, { useEffect, useRef } from 'react';
-import { cartToPolar, polarToCart, degToRad } from '../lib/utils/math';
+//import { cartToPolar, polarToCart, degToRad } from '../lib/utils/math';
 
-function CartesianChart() {
+function CartesianChart(props) {
 
     const canvasRef = useRef(null);
 
@@ -19,8 +19,8 @@ function CartesianChart() {
         ctx.lineWidth = canvas.width / 100;
 
         // color wheel parameters
-        const tickCount = 16;
-        const tickColor = 'hsl(0, 0%, 30%)';
+        // const tickCount = 16;
+        // const tickColor = 'hsl(0, 0%, 30%)';
 
         // fill rect
         const fillRectGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
@@ -46,6 +46,8 @@ function CartesianChart() {
             className = 'chart'
             ref = {canvasRef}
         />
+
+        {props.controls}
 
         </div>
     

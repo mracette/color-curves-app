@@ -1,23 +1,38 @@
 // libs
-import React, { useEffect, useRef } from 'react';
-import { cartToPolar, polarToCart, degToRad } from '../lib/utils/math';
-import { Arc } from '../lib/js/Arc';
+import React, { useEffect, useRef, useState } from 'react';
 
-function PolarChart() {
+// components
+import ChartControls from './ChartControls';
+
+function PolarChart(props) {
 
     const canvasRef = useRef(null);
 
+    const [activeCurve, setActiveCurve] = useState(null);
+
     const nx = (x) => {
+        /* 
+        Normalize x such that:
+            nx(0) = width / 2;
+            nx(1) = width
+            nx(-1) = 0
+        */
         return canvasRef.current.width / 2 + x * canvasRef.current.width / 2;
     }
 
     const ny = (y) => {
+        /* 
+        Normalize y such that:
+            ny(0) = height / 2;
+            ny(1) = 0
+            ny(-1) = height
+        */
         return canvasRef.current.height / 2 - y * canvasRef.current.height / 2;
     }
 
-    useEffect(() => {
+    const drawBlankChart = () => {
 
-        // canvas init
+        // get canvas and context
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d', {alpha: false});
 
@@ -66,30 +81,33 @@ function PolarChart() {
             ctx.fill();
 
         }
+    }
 
+    const drawCurve = () => {
 
-        const arc = new Arc(nx(.6), ny(0), r / 2, 0, Math.PI * 2, 0, false);
-        const arcSegments = 128;
+        // get canvas and context
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d', {alpha: false});
+
+        const lineSegments = 128;
+
         let prevCoords;
-        
-        for(let i = 0; i < arcSegments; i++) {
+
+        for(let i = 0; i <= lineSegments; i++) {
 
             ctx.beginPath();
             
-            const coords = arc.getCartesianValueAt(i / arcSegments);
+            const coords = activeCurve.getCartesianCoordsAt(i / lineSegments);
+            console.log(coords);
 
-            if(arc.outOfRadialBounds(i / arcSegments, nx(0), ny(0), r)) {
-                ctx.strokeStyle = 'red';
-            } else {
-                ctx.strokeStyle = 'black';
-            }
+            ctx.strokeStyle = 'black';
 
             if(i === 0) {
-                ctx.moveTo(coords.x, coords.y);
+                ctx.moveTo(nx(coords.x), ny(coords.y));
                 prevCoords = coords;
             } else {
-                ctx.moveTo(prevCoords.x, prevCoords.y);
-                ctx.lineTo(coords.x, coords.y);
+                ctx.moveTo(nx(prevCoords.x), ny(prevCoords.y));
+                ctx.lineTo(nx(coords.x), ny(coords.y));
                 prevCoords = coords;
             }
 
@@ -98,9 +116,22 @@ function PolarChart() {
 
         }
 
+    }
 
+    useEffect(() => {
+        if(canvasRef.current && activeCurve) {
+            handleDrawCurve();
+        }
+    }, [activeCurve])
 
-    }, [canvasRef]);
+    const handleDrawCurve = () => {
+
+        if(canvasRef.current && activeCurve) {
+            drawBlankChart();
+            drawCurve();        
+        }
+
+    }
 
     return (
 
@@ -109,6 +140,11 @@ function PolarChart() {
         <canvas 
             className = 'chart'
             ref = {canvasRef}
+        />
+
+        <ChartControls 
+            handleUpdateActiveCurve = {setActiveCurve}
+            handleDrawCurve = {handleDrawCurve}
         />
 
         </div>
