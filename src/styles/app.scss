@@ -1,4 +1,5 @@
 body {
+  font-size: 62.5%;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
@@ -10,4 +11,21 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.charts {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+canvas.chart {
+  display: inline-block;
+  width: 20rem;
+  height: 20rem;
+  // border: .1rem solid black;
+}
+
+div.chart {
+  display: inline-block;
+  margin: .5rem;
 }
