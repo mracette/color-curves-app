@@ -8,8 +8,6 @@ function PolarChart(props) {
 
     const canvasRef = useRef(null);
 
-    const [activeCurve, setActiveCurve] = useState(null);
-
     const nx = (x) => {
         /* 
         Normalize x such that:
@@ -97,8 +95,7 @@ function PolarChart(props) {
 
             ctx.beginPath();
             
-            const coords = activeCurve.getCartesianCoordsAt(i / lineSegments);
-            console.log(coords);
+            const coords = props.activeCurve.getCartesianCoordsAt(i / lineSegments);
 
             ctx.strokeStyle = 'black';
 
@@ -114,24 +111,27 @@ function PolarChart(props) {
             ctx.closePath();
             ctx.stroke();
 
+            
         }
+                
+    }
+
+    const handleDrawCurve = () => {
+        
+        if(canvasRef.current && props.activeCurve) {
+            drawBlankChart();
+            drawCurve();
+            props.drawContinuousScheme();
+        }
+
 
     }
 
     useEffect(() => {
-        if(canvasRef.current && activeCurve) {
-            handleDrawCurve();
-        }
-    }, [activeCurve])
+        if(canvasRef.current) drawBlankChart();
+        if(props.activeCurve) drawCurve(); 
+    })
 
-    const handleDrawCurve = () => {
-
-        if(canvasRef.current && activeCurve) {
-            drawBlankChart();
-            drawCurve();        
-        }
-
-    }
 
     return (
 
@@ -143,7 +143,7 @@ function PolarChart(props) {
         />
 
         <ChartControls 
-            handleUpdateActiveCurve = {setActiveCurve}
+            handleUpdateCurve = {props.handleUpdateCurve}
             handleDrawCurve = {handleDrawCurve}
         />
 

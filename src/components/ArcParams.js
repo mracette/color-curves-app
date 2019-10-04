@@ -4,6 +4,11 @@ import { Arc } from '../lib/js/geometries/Arc';
 
 function ArcParams(props) {
 
+    const {
+        handleDrawCurve,
+        handleUpdateCurve
+        } = props;
+
     const [params, setParams] = useState({
         r: 0.5,
         angleStart: 0,
@@ -14,7 +19,7 @@ function ArcParams(props) {
         reverse: false,
     })
 
-    const [arc, setArc] = useState(new Arc(
+    const [arc] = useState(new Arc(
         0, 0,
         params.r,
         params.angleStart,
@@ -24,15 +29,19 @@ function ArcParams(props) {
 
     useEffect(() => {
 
-        props.handleUpdateActiveCurve(arc);
+        if(handleUpdateCurve) {
+            handleUpdateCurve(arc);
+        }
 
-    }, [arc]);
+    }, [arc, handleUpdateCurve]);
 
     useEffect(() => {
 
-        props.handleDrawCurve(true);
+        if(handleDrawCurve) {
+            handleDrawCurve(true);
+        }
 
-    }, [params]);
+    }, [params, handleDrawCurve]);
 
     const onParamChange = (param, value) => {
 
@@ -44,6 +53,7 @@ function ArcParams(props) {
             case 'translateX': arc.setTranslateX(value); break;
             case 'translateY': arc.setTranslateY(value); break;
             case 'reverse': arc.reverse(); break;
+            default: break;
         }
 
         const newParams = {...params};

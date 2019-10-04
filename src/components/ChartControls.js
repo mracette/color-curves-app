@@ -24,7 +24,7 @@ function ChartControls(props) {
             {
                 curveType === 'arc' && 
                 <ArcParams
-                    handleUpdateActiveCurve = { props.handleUpdateActiveCurve }
+                    handleUpdateCurve = { props.handleUpdateCurve }
                     handleDrawCurve = { props.handleDrawCurve }
                 />
             }

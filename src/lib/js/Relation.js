@@ -1,5 +1,3 @@
-import { cartToPolar } from '../utils/math';
-
 /**
  * Class representing a relationship between inputs and outputs and a set of 
  * transformations. Not to be invoked directly

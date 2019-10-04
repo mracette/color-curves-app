@@ -31,8 +31,6 @@ export class Arc extends Relation {
         const x = this.cx + this.translation.x + this.r * Math.cos(theta);
         const y = this.cy + this.translation.y + this.r * Math.sin(theta);
 
-        console.log(n)
-
         return {x, y};
 
     }
