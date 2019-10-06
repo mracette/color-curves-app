@@ -1,24 +1,29 @@
+import { cartToPolar } from '../../utils/math';
+import Relation from '../Relation';
 
-export default class Function {
+export default class Function extends Relation {
     
-    constructor(fn) {
-        this._fn = fn;
+    constructor(fn, rotation, translation, scale) {
+
+        super(rotation, translation, scale);
+        this.fn = fn;
+
     }
 
-    getPolarValueAt(n) {
+    getPolarCoordsAt(n) {
 
         const cartCoords = this.getCartesianValueAt(n);
         return cartToPolar(cartCoords.x, cartCoords.y);
 
     }
     
-    getCartesianValueAt(n) {
+    getCartesianCoordsAt(n) {
 
-        const x = n * this._scale.x + this._translation.x;
-        const y = this._fn(n) * this._scale.y + this._translation.y;
+        const x = n * this.scale.x + this.translation.x;
+        const y = this.fn(n) * this.scale.y + this.translation.y;
 
-        const sin = Math.sin(this._rotation);
-        const cos = Math.cos(this._rotation);
+        const sin = Math.sin(this.rotation);
+        const cos = Math.cos(this.rotation);
 
         const xRot = x * cos - y * sin;
         const yRot = x * sin + y * cos;

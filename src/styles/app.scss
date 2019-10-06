@@ -25,12 +25,50 @@ canvas.chart {
   // border: .1rem solid black;
 }
 
+#palettes {
+  width: 41.5rem;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.palette {
+  width: 100%;
+  height: 5rem;
+}
+
+#charts {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
 div.chart {
+  align-items: flex-start;
   display: inline-block;
   margin: .5rem;
 }
 
-.canvas-scheme {
-  height: 5rem;
-  width: 50rem;
+.params {
+  width: 20rem;
+}
+
+.param div {
+  flex-grow: 1;
+}
+
+.param input {
+  width: 90%;
+}
+
+.block-param{
+  display: block;
+}
+
+.flex-row {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.flex-col {
+  display: col;
+  flex-flow: column nowrap;
 }

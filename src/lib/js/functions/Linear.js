@@ -1,13 +1,11 @@
-import Curve from '../Curve';
+import Function from './Function';
 import * as d3 from 'd3-ease';
 
-export class LinearCurve extends Curve {
+export default class Linear extends Function {
 
-    constructor() {
+    constructor(rotation, translation, scale) {
 
-        console.log(d3.easeLinear(.1));
-
-        super(d3.easeLinear);
+        super(d3.easeLinear, rotation, translation, scale);
 
     }
 

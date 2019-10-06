@@ -1,5 +1,5 @@
 // libs
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 // components
 import ChartControls from './ChartControls';
@@ -111,8 +111,11 @@ function PolarChart(props) {
             ctx.closePath();
             ctx.stroke();
 
-            
         }
+
+        // if curve is redrawn, also redraw the palettes
+        props.drawContinuousPalette();
+        props.drawDiscretePalette();
                 
     }
 
@@ -121,17 +124,14 @@ function PolarChart(props) {
         if(canvasRef.current && props.activeCurve) {
             drawBlankChart();
             drawCurve();
-            props.drawContinuousScheme();
         }
-
 
     }
 
     useEffect(() => {
         if(canvasRef.current) drawBlankChart();
         if(props.activeCurve) drawCurve(); 
-    })
-
+    });
 
     return (
 
@@ -145,6 +145,7 @@ function PolarChart(props) {
         <ChartControls 
             handleUpdateCurve = {props.handleUpdateCurve}
             handleDrawCurve = {handleDrawCurve}
+            default = 'arc'
         />
 
         </div>

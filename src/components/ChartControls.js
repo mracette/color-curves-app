@@ -1,10 +1,11 @@
 // libs
 import React, { useState } from 'react';
-import ArcParams from '../components/ArcParams';
+import ArcParams from './params/ArcParams';
+import LinearParams from './params/LinearParams';
 
 function ChartControls(props) {
 
-    const [curveType, setCurveType] = useState('arc');
+    const [curveType, setCurveType] = useState(props.default);
 
     return (
         <div className = 'chart-controls'>
@@ -24,6 +25,13 @@ function ChartControls(props) {
             {
                 curveType === 'arc' && 
                 <ArcParams
+                    handleUpdateCurve = { props.handleUpdateCurve }
+                    handleDrawCurve = { props.handleDrawCurve }
+                />
+            }
+            {
+                curveType === 'linear' && 
+                <LinearParams
                     handleUpdateCurve = { props.handleUpdateCurve }
                     handleDrawCurve = { props.handleDrawCurve }
                 />
