@@ -1,3 +1,4 @@
+import { cartToPolar, polarToCart } from '../../utils/math';
 import Relation from '../Relation';
 
 export class Arc extends Relation {
@@ -28,10 +29,24 @@ export class Arc extends Relation {
         const arcAngle = n * (this.angleEnd - this.angleStart);
         const theta = this.angleOffset + this.angleStart + arcAngle;
 
+        // these coordinates could be outside of the unit circle 
         const x = this.cx + this.translation.x + this.r * Math.cos(theta);
         const y = this.cy + this.translation.y + this.r * Math.sin(theta);
 
-        return {x, y};
+        // convert to polar in order to clamp the radius
+        const polarCoords = cartToPolar(x, y);
+
+        // assign clamped flag
+        const clamped = polarCoords.r > 1 || polarCoords.r < -1;
+
+        // convert clamped polar coordinates back to cartesian x and y
+        const cartCoordsClamped = polarToCart(Math.max(0, Math.min(1, polarCoords.r)), polarCoords.theta);
+
+        return {
+            x: cartCoordsClamped.x, 
+            y: cartCoordsClamped.y,
+            clamped
+        };
 
     }
 

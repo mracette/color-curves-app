@@ -11,7 +11,7 @@ function ArcParams(props) {
 
     const [params, setParams] = useState({
         r: 0.5,
-        angleStart: 0,
+        angleStart: Math.PI,
         angleEnd: Math.PI * 2,
         angleOffset: 0,
         translateX: 0,

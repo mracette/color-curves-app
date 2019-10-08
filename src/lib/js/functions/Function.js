@@ -27,10 +27,13 @@ export default class Function extends Relation {
 
         const xRot = x * cos - y * sin;
         const yRot = x * sin + y * cos;
-    
+        
+        const xClamp = Math.min(1, Math.max(0, xRot));
+        const yClamp = Math.min(1, Math.max(0, yRot));
+
         return {
-            x: xRot, 
-            y: yRot
+            x: xClamp,
+            y: yClamp
         };
         
     }

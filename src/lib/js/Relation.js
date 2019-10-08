@@ -4,17 +4,28 @@
  */
 export default class Relation {
 
-    constructor(rotation, translation, scale) {
+    constructor(rotation, translation, scale, reverse) {
 
         this.reverse = false;
         this.rotation = typeof rotation === 'number' ? rotation : 0;
         this.translation = typeof translation === 'object' ? translation : {x: 0, y: 0};
         this.scale = typeof scale === 'object' ? scale : {x: 1, y: 1};
+        this.reverse = typeof reverse === 'boolean' ? reverse : false;
+        this.minValue = 0;
+        this.maxValue = 1;
 
     }
 
     reverse() {
         this.reverse = !this.reverse;
+    }
+
+    setminValue(n) {
+        this.minValue = Math.max(0, Math.min(this.maxValue, Math.min(1, n)));
+    }
+
+    setmaxValue(n) {
+        this.maxValue = Math.max(0, Math.max(this.minValue, Math.min(1, n)));
     }
 
     setTranslateX(value) {

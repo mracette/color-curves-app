@@ -16,6 +16,8 @@ function Editor() {
 
   const drawContinuousPalette = () => {
 
+    console.log(cartesianCurve);
+
     const canvas = continuousPalette.current;
     const ctx = canvas.getContext('2d');
 

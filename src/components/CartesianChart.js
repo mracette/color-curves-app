@@ -38,10 +38,6 @@ function CartesianChart(props) {
         // get key dimensions
         ctx.lineWidth = canvas.width / 100;
 
-        // color wheel parameters
-        // const tickCount = 16;
-        // const tickColor = 'hsl(0, 0%, 30%)';
-
         // fill rect
         const fillRectGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
         fillRectGradient.addColorStop(0, 'hsl(0, 0%, 100%');
@@ -55,6 +51,24 @@ function CartesianChart(props) {
         ctx.lineTo(0, canvas.height);
         ctx.lineTo(canvas.width, canvas.height);
         ctx.stroke();
+
+        // create labels
+        const padding = .075;
+        ctx.font = '64px Arial';
+        
+        // white labels
+        ctx.fillStyle = 'white';
+            ctx.textAlign = 'left';
+            ctx.fillText('(0,0)', nx(0 + padding), ny(0 + padding));
+            ctx.textAlign = 'right';
+            ctx.fillText('(1,0)', nx(1 - padding), ny(0 + padding));
+
+            // black labels
+        ctx.fillStyle = 'black';
+            ctx.textAlign = 'left';
+            ctx.fillText('(0,1)', nx(0 + padding), ny(1 - padding));
+            ctx.textAlign = 'right';
+            ctx.fillText('(1,1)', nx(1 - padding), ny(1 - padding));
 
     }
 
@@ -97,50 +111,17 @@ function CartesianChart(props) {
     }
 
     const handleDrawCurve = () => {
+
+        console.log(props.activeCurve);
         
-        if(canvasRef.current && props.activeCurve) {
-            drawBlankChart();
-            drawCurve();
-        }
+        canvasRef.current && drawBlankChart();
+        props.activeCurve && drawCurve();
 
     }
 
     useEffect(() => {
-        if(canvasRef.current) drawBlankChart();
-        if(props.activeCurve) drawCurve(); 
+        handleDrawCurve();
     });
-
-    useEffect(() => {
-
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d', {alpha: false});
-
-        // larger coordinate systems seem to result in sharper renders
-        canvas.height = canvas.clientHeight * 4;
-        canvas.width = canvas.clientWidth * 4;
-
-        // get key dimensions
-        ctx.lineWidth = canvas.width / 100;
-
-        // color wheel parameters
-        // const tickCount = 16;
-        // const tickColor = 'hsl(0, 0%, 30%)';
-
-        // fill rect
-        const fillRectGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        fillRectGradient.addColorStop(0, 'hsl(0, 0%, 100%');
-        fillRectGradient.addColorStop(1, 'hsl(0, 0%, 0%');
-        ctx.fillStyle = fillRectGradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // draw x and y axis
-        ctx.strokeStyle = 'black';
-        ctx.moveTo(0, 0);
-        ctx.lineTo(0, canvas.height);
-        ctx.lineTo(canvas.width, canvas.height);
-        ctx.stroke();
-
-    }, [canvasRef]);
 
     return (
 
