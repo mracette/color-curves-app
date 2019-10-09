@@ -4,20 +4,20 @@
  */
 export default class Relation {
 
-    constructor(rotation, translation, scale, reverse) {
+    constructor(surface) {
 
+        this.surface = surface;
         this.reverse = false;
-        this.rotation = typeof rotation === 'number' ? rotation : 0;
-        this.translation = typeof translation === 'object' ? translation : {x: 0, y: 0};
-        this.scale = typeof scale === 'object' ? scale : {x: 1, y: 1};
-        this.reverse = typeof reverse === 'boolean' ? reverse : false;
+        this.rotation = 0;
+        this.translation = {x: 0, y: 0};
+        this.scale = {x: 1, y: 1};
         this.minValue = 0;
         this.maxValue = 1;
 
     }
 
-    reverse() {
-        this.reverse = !this.reverse;
+    setReverse(bool) {
+        this.reverse = bool;
     }
 
     setminValue(n) {
@@ -36,6 +36,11 @@ export default class Relation {
         this.translation.y = value;
     }
 
+    setTranslation(translation) {
+        this.setTranslateX(translation.x);
+        this.setTranslateY(translation.y);
+    }
+
     translateX(amount) {
         this.translation.x += amount;
     }
@@ -50,6 +55,11 @@ export default class Relation {
 
     setScaleY(value) {
         this.scale.y = value;
+    }
+
+    setScale(scale) {
+        this.setScaleX(scale.x);
+        this.setScaleY(scale.y);
     }
 
     scaleX(amount) {

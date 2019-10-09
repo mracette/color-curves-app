@@ -3,10 +3,10 @@ import UnitCircle from '../surfaces/UnitCircle';
 import UnitSquare from '../surfaces/UnitSquare';
 import * as d3 from 'd3-ease';
 
-export default class Linear extends Function {
+export default class Bounce extends Function {
 
     constructor(surface, params) {
-        
+
         // initialize a new surface class if an instance isn't passed in
         if(surface.type === undefined) {
             if(surface === 'unitSquare') {
@@ -22,13 +22,41 @@ export default class Linear extends Function {
             }
         }
 
-        // initialize parent class
-        super(surface, d3.easeLinear);
+        // initialize parent class with default function
+        super(surface, d3.easeBounceIn);
+
+        // override function if a variation is specified
+        if(params && params.variation) {
+            this.setVariation(params.variation);
+        } {
+            this.variation = 'in';
+        }
 
         // set initial tranformations
         (params && params.rotation) ? this.setRotation(params.rotation) : this.setDefaultRotation();
         (params && params.translation) ? this.setTranslation(params.translation) : this.setDefaultTranslation();
         (params && params.scale) ? this.setScale(params.scale) : this.setDefaultScale();
+
+    }
+
+    setVariation(variation) {
+
+        if(variation === 'in' || variation === 'out' || variation === 'in-out'){
+
+            switch(variation) {
+                case 'in': this.setFn(d3.easeBounceIn); break;
+                case 'out': this.setFn(d3.easeBounceOut); break;
+                case 'in-out': this.setFn(d3.easeBounceInOut); break;
+                default: break;
+            }
+    
+            this.variation = variation;
+
+        } else {
+
+            console.warning("variation must be 'in', 'out', or 'in-out'");
+
+        }
 
     }
 

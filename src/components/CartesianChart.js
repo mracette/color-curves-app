@@ -4,6 +4,10 @@ import React, { useEffect, useRef, useState } from 'react';
 // components
 import ChartControls from './ChartControls';
 
+// bootstrap
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 function CartesianChart(props) {
 
     const canvasRef = useRef(null);
@@ -85,8 +89,10 @@ function CartesianChart(props) {
         for(let i = 0; i <= lineSegments; i++) {
 
             ctx.beginPath();
-            
-            const coords = props.activeCurve.getCartesianCoordsAt(i / lineSegments);
+
+            const coords = props.palette.lCurve.getCartesianCoordsAt(i / lineSegments);
+
+            console.log(coords);
 
             ctx.strokeStyle = 'black';
 
@@ -104,43 +110,59 @@ function CartesianChart(props) {
 
         }
 
-        // if curve is redrawn, also redraw the palettes
-        props.drawContinuousPalette();
-        props.drawDiscretePalette();
+        // if curve is redrawn, also update the palettes
+        props.updatePalettes();
                 
     }
 
-    const handleDrawCurve = () => {
-
-        console.log(props.activeCurve);
-        
-        canvasRef.current && drawBlankChart();
-        props.activeCurve && drawCurve();
-
+    const updateCurve = () => { 
+        if(props.palette.lCurve) {
+            drawBlankChart();
+            drawCurve();
+        }
     }
 
-    useEffect(() => {
-        handleDrawCurve();
-    });
+    useEffect(() => {updateCurve();});
 
     return (
 
-        <div className = 'chart cartesian-chart'>
+        <Col className = 'chart' sm={6}>
 
-        <canvas 
-            className = 'chart'
-            ref = {canvasRef}
-        />
+            <Row>
 
-        <ChartControls 
-            handleUpdateCurve = {props.handleUpdateCurve}
-            handleDrawCurve = {handleDrawCurve}
-            default = 'linear'
-        />
+                <Col sm={12}>
 
-        {props.controls}
+                    <h2>{props.title}</h2>
 
-        </div>
+                </Col>
+
+            </Row>
+
+            <Row>
+
+                <Col sm={12}>
+
+                    <canvas
+                        className = 'chart'
+                        ref = {canvasRef}
+                    />
+
+                </Col>
+
+            </Row>
+
+            <Row>
+
+                <ChartControls 
+                    chartType = 'l'
+                    config = { props.config }
+                    palette = { props.palette }
+                    updateCurve = { updateCurve }
+                />
+                
+            </Row>
+
+        </Col>
     
     );
 

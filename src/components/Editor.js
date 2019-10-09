@@ -6,19 +6,79 @@ import { cartToPolar, radToDeg } from '../lib/utils/math';
 import PolarChart from './PolarChart';
 import CartesianChart from './CartesianChart';
 
+// bootstrap
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+// curves 
+import ColorPalette from '../lib/js/ColorPalette';
+
 function Editor() {
 
-  const [polarCurve, setPolarCurve] = useState(null);
-  const [cartesianCurve, setCartesianCurve] = useState(null);
+  // the config defines all options for curve types and their corresponding
+  // display names and constructors
+  const config = [
+    {
+      name: 'geometries',
+      options: [
+        {
+          id: 'arc',
+          display: 'Geometry: Arc'
+        }
+      ]
+    },
+    {
+      name: 'functions',
+      options: [
+        {
+          id: 'linear',
+          display: 'Function: Linear'
+        },
+        {
+          id: 'polynomial',
+          display: 'Function: Polynomial'
+        },
+        {
+          id: 'sinusoidal',
+          display: 'Function: Sinusoidal'
+        },
+        {
+          id: 'exponential',
+          display: 'Function: Exponential'
+        },
+        {
+          id: 'elastic',
+          display: 'Function: Elastic'
+        },
+        {
+          id: 'back',
+          display: 'Function: EaseBack'
+        },
+        {
+          id: 'bounce',
+          display: 'Function: Bounce'
+        }
+      ]
+    }
+  ];
 
-  const continuousPalette = useRef(null);
-  const discretePalette = useRef(null);
+  // initialize palette
+  const defaultPalette = new ColorPalette();
+
+  // set default curve types
+  defaultPalette.setHsCurve('linear');
+  defaultPalette.setLCurve('linear');
+
+  // initialize default color palette state
+  const [palette, setPalette] = useState(defaultPalette);
+
+  // initialize canvas refs
+  const continuousPaletteCanvas = useRef(null);
+  const discretePaletteCanvas = useRef(null);
 
   const drawContinuousPalette = () => {
 
-    console.log(cartesianCurve);
-
-    const canvas = continuousPalette.current;
+    const canvas = continuousPaletteCanvas.current;
     const ctx = canvas.getContext('2d');
 
     canvas.height = canvas.clientHeight * 4;
@@ -27,20 +87,13 @@ function Editor() {
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
     const numStops = 32;
 
-    for(let i = 0; i < numStops; i++) {
+    for(let i = 0; i <= numStops; i++) {
 
-        // get hue and saturation values from the polar chart curve
-        const hsCartCoords = polarCurve.getCartesianCoordsAt(i / numStops);
-        const hsPolarCoords = cartToPolar(hsCartCoords.x, hsCartCoords.y);
-        const hue = radToDeg(hsPolarCoords.theta);
-        const sat = hsPolarCoords.r * 100 + '%';
-
-        // get lightness values from the cartesian chart curve
-        const lCartCoords = cartesianCurve.getCartesianCoordsAt(i / numStops);
-        const lightness = Math.max(0, Math.min(1, lCartCoords.y)) * 100 + '%';
+        // get hsl values
+        const hsl = palette.hslValueAt(i / numStops);
 
         // add a gradient stop
-        gradient.addColorStop(i / numStops, `hsl(${hue}, ${sat}, ${lightness})`);
+        gradient.addColorStop(i / numStops, hsl);
 
     }
 
@@ -51,7 +104,7 @@ function Editor() {
 
   const drawDiscretePalette = () => {
 
-    const canvas = discretePalette.current;
+    const canvas = discretePaletteCanvas.current;
     const ctx = canvas.getContext('2d');
 
     canvas.height = canvas.clientHeight * 4;
@@ -61,60 +114,76 @@ function Editor() {
 
     for(let i = 0; i < numStops; i++) {
 
-        // get hue and saturation values from the polar chart curve
-        const hsCartCoords = polarCurve.getCartesianCoordsAt(i / numStops);
-        const hsPolarCoords = cartToPolar(hsCartCoords.x, hsCartCoords.y);
-        const hue = radToDeg(hsPolarCoords.theta);
-        const sat = hsPolarCoords.r * 100 + '%';
+        // get hsl values
+        const hsl = palette.hslValueAt(i / numStops);
 
-        // get lightness values from the cartesian chart curve
-        const lCartCoords = cartesianCurve.getCartesianCoordsAt(i / numStops);
-        const lightness = Math.max(0, Math.min(1, lCartCoords.y)) * 100 + '%';
-
-        ctx.fillStyle = `hsl(${hue}, ${sat}, ${lightness})`;
+        ctx.fillStyle = hsl;
         ctx.fillRect(i * canvas.width / numStops, 0, canvas.width / numStops, canvas.height);
+
     }
 
   }
 
+  const updatePalettes = () => {
+    drawContinuousPalette();
+    drawDiscretePalette();
+  }
+
   return (
 
-    <div id = 'editor'>
+    <>
 
-        <h2>Editor</h2>
+        <Row id = 'header'>
 
-            <div id = 'palettes'>
+          <Col sm={12}>
+            <h1>Color Curves</h1>
+          </Col>
 
-              <canvas
-                  className = 'palette'
-                  ref = { continuousPalette } 
-              />
-              <canvas
-                  className = 'palette'
-                  ref = { discretePalette } 
-              />
+          <Col sm={12}>
+            <p className = 'lead'>
+              Create unique color palettes by overlaying curves onto the HSL color space.
+            </p>
+          </Col>
+
+        </Row>
+
+        <Row id = 'palettes'>
+
+          <Col sm={12}>
+            <canvas
+                className = 'palette'
+                ref = { continuousPaletteCanvas } 
+            />
+          </Col>
+
+          <Col sm={12}>
+            <canvas
+                className = 'palette'
+                ref = { discretePaletteCanvas } 
+            />
+          </Col>
+
+        </Row>
+
+        <Row id = 'charts'>
+
+            <PolarChart 
+              title = 'Hue + Saturation'
+              config = { config }
+              palette = { palette }
+              updatePalettes = { updatePalettes }
+            />
+
+            <CartesianChart 
+              title = 'Lightness'
+              config = { config }
+              palette = { palette }
+              updatePalettes = { updatePalettes }
+            />
             
-            </div>
+        </Row>
 
-            <div id = 'charts'>
-
-                <PolarChart 
-                  activeCurve = {polarCurve}
-                  handleUpdateCurve = {setPolarCurve}
-                  drawContinuousPalette = {drawContinuousPalette}
-                  drawDiscretePalette = {drawDiscretePalette}
-                />
-                <CartesianChart 
-                  activeCurve = {cartesianCurve}
-                  handleUpdateCurve = {setCartesianCurve}
-                  drawContinuousPalette = {drawContinuousPalette}
-                  drawDiscretePalette = {drawDiscretePalette}
-                />
-
-            </div>
-
-
-    </div>
+      </>
     
   );
 

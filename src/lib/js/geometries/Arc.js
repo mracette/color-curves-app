@@ -1,15 +1,15 @@
 import { cartToPolar, polarToCart } from '../../utils/math';
 import Relation from '../Relation';
 
-export class Arc extends Relation {
+export default class Arc extends Relation {
 
-    constructor(cx, cy, r, angleStart, angleEnd, angleOffset) {
+    constructor(surface, cx, cy, r, angleStart, angleEnd, angleOffset) {
 
-        super();
+        super(surface);
 
-        this.cx = cx;
-        this.cy = cy;
-        this.r = r;
+        this.cx = typeof cx === 'number' ? cx : 0;
+        this.cy = typeof cy === 'number' ? cy : 0;
+        this.r = typeof r === 'number' ? r : 1;
 
         this.angleStart = typeof angleStart === 'number' ? angleStart : 0;
         this.angleEnd = typeof angleEnd === 'number' ? angleEnd : Math.PI * 2;
@@ -24,7 +24,7 @@ export class Arc extends Relation {
             return null;
         }
 
-        if(this._reverse) n = (1 - n);
+        if(this.reverse) n = (1 - n);
 
         const arcAngle = n * (this.angleEnd - this.angleStart);
         const theta = this.angleOffset + this.angleStart + arcAngle;

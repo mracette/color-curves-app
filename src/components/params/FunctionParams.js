@@ -1,147 +1,162 @@
 // libs
 import React, { useState, useEffect } from 'react';
-import Linear from '../../lib/js/functions/Linear';
-import Polynomial from '../../lib/js/functions/Polynomial';
+
+// components
+import SmartInput from '../SmartInput';
+
+// bootstrap
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
 
 function FunctionParams(props) {
 
-    const {
-        handleDrawCurve,
-        handleUpdateCurve
-        } = props;
-
     const [params, setParams] = useState({
-        rotation: 0,
-        translation: {x: 0, y:0.25},
-        scale: {x: 1, y: 0.5},
-        reverse: false
-    })
-
-    const classConstructors = {
-        linear: Linear,
-        polynomial: Polynomial
-    };
-
-    const classType = classConstructors[props.curveType];
-
-    const [fn, setFn] = useState(
-        new classType(
-            params.rotation, 
-            params.translation, 
-            params.scale
-        )
-    );
-
-    useEffect(() => {
-
-        const newCurve = new classType(
-            params.rotation, 
-            params.translation, 
-            params.scale
-        );
-
-        setFn(newCurve);
-        handleUpdateCurve(fn);
-
-    }, [props.curveType])
-
-    // update the 
-    // useEffect(() => {
-
-    //     if(handleUpdateCurve) {
-    //         handleUpdateCurve(fn);
-    //     }
-
-    // }, [handleUpdateCurve]);
-
-    // draw curve when params change
-    useEffect(() => {
-
-        if(handleDrawCurve) {
-            handleDrawCurve(true);
-        }
-
-    }, [params, handleDrawCurve]);
+        curveType: props.curveType,
+        translateY: props.curve.translation.y,
+        translateX: props.curve.translation.x,
+        scaleX: props.curve.scale.x,
+        scaleY: props.curve.scale.y,
+        variation: props.curve.variation,
+        reverse: props.curve.reverse,
+    });
 
     const onParamChange = (param, value) => {
 
         switch(param) {
-            case 'translateY': fn.setTranslateY(value); break;
-            case 'scaleY': fn.setScaleY(value); break;
-            case 'reverse': fn.reverse(); break;
+            case 'variation': props.curve.setVariation(value); break;
+            case 'translateX': props.curve.setTranslateX(value); break;
+            case 'translateY': props.curve.setTranslateY(value); break;
+            case 'scaleX': props.curve.setScaleX(value); break;
+            case 'scaleY': props.curve.setScaleY(value); break;
+            case 'reverse': props.curve.setReverse(value); break;
             default: break;
         }
 
+        props.updateCurve();
+
         const newParams = {...params};
         newParams[param] = value;
-
         setParams(newParams);
 
     };
 
-    return (
-        <div 
-            id = 'linear-params'
-            className = 'params'
-        >
+    // if the curve type changes, reset the params state
+    useEffect(() => {
 
-            <div className = 'flex-row'>
+        setParams({
+            curveType: props.curveType,
+            translateY: props.curve.translation.y,
+            translateX: props.curve.translation.x,
+            scaleX: props.curve.scale.x,
+            scaleY: props.curve.scale.y,
+            variation: props.curve.variation,
+            reverse: props.curve.reverse,
+        });
 
-                <div className = 'param'>
-                    <p>Off Grid Behavior:</p>
-                    <select
-                        value = {params.outOfBounds}
-                        onChange = {(e) => {
-                            const value = parseFloat(e.target.value);
-                            onParamChange('outOfBounds', value);
-                        }}>
-                        <option value = 'clip'>Clip</option>
-                        <option value = 'project'>Project</option>
-                    </select>
-                </div>
+    }, [props.curveType])
 
-            </div>
+    return (<>
 
-            <div className = 'flex-row'>
+        <Row className = 'params'>
 
-                <div className = 'param'>
-                    <p>Translate Y: {params.translation.y.toPrecision(2)}</p>
-                    <input
-                        type = "range"
-                        min = {-1}
-                        max = {1}
-                        step = {0.01}
-                        value = {params.cy}
-                        onChange = {(e) => {
-                            const value = parseFloat(e.target.value);
-                            onParamChange('translateY', value);
-                        }}>   
-                    </input>
-                </div>
+            <Col sm={2}>
+                <Form.Label><h4>Variation</h4></Form.Label>
+            </Col>
 
-            </div>
+            <Col sm={4}>
+                <Form.Control 
+                    as='select' 
+                    defaultValue = {
+                        props.curveType === 'linear' ? 'na' : params.variation
+                    }
+                    onChange = {(e) => {
+                        const value = e.target.value;
+                        onParamChange('variation', value);
+                }}>
+                    {props.curveType === 'linear' && <option disabled = {true} value = 'na'>N/A</option>}
+                    {props.curveType !== 'linear' && <option value = 'in'>In</option>}
+                    {props.curveType !== 'linear' && <option value = 'out'>Out</option>}
+                    {props.curveType !== 'linear' && <option value = 'in-out'>In-Out</option>}
+                </Form.Control>
+            </Col>
 
-            <div className = 'flex-row'>
+            <Col sm={2}>
+                <Form.Label><h4>Reverse</h4></Form.Label>
+            </Col>
 
-                <div className = 'param'>
-                    <p>Scale Y: {params.scale.y.toPrecision(2)}</p>
-                    <input
-                        type = "range"
-                        min = {-1}
-                        max = {1}
-                        step = {0.01}
-                        value = {params.scale.y}
-                        onChange = {(e) => {
-                            const value = parseFloat(e.target.value);
-                            onParamChange('scaleY', value);
-                        }}>   
-                    </input>
-                </div>
+            <Col sm={4}>
+                <Form.Control 
+                    as='select' 
+                    defaultValue = {params.reverse.toString()}
+                    onChange = {(e) => {
+                        const value = e.target.value === 'true';
+                        onParamChange('reverse', value);
+                    }}>
+                    <option value = 'true'>True</option>
+                    <option value = 'false'>False</option>
+                </Form.Control>
+            </Col>
+        
+        </Row>
 
-            </div>
+        <Row classname = 'params'>
+
+            <Col sm={2}>
+                <Form.Label><h4>Translation</h4></Form.Label>
+            </Col>
             
-        </div>
-    );
+            <Col sm={5}>
+                <SmartInput
+                    label = 'X'
+                    step = {0.01}
+                    fixedDecimals = {2}
+                    defaultValue = {props.curve.translation.x.toPrecision(2)}
+                    handleChange = {(value) => onParamChange('translateX', value)}
+                />
+            </Col>
+
+            <Col sm={5}>
+                <SmartInput
+                    label = 'Y'
+                    step = {0.01}
+                    fixedDecimals = {2}
+                    defaultValue = {props.curve.translation.y.toPrecision(2)}
+                    handleChange = {(value) => onParamChange('translateY', value)}
+                />
+            </Col>
+
+        </Row>
+
+        <Row classname = 'params'>
+
+            <Col sm={2}>
+                <Form.Label><h4>Scale</h4></Form.Label>
+            </Col>
+            
+            <Col sm={5}>
+                <SmartInput
+                    label = 'X'
+                    step = {0.01}
+                    fixedDecimals = {2}
+                    defaultValue = {props.curve.scale.x.toPrecision(2)}
+                    handleChange = {(value) => onParamChange('scaleX', value)}
+                />
+            </Col>
+
+            <Col sm={5}>
+                <SmartInput
+                    label = 'Y'
+                    step = {0.01}
+                    fixedDecimals = {2}
+                    defaultValue = {props.curve.scale.y.toPrecision(2)}
+                    handleChange = {(value) => onParamChange('scaleY', value)}
+                />
+            </Col>
+
+        </Row>            
+
+    </>);
 
 }
 

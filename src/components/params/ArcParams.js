@@ -1,6 +1,6 @@
 // libs
 import React, { useState, useEffect } from 'react';
-import { Arc } from '../../lib/js/geometries/Arc';
+import Arc from '../../lib/js/geometries/Arc';
 
 function ArcParams(props) {
 
