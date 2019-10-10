@@ -4,10 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 // components
 import ChartControls from './ChartControls';
 
-// bootstrap
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-
 function CartesianChart(props) {
 
     const canvasRef = useRef(null);
@@ -126,32 +122,32 @@ function CartesianChart(props) {
 
     return (
 
-        <Col className = 'chart' sm={6}>
+        <div className = 'chart col-sm-6'>
 
-            <Row>
+            <div className = 'chart-border border'>
 
-                <Col sm={12}>
+                <div className = 'row'>
 
-                    <h2>{props.title}</h2>
+                    <div className = 'col-sm-12'>
 
-                </Col>
+                        <h2>{props.title}</h2>
 
-            </Row>
+                    </div>
 
-            <Row>
+                </div>
 
-                <Col sm={12}>
+                <div className = 'row'>
 
-                    <canvas
-                        className = 'chart'
-                        ref = {canvasRef}
-                    />
+                    <div className = 'col-sm-12'>
 
-                </Col>
+                        <canvas
+                            className = 'chart'
+                            ref = {canvasRef}
+                        />
 
-            </Row>
+                    </div>
 
-            <Row>
+                </div>
 
                 <ChartControls 
                     chartType = 'l'
@@ -159,10 +155,10 @@ function CartesianChart(props) {
                     palette = { props.palette }
                     updateCurve = { updateCurve }
                 />
-                
-            </Row>
 
-        </Col>
+            </div>
+
+        </div>
     
     );
 

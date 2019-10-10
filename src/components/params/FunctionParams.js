@@ -4,11 +4,6 @@ import React, { useState, useEffect } from 'react';
 // components
 import SmartInput from '../SmartInput';
 
-// bootstrap
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-
 function FunctionParams(props) {
 
     const [params, setParams] = useState({
@@ -29,6 +24,7 @@ function FunctionParams(props) {
             case 'translateY': props.curve.setTranslateY(value); break;
             case 'scaleX': props.curve.setScaleX(value); break;
             case 'scaleY': props.curve.setScaleY(value); break;
+            case 'rotate': props.curve.setRotation(value); break;
             case 'reverse': props.curve.setReverse(value); break;
             default: break;
         }
@@ -58,15 +54,18 @@ function FunctionParams(props) {
 
     return (<>
 
-        <Row className = 'params'>
+        <div className = 'row'>
 
-            <Col sm={2}>
-                <Form.Label><h4>Variation</h4></Form.Label>
-            </Col>
+            <div className = 'col-sm-2'>
+                <h4>
+                    <label for = 'variation-select'>Variation</label>
+                </h4>
+            </div>
 
-            <Col sm={4}>
-                <Form.Control 
-                    as='select' 
+            <div className = 'col-sm-4'>
+                <select 
+                    id = {'variation-select'}
+                    className = {'form-control'}
                     defaultValue = {
                         props.curveType === 'linear' ? 'na' : params.variation
                     }
@@ -78,16 +77,19 @@ function FunctionParams(props) {
                     {props.curveType !== 'linear' && <option value = 'in'>In</option>}
                     {props.curveType !== 'linear' && <option value = 'out'>Out</option>}
                     {props.curveType !== 'linear' && <option value = 'in-out'>In-Out</option>}
-                </Form.Control>
-            </Col>
+                </select>
+            </div>
 
-            <Col sm={2}>
-                <Form.Label><h4>Reverse</h4></Form.Label>
-            </Col>
+            <div className = 'col-sm-2'>
+                <h4>
+                    <label for = 'reverse-select'>Reverse</label>
+                </h4>
+            </div>
 
-            <Col sm={4}>
-                <Form.Control 
-                    as='select' 
+            <div className = 'col-sm-4'>
+                <select 
+                    id = {'reverse-select'}
+                    className = {'form-control'}
                     defaultValue = {params.reverse.toString()}
                     onChange = {(e) => {
                         const value = e.target.value === 'true';
@@ -95,18 +97,25 @@ function FunctionParams(props) {
                     }}>
                     <option value = 'true'>True</option>
                     <option value = 'false'>False</option>
-                </Form.Control>
-            </Col>
+                </select>
+            </div>
         
-        </Row>
+        </div>
 
-        <Row classname = 'params'>
+        <div className = 'row'>
+            <div className = 'col-sm-2'/>
+            <div className = 'col-sm-10'>
+                <h3>Transform</h3>
+            </div>
+        </div>
 
-            <Col sm={2}>
-                <Form.Label><h4>Translation</h4></Form.Label>
-            </Col>
+        <div className = 'row'>
+
+            <div className = 'col-sm-2'>
+                <h4>Translation</h4>
+            </div>
             
-            <Col sm={5}>
+            <div className = 'col-sm-5'>
                 <SmartInput
                     label = 'X'
                     step = {0.01}
@@ -114,9 +123,9 @@ function FunctionParams(props) {
                     defaultValue = {props.curve.translation.x.toPrecision(2)}
                     handleChange = {(value) => onParamChange('translateX', value)}
                 />
-            </Col>
+            </div>
 
-            <Col sm={5}>
+            <div className = 'col-sm-5'>
                 <SmartInput
                     label = 'Y'
                     step = {0.01}
@@ -124,17 +133,17 @@ function FunctionParams(props) {
                     defaultValue = {props.curve.translation.y.toPrecision(2)}
                     handleChange = {(value) => onParamChange('translateY', value)}
                 />
-            </Col>
+            </div>
 
-        </Row>
+        </div>
 
-        <Row classname = 'params'>
+        <div className = 'row'>
 
-            <Col sm={2}>
-                <Form.Label><h4>Scale</h4></Form.Label>
-            </Col>
+            <div className = 'col-sm-2'>
+                <h4>Scale</h4>
+            </div>
             
-            <Col sm={5}>
+            <div className = 'col-sm-5'>
                 <SmartInput
                     label = 'X'
                     step = {0.01}
@@ -142,9 +151,9 @@ function FunctionParams(props) {
                     defaultValue = {props.curve.scale.x.toPrecision(2)}
                     handleChange = {(value) => onParamChange('scaleX', value)}
                 />
-            </Col>
+            </div>
 
-            <Col sm={5}>
+            <div className = 'col-sm-5'>
                 <SmartInput
                     label = 'Y'
                     step = {0.01}
@@ -152,9 +161,27 @@ function FunctionParams(props) {
                     defaultValue = {props.curve.scale.y.toPrecision(2)}
                     handleChange = {(value) => onParamChange('scaleY', value)}
                 />
-            </Col>
+            </div>
 
-        </Row>            
+        </div>
+
+        <div className = 'row'>
+
+            <div className = 'col-sm-2'>
+                <h4>Rotate</h4>
+            </div>
+            
+            <div className = 'col-sm-5'>
+                <SmartInput
+                    label = {String.fromCharCode(0xfeff0398)}
+                    step = {0.01}
+                    fixedDecimals = {2}
+                    defaultValue = {props.curve.rotation.toPrecision(2)}
+                    handleChange = {(value) => onParamChange('rotate', value)}
+                />
+            </div>
+
+        </div>          
 
     </>);
 

@@ -5,11 +5,6 @@ import React, { useState, useEffect } from 'react';
 import ArcParams from './params/ArcParams';
 import FunctionParams from './params/FunctionParams';
 
-// bootstrap
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-
 function ChartControls(props) {
 
     const getCurveType = (chartType) => {
@@ -38,106 +33,112 @@ function ChartControls(props) {
 
     return (
 
-        <Col sm = {12}>
+        <div className = 'chart-control row'>
 
-            <Row>
+            <div className = 'col-sm-12'>
 
-                <Col sm = {12}>
-                    <h3>Parameters</h3>
-                </Col>
+                <div className = 'row'>
+                    <div className = 'col-sm-2'/>
+                    <div className = 'col-sm-10'>
+                        <h3>Curve</h3>
+                    </div>
+                </div>
 
-            </Row>
 
-            <Row>
+                <div className = 'row'>
 
-                <Col sm = {2}>
-                    <Form.Label>
-                        <h4>Type</h4>
-                    </Form.Label>
-                </Col>
+                    <div className = 'col-sm-2'>
+                        <h4>
+                            <label for = 'type-select'>
+                                Type
+                            </label>
+                        </h4> 
+                    </div>
 
-                <Col sm = {4}>
+                    <div className = 'col-sm-10'>
 
-                    <Form.Control 
-                        as='select' 
-                        id='curve-select'
-                        defaultValue = {curveType}
-                        onChange = {(e) => {
+                        <select
+                            id = {'variation-select'}
+                            className = {'form-control'}
+                            defaultValue = {curveType}
+                            onChange = {(e) => {
 
-                            const value = e.target.value;
+                                const value = e.target.value;
 
-                            // update the palette with the new curve
-                            if(props.chartType === 'hs') {
-                                props.palette.setHsCurve(value);
-                            } else if (props.chartType === 'l') {
-                                props.palette.setLCurve(value);
-                            }
-
-                            // update curve type
-                            setCurveType(value);
-
-                            // update curve
-                            setCurve(getCurve(props.chartType));
-
-                            // redraw the curve
-                            props.updateCurve();
-
-                        }}>
-                    >
-                    
-                        (<> 
-                        {props.config.map((group, i) => {
-                            return group.options.map((option, j) => {
-                                if(j === 0) {
-                                    return (<>
-                                        <option key = {`${i}${j}`} disabled>──────────</option>
-                                        <option key = {option.id} value = {option.id}>{option.display}</option>
-                                    </>);
-                                } else {
-                                    return (
-                                        <option key = {option.id} value = {option.id}>{option.display}</option>
-                                    );
+                                // update the palette with the new curve
+                                if(props.chartType === 'hs') {
+                                    props.palette.setHsCurve(value);
+                                } else if (props.chartType === 'l') {
+                                    props.palette.setLCurve(value);
                                 }
-                            })
-                        })} 
-                        <option disabled>──────────</option>
-                        </>)
-                    
-                    </Form.Control>
 
-                </Col>
+                                // update curve type
+                                setCurveType(value);
 
-            </Row>
+                                // update curve
+                                setCurve(getCurve(props.chartType));
 
-             {
-                 curveType === 'arc' 
-                 && 
-                 <ArcParams
-                     chartType = {props.chartType}
-                     curveType = {curveType}
-                     curve = {curve}
-                     updateCurve = { props.updateCurve }
-                 />
-             }
-             {
-                 (
-                 curveType === 'linear' ||
-                 curveType === 'polynomial' ||
-                 curveType === 'sinusoidal' ||
-                 curveType === 'exponential' ||
-                 curveType === 'elastic' ||
-                 curveType === 'back' ||
-                 curveType === 'bounce'
-                 ) &&
-                 <FunctionParams
-                     chartType = {props.chartType}
-                     curveType = {curveType}
-                     curve = {curve}
-                     updateCurve = { props.updateCurve }
-                 />
-             }
+                                // redraw the curve
+                                props.updateCurve();
 
-        </Col>
+                            }}>
+                        
+                        
+                            (<> 
+                            {props.config.map((group, i) => {
+                                return group.options.map((option, j) => {
+                                    if(j === 0) {
+                                        return (<>
+                                            <option key = {`${i}${j}`} disabled>──────────</option>
+                                            <option key = {option.id} value = {option.id}>{option.display}</option>
+                                        </>);
+                                    } else {
+                                        return (
+                                            <option key = {option.id} value = {option.id}>{option.display}</option>
+                                        );
+                                    }
+                                })
+                            })} 
+                            <option disabled>──────────</option>
+                            </>)
+            
+                        </select>
+
+                    </div>
+
+                </div>
+
+                {
+                    curveType === 'arc' 
+                    && 
+                    <ArcParams
+                        chartType = {props.chartType}
+                        curveType = {curveType}
+                        curve = {curve}
+                        updateCurve = { props.updateCurve }
+                    />
+                }
+                {
+                    (
+                    curveType === 'linear' ||
+                    curveType === 'polynomial' ||
+                    curveType === 'sinusoidal' ||
+                    curveType === 'exponential' ||
+                    curveType === 'elastic' ||
+                    curveType === 'back' ||
+                    curveType === 'bounce'
+                    ) &&
+                    <FunctionParams
+                        chartType = {props.chartType}
+                        curveType = {curveType}
+                        curve = {curve}
+                        updateCurve = { props.updateCurve }
+                    />
+                }
+
+            </div>
+
+        </div>
 
     );
 

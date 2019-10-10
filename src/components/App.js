@@ -1,13 +1,12 @@
 // libs
 import React from 'react';
+import 'bootstrap';
 
 // components
 import Editor from './Editor'
-import Container from 'react-bootstrap/Container';
 
 // styles
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/app.css';
+import '../styles/app.scss';
 
 function App() {
 
@@ -23,11 +22,11 @@ function App() {
 
   return (
 
-    <Container className = 'no-focus-outline' id = 'app' fluid = {true}>
+    <div className = 'container no-focus-outline' id = 'app' fluid = {true}>
       
       <Editor />
 
-    </Container>
+    </div>
 
   );
 

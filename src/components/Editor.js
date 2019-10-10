@@ -1,14 +1,9 @@
 // libs
-import React, { useState, useEffect, useRef } from 'react';
-import { cartToPolar, radToDeg } from '../lib/utils/math';
+import React, { useState, useRef } from 'react';
 
 // components
 import PolarChart from './PolarChart';
 import CartesianChart from './CartesianChart';
-
-// bootstrap
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 // curves 
 import ColorPalette from '../lib/js/ColorPalette';
@@ -133,39 +128,39 @@ function Editor() {
 
     <>
 
-        <Row id = 'header'>
+        <div className = 'row' id = 'header'>
 
-          <Col sm={12}>
+          <div className = 'col-sm-12'>
             <h1>Color Curves</h1>
-          </Col>
+          </div>
 
-          <Col sm={12}>
+          <div className = 'col-sm-12'>
             <p className = 'lead'>
               Create unique color palettes by overlaying curves onto the HSL color space.
             </p>
-          </Col>
+          </div>
 
-        </Row>
+        </div>
 
-        <Row id = 'palettes'>
+        <div className = 'row' id = 'palettes'>
 
-          <Col sm={12}>
+          <div className = 'col-sm-12'>
             <canvas
                 className = 'palette'
                 ref = { continuousPaletteCanvas } 
             />
-          </Col>
+          </div>
 
-          <Col sm={12}>
+          <div className = 'col-sm-12'>
             <canvas
                 className = 'palette'
                 ref = { discretePaletteCanvas } 
             />
-          </Col>
+          </div>
 
-        </Row>
+        </div>
 
-        <Row id = 'charts'>
+        <div className = 'row' id = 'charts'>
 
             <PolarChart 
               title = 'Hue + Saturation'
@@ -181,7 +176,7 @@ function Editor() {
               updatePalettes = { updatePalettes }
             />
             
-        </Row>
+        </div>
 
       </>
     
