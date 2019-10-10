@@ -53,10 +53,11 @@ function FunctionParams(props) {
             className = 'smart-input'
             style = {
                 (props.defaultStyles !== false) && {
-                    display: 'table',
+                    display: 'flex',
+                    flexFlow: 'row nowrap',
+                    alignItems: 'center',
+                    height: '2rem',
                     width: '100%',
-                    height: '34px',
-                    fontSize: '14px',
                     color: '#555',
                     backgroundColor: '#FFF',
                     border: '1px solid #CCC',
@@ -72,51 +73,46 @@ function FunctionParams(props) {
                 }}
                 style = {
                     (props.defaultStyles !== false) && {
-                        cursor: 'ew-resize',
-                        display: 'table-cell',
-                        whiteSpace: 'nowrap',
-                        width: '1px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        flex: '1 1 auto',
                         height: '100%',
-                        padding: '6px 12px',
+                        cursor: 'ew-resize',
+                        fontSize: '0.875rem',
+                        padding: '0px 12px',
                         margin: '0',
                         backgroundColor: '#EEE',
                         borderTopLeftRadius: '4px',
                         borderBottomLeftRadius: '4px'
                 }}
             >
-                {props.label}
+                <span>
+                    {props.label}
+                </span>
             </div>
-            <div 
+            <input
+                className = 'smart-input-text'
+                ref = {inputRef}
+                onClick={handleClick}
+                onChange = {(e) => {
+                    const value = parseFloat(e.target.value);
+                    props.handleChange(value);
+                }}
+                defaultValue = {props.defaultValue || 0}
+                type = 'text'
                 style = {
                     (props.defaultStyles !== false) && {
-                        display: 'table-cell',
-                        padding: '0',
+                        flex: '1 1 auto',
+                        height: '100%',
+                        fontSize: '0.875rem',
+                        padding: '0px 12px',
                         margin: '0',
                         border: 'none',
                         borderRadius: '4px'
                 }}
             >
-                <input 
-                    ref = {inputRef}
-                    onClick={handleClick}
-                    onChange = {(e) => {
-                        const value = parseFloat(e.target.value);
-                        props.handleChange(value);
-                    }}
-                    defaultValue = {props.defaultValue || 0}
-                    type = 'text'
-                    style = {
-                        (props.defaultStyles !== false) && {
-                            display: 'inline-block',
-                            padding: '6px 12px',
-                            border: 'none',
-                            borderRadius: '4px',
-                            width: '100%',
-                            height: '100%'
-                    }}
-                >
-                </input>
-            </div>
+            </input>
         </div>
     )
 

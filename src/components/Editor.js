@@ -13,49 +13,49 @@ function Editor() {
   // the config defines all options for curve types and their corresponding
   // display names and constructors
   const config = [
-    {
-      name: 'geometries',
-      options: [
-        {
-          id: 'arc',
-          display: 'Geometry: Arc'
-        }
-      ]
-    },
-    {
-      name: 'functions',
-      options: [
-        {
-          id: 'linear',
-          display: 'Function: Linear'
-        },
-        {
-          id: 'polynomial',
-          display: 'Function: Polynomial'
-        },
-        {
-          id: 'sinusoidal',
-          display: 'Function: Sinusoidal'
-        },
-        {
-          id: 'exponential',
-          display: 'Function: Exponential'
-        },
-        {
-          id: 'elastic',
-          display: 'Function: Elastic'
-        },
-        {
-          id: 'back',
-          display: 'Function: EaseBack'
-        },
-        {
-          id: 'bounce',
-          display: 'Function: Bounce'
-        }
-      ]
-    }
+      {
+        id: 'arc',
+        category: 'geometry',
+        display: 'Geometry: Arc'
+      },
+      {
+        id: 'linear',
+        category: 'function',
+        display: 'Function: Linear'
+      },
+      {
+        id: 'polynomial',
+        category: 'function',
+        display: 'Function: Polynomial'
+      },
+      {
+        id: 'sinusoidal',
+        category: 'function',
+        display: 'Function: Sinusoidal'
+      },
+      {
+        id: 'exponential',
+        category: 'function',
+        display: 'Function: Exponential'
+      },
+      {
+        id: 'elastic',
+        category: 'function',
+        display: 'Function: Elastic'
+      },
+      {
+        id: 'back',
+        category: 'function',
+        display: 'Function: EaseBack'
+      },
+      {
+        id: 'bounce',
+        category: 'function',
+        display: 'Function: Bounce'
+      }
   ];
+
+  const [flagPalettePinned, setFlagPalettePinned] = useState(true);
 
   // initialize palette
   const defaultPalette = new ColorPalette();
@@ -67,9 +67,30 @@ function Editor() {
   // initialize default color palette state
   const [palette, setPalette] = useState(defaultPalette);
 
-  // initialize canvas refs
+  // initialize refs
   const continuousPaletteCanvas = useRef(null);
   const discretePaletteCanvas = useRef(null);
+  const paletteWrapper = useRef(null);
+
+  // set a listener to handle scrolling and pinning behavior
+  // When the user scrolls the page, execute myFunction  
+  // const handleSticky = () => {
+
+  //     const pos = paletteWrapper.current.offsetTop;
+
+  //     console.log(pos, window.pageYOffset);
+
+  //     if (window.pageYOffset > pos && (!paletteWrapper.current.classList.contains('sticky-top'))) {
+
+  //       paletteWrapper.current.classList.add('sticky-top');
+
+  //     } else if (window.pageYOffset <= pos) {
+
+  //       paletteWrapper.current.classList.remove('sticky-top');
+
+  //     }
+
+  // };
 
   const drawContinuousPalette = () => {
 
@@ -128,34 +149,57 @@ function Editor() {
 
     <>
 
-        <div className = 'row' id = 'header'>
+        <div ref = {paletteWrapper} className = 'palette-wrapper sticky-top border'>
 
-          <div className = 'col-sm-12'>
-            <h1>Color Curves</h1>
+          {/* <div className = 'row'>
+          </div> */}
+
+          <div className = 'row'>
+            <div className = 'col-auto align-items-center'>
+              <h2>Palette</h2>
+            </div>
+            <div className = 'col-auto ml-auto d-flex align-items-center'>
+              <form>
+              <div class="custom-control custom-switch">
+                <input 
+                  type="checkbox" 
+                  id='pinned-switch'
+                  class="custom-control-input" 
+                  defaultChecked = {flagPalettePinned} 
+                  onClick = {(e) => console.log(e)}
+                  onChange = {(e) => {
+                    const sticky = e.target.checked;
+                    if(sticky) {
+                      paletteWrapper.current.classList.add('sticky-top');
+                    } else {
+                      paletteWrapper.current.classList.remove('sticky-top');
+                    }
+                  }}
+                />
+                <label class="custom-control-label" for="pinned-switch">Pinned</label>
+              </div>
+              </form>
+            </div>
           </div>
 
-          <div className = 'col-sm-12'>
-            <p className = 'lead'>
-              Create unique color palettes by overlaying curves onto the HSL color space.
-            </p>
+          <div className = 'row'>
+            <div className = 'col-md-12'>
+              <canvas
+                  className = 'palette'
+                  ref = { continuousPaletteCanvas } 
+              />
+            </div>
           </div>
 
-        </div>
+          <div className = 'row'>
 
-        <div className = 'row' id = 'palettes'>
+            <div className = 'col-md-12'>
+              <canvas
+                  className = 'palette'
+                  ref = { discretePaletteCanvas } 
+              />
+            </div>
 
-          <div className = 'col-sm-12'>
-            <canvas
-                className = 'palette'
-                ref = { continuousPaletteCanvas } 
-            />
-          </div>
-
-          <div className = 'col-sm-12'>
-            <canvas
-                className = 'palette'
-                ref = { discretePaletteCanvas } 
-            />
           </div>
 
         </div>
@@ -164,13 +208,15 @@ function Editor() {
 
             <PolarChart 
               title = 'Hue + Saturation'
+              chartType = 'polar'
               config = { config }
               palette = { palette }
               updatePalettes = { updatePalettes }
             />
 
-            <CartesianChart 
+            <PolarChart 
               title = 'Lightness'
+              chartType = 'cartesian'
               config = { config }
               palette = { palette }
               updatePalettes = { updatePalettes }

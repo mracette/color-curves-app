@@ -1,5 +1,5 @@
 // libs
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 // components
 import ChartControls from './ChartControls';
@@ -124,7 +124,7 @@ function CartesianChart(props) {
 
         <div className = 'chart col-sm-6'>
 
-            <div className = 'chart-border border'>
+            <div className = 'chart-wrapper border'>
 
                 <div className = 'row'>
 

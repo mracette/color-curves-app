@@ -26,6 +26,14 @@ export default class ColorPalette {
         this.lCurveType = curveType;
     }
 
+    getHsCurveCategory() {
+        return this.hsCurve.curveCategory;
+    }
+
+    getLCurveCategory() {
+        return this.lCurve.curveCategory;
+    }
+
     getHsCurveType() {
         return this.hsCurveType;
     }

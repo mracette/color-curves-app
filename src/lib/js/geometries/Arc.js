@@ -15,6 +15,8 @@ export default class Arc extends Relation {
         this.angleEnd = typeof angleEnd === 'number' ? angleEnd : Math.PI * 2;
         this.angleOffset = typeof angleOffset === 'number' ? angleOffset : 0;
 
+        this.curveCategory = 'geometry';
+
     }
 
     getCartesianCoordsAt(n) {

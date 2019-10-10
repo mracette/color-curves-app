@@ -56,16 +56,11 @@ function FunctionParams(props) {
 
         <div className = 'row'>
 
-            <div className = 'col-sm-2'>
-                <h4>
-                    <label for = 'variation-select'>Variation</label>
-                </h4>
-            </div>
-
-            <div className = 'col-sm-4'>
+            <div className = 'col-sm-6'>
+                <label for='variation-select'>Variation</label>
                 <select 
                     id = {'variation-select'}
-                    className = {'form-control'}
+                    className = {'form-control form-control-sm'}
                     defaultValue = {
                         props.curveType === 'linear' ? 'na' : params.variation
                     }
@@ -80,16 +75,11 @@ function FunctionParams(props) {
                 </select>
             </div>
 
-            <div className = 'col-sm-2'>
-                <h4>
-                    <label for = 'reverse-select'>Reverse</label>
-                </h4>
-            </div>
-
-            <div className = 'col-sm-4'>
+            <div className = 'col-sm-6'>
+                <label for='variation-select'>Reverse</label>
                 <select 
                     id = {'reverse-select'}
-                    className = {'form-control'}
+                    className = {'form-control form-control-sm'}
                     defaultValue = {params.reverse.toString()}
                     onChange = {(e) => {
                         const value = e.target.value === 'true';
@@ -103,17 +93,8 @@ function FunctionParams(props) {
         </div>
 
         <div className = 'row'>
-            <div className = 'col-sm-2'/>
-            <div className = 'col-sm-10'>
-                <h3>Transform</h3>
-            </div>
-        </div>
 
-        <div className = 'row'>
-
-            <div className = 'col-sm-2'>
-                <h4>Translation</h4>
-            </div>
+            <label className = 'col-sm-2'>Translation</label>
             
             <div className = 'col-sm-5'>
                 <SmartInput
@@ -139,9 +120,7 @@ function FunctionParams(props) {
 
         <div className = 'row'>
 
-            <div className = 'col-sm-2'>
-                <h4>Scale</h4>
-            </div>
+            <label className = 'col-sm-2'>Scale</label>
             
             <div className = 'col-sm-5'>
                 <SmartInput
@@ -167,9 +146,7 @@ function FunctionParams(props) {
 
         <div className = 'row'>
 
-            <div className = 'col-sm-2'>
-                <h4>Rotate</h4>
-            </div>
+            <label className = 'col-sm-2'>Rotation</label>
             
             <div className = 'col-sm-5'>
                 <SmartInput

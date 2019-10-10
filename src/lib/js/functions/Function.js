@@ -7,6 +7,7 @@ export default class Function extends Relation {
 
         super(surface);
         this.setFn(fn);
+        this.curveCategory = 'function';
 
     }
 
