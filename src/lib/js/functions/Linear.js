@@ -3,9 +3,13 @@ import UnitCircle from '../surfaces/UnitCircle';
 import UnitSquare from '../surfaces/UnitSquare';
 import * as d3 from 'd3-ease';
 
+/**
+ * Creates a linear curve.
+ * @param {Object|string} [surface = 'unitSquare'] The surface on which to draw the curve
+ */
 export default class Linear extends Function {
 
-    constructor(surface, params) {
+    constructor(surface) {
         
         // initialize a new surface class if an instance isn't passed in
         if(surface.type === undefined) {
@@ -25,10 +29,10 @@ export default class Linear extends Function {
         // initialize parent class
         super(surface, d3.easeLinear);
 
-        // set initial tranformations
-        (params && params.rotation) ? this.setRotation(params.rotation) : this.setDefaultRotation();
-        (params && params.translation) ? this.setTranslation(params.translation) : this.setDefaultTranslation();
-        (params && params.scale) ? this.setScale(params.scale) : this.setDefaultScale();
+        // set initial tranformations according to the surface type
+        this.setDefaultRotation();
+        this.setDefaultTranslation();
+        this.setDefaultScale();
 
     }
 

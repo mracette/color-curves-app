@@ -31,15 +31,9 @@ function App() {
 
       <div className = 'row' id = 'header'>
 
-      <div className = 'col-md-12'>
-        <h1>Color Curves</h1>
-      </div>
-
-      <div className = 'col-md-12'>
-        <p className = 'lead'>
-          Create unique color palettes by overlaying curves onto the HSL color space.
-        </p>
-      </div>
+        <div className = 'col-md-12'>
+          <h1>Color Curves</h1>
+        </div>
 
       </div>
       

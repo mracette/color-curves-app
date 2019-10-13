@@ -30,8 +30,8 @@ function FunctionParams(props) {
                 parseFloat((startValue + stepDelta));
 
             // clamp if necessary
-            if(props.min) newValue = Math.max(props.min, newValue);
-            if(props.max) newValue = Math.min(props.max, newValue);
+            if(props.min !== undefined) newValue = Math.max(props.min, newValue);
+            if(props.max !== undefined) newValue = Math.min(props.max, newValue);
 
             // replace the current value
             inputRef.current.value = newValue;
@@ -76,7 +76,7 @@ function FunctionParams(props) {
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        flex: '1 1 auto',
+                        flex: '0 1 auto',
                         height: '100%',
                         cursor: 'ew-resize',
                         fontSize: '0.875rem',
@@ -104,6 +104,7 @@ function FunctionParams(props) {
                 style = {
                     (props.defaultStyles !== false) && {
                         flex: '1 1 auto',
+                        width: '100%',
                         height: '100%',
                         fontSize: '0.875rem',
                         padding: '0px 12px',

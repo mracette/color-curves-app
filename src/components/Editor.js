@@ -2,8 +2,8 @@
 import React, { useState, useRef } from 'react';
 
 // components
-import PolarChart from './PolarChart';
-import CartesianChart from './CartesianChart';
+import Chart from './Chart';
+import SmartInput from './SmartInput';
 
 // curves 
 import ColorPalette from '../lib/js/ColorPalette';
@@ -55,94 +55,34 @@ function Editor() {
       }
   ];
 
-  const [flagPalettePinned, setFlagPalettePinned] = useState(true);
+  const [paletteType, setPaletteType] = useState('continuous');
+  const [numStops, setNumStops] = useState(12);
+  const [paletteRange, setPaletteRange] = useState([0,1]);
 
   // initialize palette
   const defaultPalette = new ColorPalette();
 
   // set default curve types
-  defaultPalette.setHsCurve('linear');
-  defaultPalette.setLCurve('linear');
+  // defaultPalette.setHsCurve('linear');
+  // defaultPalette.hsCurve.setClampBounds();
+  // defaultPalette.setLCurve('linear');
+  // defaultPalette.lCurve.setClampBounds();
 
   // initialize default color palette state
-  const [palette, setPalette] = useState(defaultPalette);
+  const [palette] = useState(defaultPalette);
 
   // initialize refs
-  const continuousPaletteCanvas = useRef(null);
-  const discretePaletteCanvas = useRef(null);
+  const paletteCanvas = useRef(null);
   const paletteWrapper = useRef(null);
 
-  // set a listener to handle scrolling and pinning behavior
-  // When the user scrolls the page, execute myFunction  
-  // const handleSticky = () => {
-
-  //     const pos = paletteWrapper.current.offsetTop;
-
-  //     console.log(pos, window.pageYOffset);
-
-  //     if (window.pageYOffset > pos && (!paletteWrapper.current.classList.contains('sticky-top'))) {
-
-  //       paletteWrapper.current.classList.add('sticky-top');
-
-  //     } else if (window.pageYOffset <= pos) {
-
-  //       paletteWrapper.current.classList.remove('sticky-top');
-
-  //     }
-
-  // };
-
-  const drawContinuousPalette = () => {
-
-    const canvas = continuousPaletteCanvas.current;
-    const ctx = canvas.getContext('2d');
-
-    canvas.height = canvas.clientHeight * 4;
-    canvas.width = canvas.clientWidth * 4;
-
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-    const numStops = 32;
-
-    for(let i = 0; i <= numStops; i++) {
-
-        // get hsl values
-        const hsl = palette.hslValueAt(i / numStops);
-
-        // add a gradient stop
-        gradient.addColorStop(i / numStops, hsl);
-
-    }
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  }
-
-  const drawDiscretePalette = () => {
-
-    const canvas = discretePaletteCanvas.current;
-    const ctx = canvas.getContext('2d');
-
-    canvas.height = canvas.clientHeight * 4;
-    canvas.width = canvas.clientWidth * 4;
-
-    const numStops = 12;
-
-    for(let i = 0; i < numStops; i++) {
-
-        // get hsl values
-        const hsl = palette.hslValueAt(i / numStops);
-
-        ctx.fillStyle = hsl;
-        ctx.fillRect(i * canvas.width / numStops, 0, canvas.width / numStops, canvas.height);
-
-    }
-
-  }
-
   const updatePalettes = () => {
-    drawContinuousPalette();
-    drawDiscretePalette();
+
+    if(paletteType === 'continuous') {
+      palette.drawContinuousPalette(paletteCanvas.current);
+    } else if(paletteType === 'discrete') {
+      palette.drawDiscretePalette(paletteCanvas.current, numStops);
+    }
+
   }
 
   return (
@@ -151,10 +91,7 @@ function Editor() {
 
         <div ref = {paletteWrapper} className = 'palette-wrapper sticky-top border'>
 
-          {/* <div className = 'row'>
-          </div> */}
-
-          <div className = 'row'>
+          <div className = 'row border-bottom'>
             <div className = 'col-auto align-items-center'>
               <h2>Palette</h2>
             </div>
@@ -165,8 +102,7 @@ function Editor() {
                   type="checkbox" 
                   id='pinned-switch'
                   class="custom-control-input" 
-                  defaultChecked = {flagPalettePinned} 
-                  onClick = {(e) => console.log(e)}
+                  defaultChecked = {true} 
                   onChange = {(e) => {
                     const sticky = e.target.checked;
                     if(sticky) {
@@ -182,31 +118,98 @@ function Editor() {
             </div>
           </div>
 
+          <form>
+
+          {/* PALETTE OPTIONS LINE 1 */}
           <div className = 'row'>
-            <div className = 'col-md-12'>
-              <canvas
-                  className = 'palette'
-                  ref = { continuousPaletteCanvas } 
-              />
-            </div>
+
+              {/* PALETTE TYPE */}
+              <label className = 'col-lg-1 col-form-label-sm' for = 'type-select'>Type</label>
+              <div className = 'col-lg-2'>
+                  <select
+                      id = 'type-select'
+                      className = 'form-control form-control-sm'
+                      defaultValue = {paletteType}
+                      onChange = {(e) => {
+                          const newPaletteType = e.target.value;
+                          setPaletteType(newPaletteType);
+                  }}>
+                    <option value = 'continuous'>Continuous</option>
+                    <option value = 'discrete'>Discrete</option>
+                  </select>
+              </div>
+
+              {/* NUM STOPS */}
+              {paletteType === 'discrete' &&
+              <div className = 'col-lg-2'>
+                <SmartInput
+                  label = 'Stops'
+                  step = {1}
+                  min = {1}
+                  max = {32}
+                  fixedDecimals = {0}
+                  defaultValue = {numStops}
+                  handleChange = {(value) => setNumStops(parseInt(value))}
+                />
+              </div>
+              }
+
           </div>
 
+          {/* PALETTE OPTIONS LINE 2 */}
           <div className = 'row'>
 
+              {/* PALETTE TYPE */}
+              <label className = 'col-lg-1 col-form-label-sm' for = 'type-select'>Range</label>
+
+              <div className = 'col-lg-2'>
+                <SmartInput
+                  label = 'Start'
+                  step = {.01}
+                  min = {0}
+                  max = {paletteRange[1]}
+                  fixedDecimals = {2}
+                  defaultValue = {paletteRange[0]}
+                  handleChange = {(value) => {
+                    palette.setPaletteStart(parseFloat(value));
+                    setPaletteRange([parseFloat(value), paletteRange[1]]);
+                  }}
+                />
+              </div>
+
+              <div className = 'col-lg-2'>
+                <SmartInput
+                  label = 'End'
+                  step = {.01}
+                  min = {paletteRange[0]}
+                  max = {1}
+                  fixedDecimals = {2}
+                  defaultValue = {paletteRange[1]}
+                  handleChange = {(value) => {
+                    palette.setPaletteEnd(parseFloat(value));
+                    setPaletteRange([paletteRange[0], parseFloat(value)]);
+                  }}
+                />
+              </div>
+
+          </div>
+
+          </form>
+          
+          <div className = 'row'>
             <div className = 'col-md-12'>
               <canvas
                   className = 'palette'
-                  ref = { discretePaletteCanvas } 
+                  ref = { paletteCanvas } 
               />
             </div>
-
           </div>
 
         </div>
 
         <div className = 'row' id = 'charts'>
 
-            <PolarChart 
+            <Chart 
               title = 'Hue + Saturation'
               chartType = 'polar'
               config = { config }
@@ -214,7 +217,7 @@ function Editor() {
               updatePalettes = { updatePalettes }
             />
 
-            <PolarChart 
+            <Chart 
               title = 'Lightness'
               chartType = 'cartesian'
               config = { config }

@@ -3,6 +3,10 @@ import UnitCircle from '../surfaces/UnitCircle';
 import UnitSquare from '../surfaces/UnitSquare';
 import * as d3 from 'd3-ease';
 
+/**
+ * Creates an elastic curve.
+ * @param {Object|string} [surface = 'unitSquare'] The surface on which to draw the curve
+ */
 export default class Elastic extends Function {
 
     constructor(surface, params) {
@@ -32,10 +36,10 @@ export default class Elastic extends Function {
             this.variation = 'in';
         }
 
-        // set initial tranformations
-        (params && params.rotation) ? this.setRotation(params.rotation) : this.setDefaultRotation();
-        (params && params.translation) ? this.setTranslation(params.translation) : this.setDefaultTranslation();
-        (params && params.scale) ? this.setScale(params.scale) : this.setDefaultScale();
+        // set initial tranformations according to the surface type
+        this.setDefaultRotation();
+        this.setDefaultTranslation();
+        this.setDefaultScale();
 
     }
 

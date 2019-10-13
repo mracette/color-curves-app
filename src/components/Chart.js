@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react';
 // components
 import ChartControls from './ChartControls';
 
-function PolarChart(props) {
+function Chart(props) {
 
     const canvasRef = useRef(null);
 
@@ -15,14 +15,27 @@ function PolarChart(props) {
 
         case 'polar': {
 
+            // expressed as a percentage of the chart size
+            const chartPadding = .01;
+
             // Normalize x such that: nx(0) = width / 2 && nx(1) = width && nx(-1) = 0
             nx = (x) => {
-                return canvasRef.current.width / 2 + x * canvasRef.current.width / 2;
+
+                const width = canvasRef.current.width * (1 - 2 * chartPadding);
+                const offset = canvasRef.current.width * chartPadding;
+
+                return offset + width / 2 + x * width / 2;
+
             }
 
             // Normalize y such that: ny(0) = height / 2 && ny(1) = 0 && ny(-1) = height
             ny = (y) => {
-                return canvasRef.current.height / 2 - y * canvasRef.current.height / 2;
+
+                const height = canvasRef.current.height * (1 - 2 * chartPadding);
+                const offset = canvasRef.current.height * chartPadding;
+
+                return offset + height / 2 - y * height / 2;
+
             }
 
             drawBlankChart = () => {
@@ -34,38 +47,31 @@ function PolarChart(props) {
                 // larger coordinate systems seem to result in sharper renders
                 canvas.height = canvas.clientHeight * 4;
                 canvas.width = canvas.clientWidth * 4;
-        
-                // get key dimensions
-                const cx = nx(0);
-                const cy = ny(0);
-                const r = canvas.width / 2;
-                const outline = r / 100;
-        
+    
+                // fill background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);        
+
                 // color wheel parameters
                 const arcCount = 256;
                 const arcWidth = - Math.PI * 2 / arcCount;
                 const arcPadding = arcWidth;
+
+                // other parameters
+                const cx = nx(0);
+                const cy = ny(0);
+                const r = nx(0) - chartPadding * nx(0) * 2;
         
-                // fill rect
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-                // outline
-                ctx.strokeStyle = 'black';
-                ctx.lineWidth = canvas.width / 100;
-                ctx.arc(cx, cy, r - outline, 0, Math.PI * 2);
-                ctx.stroke();
-        
-        
+                // fill chart gradient
                 for(let i = 0; i < arcCount; i++) {
         
                     const radiusStart = 0;
-                    const radiusEnd = r - outline;
+                    const radiusEnd = r;
         
                     const angleStart = i * arcWidth;
                     const angleEnd = i * arcWidth + arcWidth;
         
-                    const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, r - outline);
+                    const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
                     gradient.addColorStop(0, `hsl(${360 * i / arcCount}, 0%, 50%)`);
                     gradient.addColorStop(1, `hsl(${360 * i / arcCount}, 100%, 50%)`);
                     ctx.fillStyle = gradient;
@@ -76,6 +82,7 @@ function PolarChart(props) {
                     ctx.fill();
         
                 }
+
             }
 
             drawCurve = () => {
@@ -83,30 +90,36 @@ function PolarChart(props) {
                 // get canvas and context
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d', {alpha: false});
+                ctx.lineWidth = canvas.width / 100;
         
                 const lineSegments = 128;
         
                 let prevCoords;
+
+                const start = props.palette.hsCurve.overflow === 'clamp' ? 
+                    props.palette.hsCurve.clampStart : 0;
+
+                const end = props.palette.hsCurve.overflow === 'clamp' ? 
+                    props.palette.hsCurve.clampEnd : 1
         
                 for(let i = 0; i <= lineSegments; i++) {
         
                     ctx.beginPath();
                     
-                    const coords = props.palette.hsCurve.getCartesianCoordsAt(i / lineSegments);
+                    const coords = props.palette.hsCurve.getCartesianCoordsAt(start + (i / lineSegments) * (end - start));
         
                     ctx.strokeStyle = 'black';
         
-                    if(i === 0) {
-                        ctx.moveTo(nx(coords.x), ny(coords.y));
-                        prevCoords = coords;
-                    } else {
-                        ctx.moveTo(nx(prevCoords.x), ny(prevCoords.y));
-                        ctx.lineTo(nx(coords.x), ny(coords.y));
-                        prevCoords = coords;
-                    }
-        
-                    ctx.closePath();
+                        if(i === 0) {
+                            ctx.moveTo(nx(coords.x), ny(coords.y));
+                        } else {
+                            ctx.moveTo(nx(prevCoords.x), ny(prevCoords.y));
+                            ctx.lineTo(nx(coords.x), ny(coords.y));
+                        }
+            
                     ctx.stroke();
+
+                    prevCoords = coords;
         
                 }
         
@@ -121,59 +134,48 @@ function PolarChart(props) {
 
         case 'cartesian': {
 
+            // expressed as a percentage of the chart size
+            const chartPadding = 0.01;
+
             // Normalize x such that: nx(0) = 0 && nx(1) = width
             nx = (x) => {
-                return x * canvasRef.current.width;
+
+                const offset = canvasRef.current.width * chartPadding;
+                const width = canvasRef.current.width * (1 - 2 * chartPadding);
+
+                return offset + x * width;
+
             }
 
             // Normalize y such that: ny(0) = height && ny(1) = 0
             ny = (y) => {
-                return canvasRef.current.height - y * canvasRef.current.height;
+
+                const offset = canvasRef.current.height * chartPadding;
+                const height = canvasRef.current.height * (1 - 2 * chartPadding);
+
+                return offset + height - y * height;
+
             }
 
             drawBlankChart = () => {
 
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d', {alpha: false});
-        
+
                 // larger coordinate systems seem to result in sharper renders
                 canvas.height = canvas.clientHeight * 4;
                 canvas.width = canvas.clientWidth * 4;
         
-                // get key dimensions
-                ctx.lineWidth = canvas.width / 100;
+                // fill background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.height, canvas.width);
         
-                // fill rect
-                const fillRectGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                // fill chart gradient
+                const fillRectGradient = ctx.createLinearGradient(nx(0), ny(1), nx(0), ny(0));
                 fillRectGradient.addColorStop(0, 'hsl(0, 0%, 100%');
                 fillRectGradient.addColorStop(1, 'hsl(0, 0%, 0%');
                 ctx.fillStyle = fillRectGradient;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-                // draw x and y axis
-                ctx.strokeStyle = 'black';
-                ctx.moveTo(0, 0);
-                ctx.lineTo(0, canvas.height);
-                ctx.lineTo(canvas.width, canvas.height);
-                ctx.stroke();
-        
-                // create labels
-                const padding = .075;
-                ctx.font = '64px Arial';
-                
-                // white labels
-                ctx.fillStyle = 'white';
-                    ctx.textAlign = 'left';
-                    ctx.fillText('(0,0)', nx(0 + padding), ny(0 + padding));
-                    ctx.textAlign = 'right';
-                    ctx.fillText('(1,0)', nx(1 - padding), ny(0 + padding));
-        
-                    // black labels
-                ctx.fillStyle = 'black';
-                    ctx.textAlign = 'left';
-                    ctx.fillText('(0,1)', nx(0 + padding), ny(1 - padding));
-                    ctx.textAlign = 'right';
-                    ctx.fillText('(1,1)', nx(1 - padding), ny(1 - padding));
+                ctx.fillRect(nx(0), ny(1), nx(1) - chartPadding * nx(1), ny(0) - chartPadding * ny(0));
         
             }
 
@@ -182,6 +184,7 @@ function PolarChart(props) {
                 // get canvas and context
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d', {alpha: false});
+                ctx.lineWidth = canvas.width / 100;
         
                 const lineSegments = 128;
         
@@ -194,18 +197,21 @@ function PolarChart(props) {
                     const coords = props.palette.lCurve.getCartesianCoordsAt(i / lineSegments);
                 
                     ctx.strokeStyle = 'black';
+
+                    if(props.palette.lCurve.overflow === 'project' || !coords.clamped) {
         
-                    if(i === 0) {
-                        ctx.moveTo(nx(coords.x), ny(coords.y));
-                        prevCoords = coords;
-                    } else {
-                        ctx.moveTo(nx(prevCoords.x), ny(prevCoords.y));
-                        ctx.lineTo(nx(coords.x), ny(coords.y));
-                        prevCoords = coords;
+                        if(i === 0) {
+                            ctx.moveTo(nx(coords.x), ny(coords.y));
+                        } else {
+                            ctx.moveTo(nx(prevCoords.x), ny(prevCoords.y));
+                            ctx.lineTo(nx(coords.x), ny(coords.y));
+                        }
+            
+                        ctx.stroke();
+
                     }
-        
-                    ctx.closePath();
-                    ctx.stroke();
+
+                    prevCoords = coords;
         
                 }
         
@@ -238,7 +244,7 @@ function PolarChart(props) {
 
             <div className = 'chart-wrapper border'>
 
-                <div className = 'row'>
+                <div className = 'row border-bottom'>
 
                     <div className = 'col-md-12'>
 
@@ -246,8 +252,15 @@ function PolarChart(props) {
 
                     </div>
 
-                </div>
+                </div>  
 
+                <ChartControls 
+                    chartType = { props.chartType }
+                    config = { props.config }
+                    palette = { props.palette }
+                    updateCurve = { updateCurve }
+                />
+        
                 <div className = 'row'>
 
                     <div className = 'col-md-12'>
@@ -261,19 +274,12 @@ function PolarChart(props) {
 
                 </div>
 
-                <ChartControls 
-                    chartType = { props.chartType }
-                    config = { props.config }
-                    palette = { props.palette }
-                    updateCurve = { updateCurve }
-                />
-
             </div>
-        
+
         </div>
     
     );
 
 }
 
-export default PolarChart;
+export default Chart;

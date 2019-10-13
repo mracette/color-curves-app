@@ -3,8 +3,16 @@ import UnitCircle from '../surfaces/UnitCircle';
 import UnitSquare from '../surfaces/UnitSquare';
 import * as d3 from 'd3-ease';
 
+/** 
+ * An exponential curve normalized to the range x:[0,1], y:[0,1] 
+ * @extends Function
+ */
 export default class Exponential extends Function {
 
+    /**
+     * Creates an exponential curve.
+     * @param {Object|string} [surface = 'unitSquare'] The surface on which to draw the curve
+     */
     constructor(surface, params) {
 
         // initialize a new surface class if an instance isn't passed in
@@ -32,10 +40,10 @@ export default class Exponential extends Function {
             this.variation = 'in';
         }
 
-        // set initial tranformations
-        (params && params.rotation) ? this.setRotation(params.rotation) : this.setDefaultRotation();
-        (params && params.translation) ? this.setTranslation(params.translation) : this.setDefaultTranslation();
-        (params && params.scale) ? this.setScale(params.scale) : this.setDefaultScale();
+        // set initial tranformations according to the surface type
+        this.setDefaultRotation();
+        this.setDefaultTranslation();
+        this.setDefaultScale();
 
     }
 

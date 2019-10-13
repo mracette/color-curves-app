@@ -23,7 +23,7 @@ function ChartControls(props) {
         }
     }
 
-    const getCurveCategory = (curveType) => {
+    const getCurveCategory = () => {
         if(props.chartType === 'polar') {
             return props.palette.getHsCurveCategory();
         } else {
@@ -52,9 +52,21 @@ function ChartControls(props) {
 
         // update the palette with the new curve
         if(props.chartType === 'polar') {
+
             props.palette.setHsCurve(newCurveType);
+            
+            if(props.palette.hsCurve.overflow === 'clamp') {
+                curve.setClampBounds();
+            }
+
         } else {
+
             props.palette.setLCurve(newCurveType);
+
+            if(props.palette.lCurve.overflow === 'clamp') {
+                curve.setClampBounds();
+            }
+
         }
 
         // update curve
@@ -75,8 +87,12 @@ function ChartControls(props) {
             case 'scaleY': curve.setScaleY(value); break;
             case 'rotate': curve.setRotation(value); break;
             case 'reverse': curve.setReverse(value); break;
+            case 'overflow': curve.setOverflow(value); break;
             default: break;
         }
+
+        // update clamping bounds
+        if(curve.overflow === 'clamp') curve.setClampBounds();
 
         props.updateCurve();
 
@@ -117,20 +133,13 @@ function ChartControls(props) {
             <form>
                     
                 <div className = 'form-group'>
-                
-                    {/* HEADER */}
-                    <div className = 'row'>                    
-                        <div className = 'col-lg-12'>
-                            <h3 className = 'text-muted'>Curve</h3>
-                        </div>
-                    </div>
 
                     {/* CURVE OPTIONS LINE 1 */}
                     <div className = 'row'>
 
                         {/* CURVE TYPE */}
-                        <label className = 'col-lg-2 col-form-label-sm' for = 'type-select'>Type</label>
-                        <div className = 'col-lg-4'>
+                        <label className = 'col-lg-2 col-form-label-sm' for = 'type-select'>Curve</label>
+                        <div className = 'col-lg-5'>
                             <select
                                 id = 'type-select'
                                 className = 'form-control form-control-sm'
@@ -148,7 +157,7 @@ function ChartControls(props) {
                         {/* CURVE VARIATION */}
                         {curveCategory === 'function' && curveType !== 'linear' && (<>
                             <label className = 'col-lg-2 col-form-label-sm'  for = 'variation-select'>Variation</label>
-                            <div className = 'col-lg-4'>
+                            <div className = 'col-lg-3'>
                                 <select 
                                     id = 'variation-select'
                                     className = 'form-control form-control-sm'
@@ -171,7 +180,7 @@ function ChartControls(props) {
 
                     {/* CURVE DIRECTION */}
                     <label className = 'col-lg-2 col-form-label-sm' for = 'direction-select'>Direction</label>
-                    <div className = 'col-lg-4'>
+                    <div className = 'col-lg-5'>
                         <select 
                             id = 'direction-select'
                             className = 'form-control form-control-sm'
@@ -187,17 +196,17 @@ function ChartControls(props) {
 
                     {/* CURVE OVERFLOW */}
                     <label className = 'col-lg-2 col-form-label-sm' for = 'off-grid-select'>Overflow</label>
-                    <div className = 'col-lg-4'>
+                    <div className = 'col-lg-3'>
                         <select 
                             id = 'overflow-select'
                             className = 'form-control form-control-sm'
-                            defaultValue = 'clip'
+                            defaultValue = 'clamp'
                             onChange = {(e) => {
                                 const value = e.target.value;
                                 onParamChange('overflow', value);
                         }}>
-                            <option value = 'clip'>Clip Curve</option>
-                            <option value = 'project'>Surface Project</option>
+                            <option value = 'clamp'>Clamp</option>
+                            <option value = 'project'>Project</option>
                         </select>
                     </div>
 
@@ -206,13 +215,6 @@ function ChartControls(props) {
                 </div>
 
                 <div className = 'form-group'>
-
-                    {/* HEADER */}
-                    <div className = 'row'>                    
-                        <div className = 'col-lg-12'>
-                            <h3 className = 'text-muted'>Transforms</h3>
-                        </div>
-                    </div>
 
                     {/* TRANSLATION */}
                     <div className = 'row'>

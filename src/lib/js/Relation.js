@@ -13,6 +13,70 @@ export default class Relation {
         this.scale = {x: 1, y: 1};
         this.minValue = 0;
         this.maxValue = 1;
+        this.overflow = 'clamp';
+        this.clampStart = 0;
+        this.clampEnd = 1;
+
+    }
+
+    setClampBounds(resolution) {
+
+        const res = typeof resolution === 'number' ? resolution : 128;
+
+        let prevCoords;
+        let clampStart = null;
+        let clampEnd = null;
+        let i = 0;
+
+        while(i <= res && (clampStart === null || clampEnd === null)) {
+
+            const coords = this.getCartesianCoordsAt(i / res);
+
+            if(i === 0) {
+
+                // if the starting point is inside the surface, then the clamp start is the same as the start
+                if(!coords.clamped) clampStart = i / res;
+
+            } else {
+
+                // set start clamp if the prev point is outside the surface, but the current point is inside
+                if(clampStart === null && prevCoords.clamped && !coords.clamped) {
+                    clampStart = i / res;
+                }
+
+                // set end clamp if the prev point is inside the surface, but the current point is outside
+                if(clampEnd === null && !prevCoords.clamped && coords.clamped) {
+                    clampEnd = i / res;
+                }
+
+            }
+
+            if(i === res && coords.clamped && clampStart === null && clampEnd === null) {
+                clampEnd = 0;
+            }
+
+            prevCoords = coords
+            i++;
+
+
+        }
+
+        this.clampStart = clampStart === null ? 0 : clampStart;
+        this.clampEnd = clampEnd === null ? 1 : clampEnd;
+
+    }
+
+    setOverflow(value) {
+
+        if(!(value === 'clamp' || value === 'project')) {
+
+            console.warn("Overflow value must be either 'clamp' or 'project'");
+
+        } else {
+
+            this.overflow = value;
+
+        }
 
     }
 
