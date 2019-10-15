@@ -1,11 +1,12 @@
 {
   "name": "color-curves-app",
-  "homepage" : "http://mracette.github.io/color-curves-app",
+  "homepage": "http://mracette.github.io/color-curves-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
     "d3-ease": "^1.0.5",
+    "gh-pages": "^2.1.1",
     "jquery": "^3.4.1",
     "node-sass": "^4.12.0",
     "popper.js": "^1.15.0",
@@ -14,6 +15,8 @@
     "react-scripts": "3.1.2"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
