@@ -43,3 +43,12 @@ div.chart {
 form {
   margin-top: 1rem;
 }
+
+.nav-link {
+  border: none;
+  background: #f8f9fa;
+}
+
+button:focus {
+  outline: none;
+}

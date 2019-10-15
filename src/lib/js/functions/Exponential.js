@@ -36,7 +36,7 @@ export default class Exponential extends Function {
         // override function if a variation is specified
         if(params && params.variation) {
             this.setVariation(params.variation);
-        } {
+        } else {
             this.variation = 'in';
         }
 
@@ -62,7 +62,7 @@ export default class Exponential extends Function {
 
         } else {
 
-            console.warning("variation must be 'in', 'out', or 'in-out'");
+            console.warn("Variation must be 'in', 'out', or 'in-out'.");
 
         }
 

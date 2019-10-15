@@ -123,6 +123,8 @@ function ChartControls(props) {
         setCurveType(getCurveType());
         setCurveCategory(getCurveCategory());
         setParams(getParams());
+        
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [curve])
 
     return (
@@ -138,7 +140,7 @@ function ChartControls(props) {
                     <div className = 'row'>
 
                         {/* CURVE TYPE */}
-                        <label className = 'col-lg-2 col-form-label-sm' for = 'type-select'>Curve</label>
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Curve</label>
                         <div className = 'col-lg-5'>
                             <select
                                 id = 'type-select'
@@ -156,7 +158,7 @@ function ChartControls(props) {
 
                         {/* CURVE VARIATION */}
                         {curveCategory === 'function' && curveType !== 'linear' && (<>
-                            <label className = 'col-lg-2 col-form-label-sm'  for = 'variation-select'>Variation</label>
+                            <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'variation-select'>Variation</label>
                             <div className = 'col-lg-3'>
                                 <select 
                                     id = 'variation-select'
@@ -179,7 +181,7 @@ function ChartControls(props) {
                     <div className = 'row'>
 
                     {/* CURVE DIRECTION */}
-                    <label className = 'col-lg-2 col-form-label-sm' for = 'direction-select'>Direction</label>
+                    <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'direction-select'>Direction</label>
                     <div className = 'col-lg-5'>
                         <select 
                             id = 'direction-select'
@@ -195,7 +197,7 @@ function ChartControls(props) {
                     </div>
 
                     {/* CURVE OVERFLOW */}
-                    <label className = 'col-lg-2 col-form-label-sm' for = 'off-grid-select'>Overflow</label>
+                    <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'off-grid-select'>Overflow</label>
                     <div className = 'col-lg-3'>
                         <select 
                             id = 'overflow-select'
@@ -220,7 +222,7 @@ function ChartControls(props) {
                     <div className = 'row'>
 
                         {/* CURVE TYPE */}
-                        <label className = 'col-lg-2 col-form-label-sm' for = 'type-select'>Translation</label>
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Translation</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
                                 label = 'X'
@@ -247,7 +249,7 @@ function ChartControls(props) {
                     <div className = 'row'>
 
                         {/* CURVE TYPE */}
-                        <label className = 'col-lg-2 col-form-label-sm' for = 'type-select'>Scale</label>
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Scale</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
                                 label = 'X'
@@ -272,7 +274,7 @@ function ChartControls(props) {
 
                     {/* ROTATION */}
                     <div className = 'row'>
-                        <label className = 'col-lg-2 col-form-label-sm' for = 'type-select'>Rotation</label>
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Rotation</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
                                 label = {String.fromCharCode(0xfeff0398)}

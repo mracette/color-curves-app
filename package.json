@@ -1,5 +1,6 @@
 {
   "name": "color-curves-app",
+  "homepage" : "http://mracette.github.io/color-curves-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

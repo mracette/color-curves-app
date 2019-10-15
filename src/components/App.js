@@ -8,9 +8,13 @@ import Editor from './Editor'
 // styles
 import '../styles/app.scss';
 
+import logoGen from '../generative/logoGen';
+
 function App() {
 
-  const [theme, setTheme] = useState('light');
+  //logoGen(512);
+
+  // const [theme, setTheme] = useState('light');
   const [nav, setNav] = useState('editor');
 
   // Listen to tab events to enable outlines (accessibility improvement)
@@ -27,7 +31,7 @@ function App() {
 
   return (
 
-    <div className = 'container-fluid no-focus-outline' id = 'app' fluid = {true}>
+    <div className = 'container-fluid no-focus-outline' id = 'app'>
 
       <div className = 'row' id = 'header'>
 
@@ -39,13 +43,13 @@ function App() {
       
       <ul className="nav nav-pills">
         <li className="nav-item">
-          <a className={`nav-link ${nav === 'editor' ? 'active' : ''}`} onClick = {() => setNav('editor')}>Editor</a>
+          <button className={`nav-link ${nav === 'editor' ? 'active' : ''}`} onClick = {() => setNav('editor')}>Editor</button>
         </li>
         <li className="nav-item">
-          <a className={`nav-link ${nav === 'presets' ? 'active' : ''}`} onClick = {() => setNav('presets')}>Presets</a>
+          <button className={`nav-link ${nav === 'presets' ? 'active' : ''}`} onClick = {() => setNav('presets')}>Presets</button>
         </li>
         <li className="nav-item">
-          <a className={`nav-link ${nav === 'about' ? 'active' : ''}`} onClick = {() => setNav('about')}>About</a>
+          <button className={`nav-link ${nav === 'about' ? 'active' : ''}`} onClick = {() => setNav('about')}>About</button>
         </li>
       </ul>
 

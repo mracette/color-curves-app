@@ -224,12 +224,16 @@ function Chart(props) {
 
         }
 
+        default: 
+            console.warn("Chart component must include a chartType prop with a value of 'polar' or 'cartesian'"); 
+            break;
+
     }
 
     const updateCurve = () => { 
         if(
-            props.chartType === 'polar' && props.palette.hsCurve ||
-            props.chartType === 'cartesian' && props.palette.lCurve
+            (props.chartType === 'polar' && props.palette.hsCurve) ||
+            (props.chartType === 'cartesian' && props.palette.lCurve)
         ) {
             drawBlankChart();
             drawCurve();

@@ -60,7 +60,17 @@ function Editor() {
   const [paletteRange, setPaletteRange] = useState([0,1]);
 
   // initialize palette
-  const defaultPalette = new ColorPalette();
+// const defaultPalette = new ColorPalette({type: "linear",variation: "in", translation: {x: -0.9238795325112868, y: -0.38268343236508967}, scale: {x: 1.8477590650225737, y: 1.8477590650225737}, rotation: 0}, {type: "linear", translation: {x: 0, y: 0.25}, scale: {x: 1, y: 1}, rotation: 0}, {
+//     paletteStart: 0,
+//     paletteEnd: 1
+// });
+
+const defaultPalette = new ColorPalette();
+
+  defaultPalette.hsCurve.setClampBounds();
+  defaultPalette.lCurve.setClampBounds();
+
+  console.log(defaultPalette.exportPaletteParams());
 
   // set default curve types
   // defaultPalette.setHsCurve('linear');
@@ -97,11 +107,11 @@ function Editor() {
             </div>
             <div className = 'col-auto ml-auto d-flex align-items-center'>
               <form>
-              <div class="custom-control custom-switch">
+              <div className="custom-control custom-switch">
                 <input 
                   type="checkbox" 
                   id='pinned-switch'
-                  class="custom-control-input" 
+                  className="custom-control-input" 
                   defaultChecked = {true} 
                   onChange = {(e) => {
                     const sticky = e.target.checked;
@@ -112,7 +122,7 @@ function Editor() {
                     }
                   }}
                 />
-                <label class="custom-control-label" for="pinned-switch">Pinned</label>
+                <label className="custom-control-label" htmlFor="pinned-switch">Pinned</label>
               </div>
               </form>
             </div>
@@ -124,7 +134,7 @@ function Editor() {
           <div className = 'row'>
 
               {/* PALETTE TYPE */}
-              <label className = 'col-lg-1 col-form-label-sm' for = 'type-select'>Type</label>
+              <label className = 'col-lg-1 col-form-label-sm' htmlFor = 'type-select'>Type</label>
               <div className = 'col-lg-2'>
                   <select
                       id = 'type-select'
@@ -143,7 +153,7 @@ function Editor() {
               {paletteType === 'discrete' &&
               <div className = 'col-lg-2'>
                 <SmartInput
-                  label = 'Stops'
+                  label = 'Num'
                   step = {1}
                   min = {1}
                   max = {32}
@@ -160,7 +170,7 @@ function Editor() {
           <div className = 'row'>
 
               {/* PALETTE TYPE */}
-              <label className = 'col-lg-1 col-form-label-sm' for = 'type-select'>Range</label>
+              <label className = 'col-lg-1 col-form-label-sm' htmlFor = 'type-select'>Range</label>
 
               <div className = 'col-lg-2'>
                 <SmartInput

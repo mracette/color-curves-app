@@ -32,7 +32,7 @@ export default class Sinusoidal extends Function {
         // override function if a variation is specified
         if(params && params.variation) {
             this.setVariation(params.variation);
-        } {
+        } else {
             this.variation = 'in';
         }
 

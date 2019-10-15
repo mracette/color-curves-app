@@ -12,7 +12,7 @@ import { hslToRgb, rgbToHex, printRgb, printHsl } from '../utils/color';
 
 export default class ColorPalette {
 
-    constructor(hsCurve, lCurve) {
+    constructor(hsCurve, lCurve, palette) {
 
         if(typeof hsCurve === 'string') {
 
@@ -21,10 +21,10 @@ export default class ColorPalette {
             this.hsCurve.setDefaultTranslation();
             this.hsCurve.setDefaultScale();
 
-        } else if(typeof hsCurve === 'Object') {
+        } else if(typeof hsCurve === 'object') {
 
             this.setHsCurve(hsCurve.type);
-            hsCurve.variation && this.hsCurve.setVariation(hsCurve.variation);
+            hsCurve.variation && this.hsCurve.setVariation && this.hsCurve.setVariation(hsCurve.variation);
             hsCurve.translation ? this.hsCurve.setTranslation(hsCurve.translation) : this.hsCurve.setDefaultTranslation();
             hsCurve.scale ? this.hsCurve.setScale(hsCurve.scale) : this.hsCurve.setDefaultScale();
             hsCurve.rotation ? this.hsCurve.setRotation(hsCurve.rotation) : this.hsCurve.setDefaultRotation();
@@ -47,10 +47,10 @@ export default class ColorPalette {
             this.lCurve.setDefaultTranslation();
             this.lCurve.setDefaultScale();
 
-        } else if(typeof lCurve === 'Object') {
+        } else if(typeof lCurve === 'object') {
 
             this.setLCurve(lCurve.type);
-            lCurve.variation && this.lCurve.setVariation(lCurve.variation);
+            lCurve.variation && this.lCurve.setVariation && this.lCurve.setVariation(lCurve.variation);
             lCurve.translation ? this.lCurve.setTranslation(lCurve.translation) : this.lCurve.setDefaultTranslation();
             lCurve.scale ? this.lCurve.setScale(lCurve.scale) : this.lCurve.setDefaultScale();
             lCurve.rotation ? this.lCurve.setRotation(lCurve.rotation) : this.lCurve.setDefaultRotation();
@@ -67,21 +67,85 @@ export default class ColorPalette {
 
         }
 
-        this.paletteStart = 0;
-        this.paletteEnd = 1;
+        if(typeof palette === 'object') {
+
+            palette.paletteStart ? 
+                this.paletteStart = palette.paletteStart :
+                this.paletteStart = 0;
+
+            palette.paletteEnd ? 
+                this.paletteEnd = palette.paletteEnd : 
+                this.paletteEnd = 1;
+
+        } else {
+
+            this.paletteStart = 0;
+            this.paletteEnd = 1;
+
+        }
 
     }
 
-    runAnalysis(resolution) {
+    exportPaletteParams() {
+
+        // initiatialize string representation of HS curve
+        let hsParams = "{";
+
+            // all curves have a type
+            hsParams += `type: "${this.hsCurveType}",`;
+
+            // some curves have variation
+            if(this.getHsCurveCategory() === 'function' && this.hsCurve.type !== 'linear') {
+                hsParams += `variation: "${this.hsCurve.variation}", `;
+            }
+
+            // all curve have tranform properties
+            hsParams += `translation: {x: ${this.hsCurve.translation.x}, y: ${this.hsCurve.translation.y}}, `;
+            hsParams += `scale: {x: ${this.hsCurve.scale.x}, y: ${this.hsCurve.scale.x}}, `
+            hsParams += `rotation: ${this.hsCurve.rotation}`;
+
+            // close
+            hsParams += `}`;
+
+        // initiatialize string representation of L curve
+        let lParams = "{";
+
+            // all curves have a type
+            lParams += `type: "${this.lCurveType}", `;
+
+            // some curves have variation
+            if(this.getLCurveCategory() === 'function' && this.lCurveType !== 'linear') {
+                lParams += `variation: "${this.lCurve.variation}", `;
+            }
+
+            // all curve have tranform properties
+            lParams += `translation: {x: ${this.lCurve.translation.x}, y: ${this.lCurve.translation.y}}, `;
+            lParams += `scale: {x: ${this.lCurve.scale.x}, y: ${this.lCurve.scale.x}}, `
+            lParams += `rotation: ${this.lCurve.rotation}`;
+
+            // close
+            lParams += `}`;
+
+        // construct representation of palette
+        const paletteParams = `{
+            paletteStart: ${this.paletteStart},
+            paletteEnd: ${this.paletteEnd}
+        }`;
+
+        return `${hsParams}, ${lParams}, ${paletteParams}`;
+
+    }
+
+/*     runAnalysis(resolution) {
 
         const res = resolution || 128;
 
-/* 
+
         let hsCount = 0, lCount = 0;
         let hTotal = 0, sTotal = 0, lTotal = 0;
         let hVarTotal = 0, sVarTotal = 0, lVarTotal = 0;
         let hPrev, sPrev, lPrev;
- */
+
 
         let hsClampedPrev = null;
         let lClampedPrev = null;
@@ -97,7 +161,7 @@ export default class ColorPalette {
 
             const n = start + range * i / res;
 
-/* 
+
             // get hs and l curve values
             const hsCartCoords = this.hsCurve.getCartesianCoordsAt(n);
             const hsPolarCoords = cartToPolar(hsCartCoords.x, hsCartCoords.y);
@@ -116,38 +180,38 @@ export default class ColorPalette {
             const lightness = Math.max(0, Math.min(1, lCartCoords.y));
             lTotal += lightness;
             if(i !== 0) lVarTotal += Math.abs(lPrev - lightness);
- */
 
-            // if(i === 0) {
 
-            //     // if the starting point is inside the surface, then the clamp start is the same as the start
-            //     if(!hsCartCoords.clamped) hsClampStart = n;
-            //     if(!lCartCoords.clamped) lClampStart = n;
+            if(i === 0) {
 
-            // } else {
+                // if the starting point is inside the surface, then the clamp start is the same as the start
+                if(!hsCartCoords.clamped) hsClampStart = n;
+                if(!lCartCoords.clamped) lClampStart = n;
 
-            //     // set start clamp if the prev point is outside the surface, but the current point is inside
+            } else {
 
-            //     if(hsClampStart === null && hsClampedPrev && !hsCartCoords.clamped) {
-            //         hsClampStart = n;
-            //     }
+                // set start clamp if the prev point is outside the surface, but the current point is inside
 
-            //     if(lClampStart === null && lClampedPrev && !lCartCoords.clamped) {
-            //         lClampStart = n;
-            //     }
+                if(hsClampStart === null && hsClampedPrev && !hsCartCoords.clamped) {
+                    hsClampStart = n;
+                }
 
-            //     // set end clamp if the prev point is inside the surface, but the current point is outside
+                if(lClampStart === null && lClampedPrev && !lCartCoords.clamped) {
+                    lClampStart = n;
+                }
 
-            //     if(hsClampEnd === null && !hsClampedPrev && hsCartCoords.clamped) {
-            //         hsClampEnd = n;
-            //     }
+                // set end clamp if the prev point is inside the surface, but the current point is outside
 
-            //     if(lClampEnd === null && !lClampedPrev && lCartCoords.clamped) {
-            //         lClampEnd = n;
-            //     }
+                if(hsClampEnd === null && !hsClampedPrev && hsCartCoords.clamped) {
+                    hsClampEnd = n;
+                }
 
-            // }
-/* 
+                if(lClampEnd === null && !lClampedPrev && lCartCoords.clamped) {
+                    lClampEnd = n;
+                }
+
+            }
+
             // only increment if the curve isn't clamped based on its position and settings
 
             if(this.hsCurve.overflow === 'project' ||
@@ -165,26 +229,26 @@ export default class ColorPalette {
             hPrev = hue;
             sPrev = sat;
             lPrev = lightness;
- */
-            // hsClampedPrev = hsCartCoords.clamped;
-            // lClampedPrev = lCartCoords.clamped;
+
+            hsClampedPrev = hsCartCoords.clamped;
+            lClampedPrev = lCartCoords.clamped;
 
         }
 
         return {
-            // hAvg: hTotal / hsCount,
-            // sAvg: sTotal / hsCount,
-            // lAvg: lTotal / lCount,
-            // hVar: hVarTotal / hsCount,
-            // sVar: sVarTotal / hsCount,
-            // lVar: lVarTotal / lCount,
+            hAvg: hTotal / hsCount,
+            sAvg: sTotal / hsCount,
+            lAvg: lTotal / lCount,
+            hVar: hVarTotal / hsCount,
+            sVar: sVarTotal / hsCount,
+            lVar: lVarTotal / lCount,
             hsClampStart,
             hsClampEnd,
             lClampStart,
             lClampEnd
         };
 
-    }
+    } */
 
     setPaletteStart(start) {
 
