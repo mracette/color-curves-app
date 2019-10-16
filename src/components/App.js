@@ -1,5 +1,6 @@
 // libs
 import React, { useState } from 'react';
+import { downloadCanvas, logoGen } from '../lib/utils/logo';
 import 'bootstrap';
 
 // components
@@ -8,11 +9,9 @@ import Editor from './Editor'
 // styles
 import '../styles/app.scss';
 
-import logoGen from '../generative/logoGen';
-
 function App() {
 
-  //logoGen(512);
+  // downloadCanvas(logoGen(192), 'logo192.png');
 
   // const [theme, setTheme] = useState('light');
   const [nav, setNav] = useState('editor');

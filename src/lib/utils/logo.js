@@ -1,4 +1,24 @@
-const logoGen = (size) => {
+
+export const downloadCanvas = (canvas, filename) => {
+
+    // create an "off-screen" anchor tag
+    const link = document.createElement('a');
+
+    link.download = filename;
+    link.href = canvas.toDataURL("image/png;base64");
+
+    // fire moust event to trigger download
+    const e = document.createEvent("MouseEvents");
+
+    e.initMouseEvent("click", true, true, window,
+        0, 0, 0, 0, 0, false, false, false,
+        false, 0, null);
+
+    link.dispatchEvent(e);
+
+}
+
+export const logoGen = (size) => {
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -43,8 +63,6 @@ const logoGen = (size) => {
     ctx.arc(size / 2, size / 2, innerRadius, 0, Math.PI * 2);
     ctx.stroke();
     
-    document.body.appendChild(ctx.canvas);
+    return canvas;
 
 }
-
-export default logoGen;
