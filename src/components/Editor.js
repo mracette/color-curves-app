@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 // components
 import Chart from './Chart';
 import SmartInput from './SmartInput';
+import ExportModal from './ExportModal';
 
 // curves 
 import ColorPalette from '../lib/js/ColorPalette';
@@ -58,6 +59,8 @@ function Editor() {
   const [paletteType, setPaletteType] = useState('continuous');
   const [numStops, setNumStops] = useState(12);
   const [paletteRange, setPaletteRange] = useState([0,1]);
+  const [showModal, setShowModal] = useState(false);
+  const [paletteParams, setPaletteParams] = useState(null);
 
   // initialize palette
 // const defaultPalette = new ColorPalette({type: "linear",variation: "in", translation: {x: -0.9238795325112868, y: -0.38268343236508967}, scale: {x: 1.8477590650225737, y: 1.8477590650225737}, rotation: 0}, {type: "linear", translation: {x: 0, y: 0.25}, scale: {x: 1, y: 1}, rotation: 0}, {
@@ -69,14 +72,6 @@ const defaultPalette = new ColorPalette();
 
   defaultPalette.hsCurve.setClampBounds();
   defaultPalette.lCurve.setClampBounds();
-
-  console.log(defaultPalette.exportPaletteParams());
-
-  // set default curve types
-  // defaultPalette.setHsCurve('linear');
-  // defaultPalette.hsCurve.setClampBounds();
-  // defaultPalette.setLCurve('linear');
-  // defaultPalette.lCurve.setClampBounds();
 
   // initialize default color palette state
   const [palette] = useState(defaultPalette);
@@ -214,6 +209,23 @@ const defaultPalette = new ColorPalette();
               />
             </div>
           </div>
+
+          <button 
+            onClick = {() => {
+              setPaletteParams(palette.exportPaletteParams());
+              setShowModal(!showModal);
+            }}
+            type="button" 
+            className="btn btn-primary"
+          >
+              Export Palette
+          </button>
+
+          <ExportModal 
+            show = {showModal}
+            setShow = {setShowModal}
+            paletteParams = {paletteParams}
+          />
 
         </div>
 

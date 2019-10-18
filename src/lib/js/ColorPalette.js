@@ -92,17 +92,17 @@ export default class ColorPalette {
         let hsParams = "{";
 
             // all curves have a type
-            hsParams += `type: "${this.hsCurveType}",`;
+            hsParams += `type: "${this.hsCurveType}", `;
 
             // some curves have variation
-            if(this.getHsCurveCategory() === 'function' && this.hsCurve.type !== 'linear') {
+            if(this.getHsCurveCategory() === 'function' && this.hsCurveType !== 'linear') {
                 hsParams += `variation: "${this.hsCurve.variation}", `;
             }
 
             // all curve have tranform properties
-            hsParams += `translation: {x: ${this.hsCurve.translation.x}, y: ${this.hsCurve.translation.y}}, `;
-            hsParams += `scale: {x: ${this.hsCurve.scale.x}, y: ${this.hsCurve.scale.x}}, `
-            hsParams += `rotation: ${this.hsCurve.rotation}`;
+            hsParams += `translation: {x: ${this.hsCurve.translation.x.toFixed(5)}, y: ${this.hsCurve.translation.y.toFixed(5)}}, `;
+            hsParams += `scale: {x: ${this.hsCurve.scale.x.toFixed(5)}, y: ${this.hsCurve.scale.y.toFixed(5)}}, `
+            hsParams += `rotation: ${this.hsCurve.rotation.toFixed(5)}`;
 
             // close
             hsParams += `}`;
@@ -119,9 +119,9 @@ export default class ColorPalette {
             }
 
             // all curve have tranform properties
-            lParams += `translation: {x: ${this.lCurve.translation.x}, y: ${this.lCurve.translation.y}}, `;
-            lParams += `scale: {x: ${this.lCurve.scale.x}, y: ${this.lCurve.scale.x}}, `
-            lParams += `rotation: ${this.lCurve.rotation}`;
+            lParams += `translation: {x: ${this.lCurve.translation.x.toFixed(5)}, y: ${this.lCurve.translation.y.toFixed(5)}}, `;
+            lParams += `scale: {x: ${this.lCurve.scale.x.toFixed(5)}, y: ${this.lCurve.scale.y.toFixed(5)}}, `
+            lParams += `rotation: ${this.lCurve.rotation.toFixed(5)}`;
 
             // close
             lParams += `}`;

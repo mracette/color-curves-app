@@ -1,17 +1,15 @@
 // libs
 import React, { useState } from 'react';
-import { downloadCanvas, logoGen } from '../lib/utils/logo';
 import 'bootstrap';
 
 // components
 import Editor from './Editor'
+import Presets from './Presets';
 
 // styles
 import '../styles/app.scss';
 
 function App() {
-
-  // downloadCanvas(logoGen(192), 'logo192.png');
 
   // const [theme, setTheme] = useState('light');
   const [nav, setNav] = useState('editor');
@@ -56,10 +54,10 @@ function App() {
         <div className={`tab-pane fade ${nav === 'editor' ? 'show active' : ''}`} id="home" role="tabpanel" aria-labelledby="home-tab">
           <Editor/>
         </div>
-        <div className={`tab-pane fade ${nav === 'presets' ? 'show active' : ''}`} id="home" role="tabpanel" aria-labelledby="home-tab">
-          presets
+        <div className={`tab-pane fade ${nav === 'presets' ? 'show active' : ''}`} id="presets" role="tabpanel" aria-labelledby="home-tab">
+          <Presets/>
         </div>
-        <div className={`tab-pane fade ${nav === 'about' ? 'show active' : ''}`} id="home" role="tabpanel" aria-labelledby="home-tab">
+        <div className={`tab-pane fade ${nav === 'about' ? 'show active' : ''}`} id="about" role="tabpanel" aria-labelledby="home-tab">
           about
         </div>
       </div>
