@@ -36,10 +36,14 @@ function ChartControls(props) {
         const params = {};
         const curve = getCurve();
 
+        if(curve.angleStart) params['angleStart'] = curve.angleStart;
+        if(curve.angleEnd) params['angleEnd'] = curve.angleEnd;
+        if(curve.angleOffset) params['angleOffset'] = curve.angleOffset;
         if(curve.translation.y) params['translateY'] = curve.translation.y;
         if(curve.translation.x) params['translateX'] = curve.translation.x;
         if(curve.scale.y) params['scaleY'] = curve.scale.y;
         if(curve.scale.x) params['scaleX'] = curve.scale.x;
+        if(curve.radius) params['radius'] = curve.radius;
         if(curve.rotation) params['rotation'] = curve.rotation;
         if(curve.variation) params['variation'] = curve.variation;
         if(curve.reverse) params['reverse'] = curve.reverse;
@@ -80,6 +84,9 @@ function ChartControls(props) {
     const onParamChange = (param, value) => {
 
         switch(param) {
+            case 'angleStart': curve.setAngleStart(value); break;
+            case 'angleEnd': curve.setAngleEnd(value); break;
+            case 'angleOffset': curve.setAngleOffset(value); break;
             case 'variation': curve.setVariation(value); break;
             case 'translateX': curve.setTranslateX(value); break;
             case 'translateY': curve.setTranslateY(value); break;
@@ -87,6 +94,7 @@ function ChartControls(props) {
             case 'scaleY': curve.setScaleY(value); break;
             case 'rotate': curve.setRotation(value); break;
             case 'reverse': curve.setReverse(value); break;
+            case 'radius': curve.setRadius(value); break;
             case 'overflow': curve.setOverflow(value); break;
             default: break;
         }
@@ -212,9 +220,78 @@ function ChartControls(props) {
                         </select>
                     </div>
 
-                </div>
+                    </div>
 
                 </div>
+
+                {/* CONDITIONAL ARC PARAMETERS */}
+                {true && <div className = 'form-group'>
+
+                    {/* RADIUS */}
+                    <div className = 'row'>
+
+                        {/* RADIUS */}
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Translation</label>
+                        <div className = 'col-sm-5'>
+                            <SmartInput
+                                label = 'r'
+                                step = {0.01}
+                                fixedDecimals = {2}
+                                defaultValue = {curve.r}
+                                handleChange = {(value) => onParamChange('radius', value)}
+                            />
+                        </div>
+
+                    </div>
+
+                    {/* BOUNDS */}
+                    <div className = 'row'>
+
+                        {/* ANGLE START */}
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Translation</label>
+                        <div className = 'col-sm-5'>
+                            <SmartInput
+                                label = {<>{String.fromCharCode(0xfeff0398)}<sub>0</sub></>}
+                                step = {0.01}
+                                fixedDecimals = {2}
+                                unitSymbol = {String.fromCharCode(0x3c0)}
+                                conversion = {Math.PI}
+                                defaultValue = {curve.angleStart}
+                                handleChange = {(value) => onParamChange('angleStart', value)}
+                            />
+                        </div>
+
+                        {/* ANGLE END */}
+                        <div className = 'col-sm-5'>
+                            <SmartInput
+                                label = {<>{String.fromCharCode(0xfeff0398)}<sub>1</sub></>}
+                                step = {0.01}
+                                fixedDecimals = {2}
+                                defaultValue = {curve.angleEnd}
+                                handleChange = {(value) => onParamChange('angleEnd', value)}
+                            />
+                        </div>
+
+                    </div>
+
+                    {/* RADIUS */}
+                    <div className = 'row'>
+
+                        {/* ANGLE START */}
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Translation</label>
+                        <div className = 'col-sm-5'>
+                            <SmartInput
+                                label = 'X'
+                                step = {0.01}
+                                fixedDecimals = {2}
+                                defaultValue = {curve.translation.x.toPrecision(2)}
+                                handleChange = {(value) => onParamChange('translateX', value)}
+                            />
+                        </div>
+
+                    </div>
+
+                </div>}
 
                 <div className = 'form-group'>
 

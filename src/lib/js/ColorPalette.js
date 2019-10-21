@@ -253,7 +253,9 @@ export default class ColorPalette {
     setPaletteStart(start) {
 
         if(start > this.paletteEnd) {
-            console.error('Palette start cannot be greater than palette end.');
+            console.warn('Palette start cannot be greater than palette end.');
+            console.log('Setting palette start to palette end.')
+            this.paletteStart = this.paletteEnd;
         } else {
             this.paletteStart = start;
         }
@@ -263,7 +265,9 @@ export default class ColorPalette {
     setPaletteEnd(end) {
 
         if(end < this.paletteStart) {
-            console.error('Palette end cannot be less than than palette start.');
+            console.warn('Palette end cannot be less than than palette start.');
+            console.log('Setting palette end to palette start.');
+            this.paletteEnd = this.paletteStart;
         } else {
             this.paletteEnd = end;
         }

@@ -18,6 +18,12 @@ function FunctionParams(props) {
 
         document.onmousemove = (e) => {
 
+            // convert the value to float
+            startValue = parseFloat(startValue);
+
+            // if there is a conversion, "upwrap" the value to its raw version
+            props.conversion && (startValue *= props.conversion);
+
             // capture the movement and compare to startPosition
             const delta = parseFloat(e.clientX - startPosition);
 
@@ -25,19 +31,28 @@ function FunctionParams(props) {
             const stepDelta = delta * (props.step || 1);
 
             // get new value
-            let newValue = props.fixedDecimals !== null ? 
-                parseFloat((startValue + stepDelta).toFixed(props.fixedDecimals)) :
-                parseFloat((startValue + stepDelta));
+            let newValue = startValue + stepDelta;
 
             // clamp if necessary
             if(props.min !== undefined) newValue = Math.max(props.min, newValue);
             if(props.max !== undefined) newValue = Math.min(props.max, newValue);
 
+            // send the "raw" value to the handler
+            props.handleChange && props.handleChange(newValue);
+
+            // "wrap" back into converted units
+            props.conversion && (newValue /= props.conversion);
+
+            // truncate if necessary
+            newValue = props.fixedDecimals !== undefined ? 
+                (startValue + stepDelta).toFixed(props.fixedDecimals) :
+                (startValue + stepDelta);
+
+            // tack on units
+            props.unitSymbol && (newValue = `${newValue} ${props.unitSymbol}`)
+
             // replace the current value
             inputRef.current.value = newValue;
-            
-            // send new value to the handler
-            props.handleChange && props.handleChange(newValue);
 
         }
             
