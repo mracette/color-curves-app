@@ -26,20 +26,28 @@ export default class Arc extends Relation {
 
         this.cx = 0;
         this.cy = 0;
-        this.r = 1;
-
-        this.angleStart = 0;
-        this.angleEnd = Math.PI * 2;
-        this.angleOffset = 0;
 
         this.curveCategory = 'geometry';
-
-        console.log(this.surface);
 
         // set initial tranformations according to the surface type
         this.setDefaultTranslation();
         this.setDefaultRadius();
+        this.setDefaultAngleStart();
+        this.setDefaultAngleEnd();
+        this.setDefaultAngleOffset();
 
+    }
+
+    setDefaultAngleStart() {
+        this.angleStart = 0;
+    }
+
+    setDefaultAngleEnd() {
+        this.angleEnd = Math.PI * 2;
+    }
+
+    setDefaultAngleOffset() {
+        this.angleOffset = 0;
     }
 
     setDefaultTranslation() {
@@ -49,8 +57,6 @@ export default class Arc extends Relation {
             this.setTranslation({x: 0.5, y: 0.5});
 
         } else if (this.surface.type === 'unitCircle') {
-
-            console.log(this.surface.type);
 
             this.setTranslation({x: 0, y: 0});
             

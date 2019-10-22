@@ -5,6 +5,10 @@ function FunctionParams(props) {
 
     const inputRef = useRef(null);
 
+    const applyMaxDecimals = (num, decimals) => {
+        return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    }
+
     const handleClick = (e) => {
         e.preventDefault();
         const value = inputRef.current.value;
@@ -42,8 +46,8 @@ function FunctionParams(props) {
                 newValue /= props.conversion;
             }
 
-            // truncate if necessary
-            props.fixedDecimals !== undefined && (newValue = newValue.toFixed(props.fixedDecimals));
+            // truncate if necessary. this solution will use 
+            typeof props.maxDecimals === 'number' && (newValue = applyMaxDecimals(newValue, props.maxDecimals));
 
             // send to input
             inputRef.current.value = newValue + (props.unitSymbol || "");
@@ -89,7 +93,12 @@ function FunctionParams(props) {
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        flex: '0 1 auto',
+                        justifyContent: 'center',
+                        flexGrow: '0',
+                        flexShrink: '0',
+                        flexBasis: typeof props.labelWidth === 'number' ? 
+                            props.labelWidth * 100 + '%' :
+                            props.labelWidth,
                         height: '100%',
                         cursor: 'ew-resize',
                         fontSize: '0.875rem',
@@ -110,19 +119,31 @@ function FunctionParams(props) {
                 onClick={handleClick}
                 onChange = {(e) => {
                     let value = e.target.value;
+
+                    // if the input isn't a number, skip the handler
                     if(props.conversion !== undefined) {
                         props.handleChange(value * props.conversion);
                     } else {
                         props.handleChange(value);
                     }
+
                 }}
-                defaultValue = {props.unitSymbol ? props.defaultValue + props.unitSymbol : (props.defaultValue || 0)}
+                value = {
+                    props.unitSymbol ? (
+                        props.maxDecimals ? 
+                            applyMaxDecimals(props.defaultValue, props.maxDecimals) + props.unitSymbol :
+                            props.defaultValue + props.unitSymbol
+                            ) : (
+                        props.maxDecimals ? 
+                            applyMaxDecimals(props.defaultValue, props.maxDecimals) :
+                            props.defaultValue
+                            )
+                }
                 type = 'text'
                 style = {
                     (props.defaultStyles !== false) && {
-                        flex: '1 1 auto',
+                        flex: '0 1 auto',
                         width: '100%',
-                        height: '100%',
                         fontSize: '0.875rem',
                         padding: '0px 12px',
                         margin: '0',

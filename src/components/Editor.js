@@ -148,6 +148,7 @@ const defaultPalette = new ColorPalette();
               {paletteType === 'discrete' &&
               <div className = 'col-lg-2'>
                 <SmartInput
+                  labelWidth = {.33}
                   label = 'Num'
                   step = {1}
                   min = {1}
@@ -169,6 +170,7 @@ const defaultPalette = new ColorPalette();
 
               <div className = 'col-lg-2'>
                 <SmartInput
+                  labelWidth = {.33}
                   label = 'Start'
                   step = {.01}
                   min = {0}
@@ -184,6 +186,7 @@ const defaultPalette = new ColorPalette();
 
               <div className = 'col-lg-2'>
                 <SmartInput
+                  labelWidth = {.33}
                   label = 'End'
                   step = {.01}
                   min = {paletteRange[0]}

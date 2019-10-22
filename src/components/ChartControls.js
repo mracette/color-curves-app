@@ -234,9 +234,10 @@ function ChartControls(props) {
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Radius</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
+                                labelWidth = {.2}
                                 label = 'r'
                                 step = {0.01}
-                                fixedDecimals = {2}
+                                maxDecimals = {2}
                                 defaultValue = {curve.r}
                                 handleChange = {(value) => onParamChange('radius', value)}
                             />
@@ -251,9 +252,10 @@ function ChartControls(props) {
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Range</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
+                                labelWidth = {.2}
                                 label = {<>{String.fromCharCode(0xfeff0398)}<sub>0</sub></>}
                                 step = {0.01}
-                                fixedDecimals = {2}
+                                maxDecimals = {2}
                                 unitSymbol = {String.fromCharCode(0x3c0)}
                                 conversion = {Math.PI}
                                 defaultValue = {curve.angleStart / Math.PI}
@@ -264,9 +266,10 @@ function ChartControls(props) {
                         {/* ANGLE END */}
                         <div className = 'col-sm-5'>
                             <SmartInput
+                                labelWidth = {.2}
                                 label = {<>{String.fromCharCode(0xfeff0398)}<sub>1</sub></>}
                                 step = {0.01}
-                                fixedDecimals = {2}
+                                maxDecimals = {2}
                                 unitSymbol = {String.fromCharCode(0x3c0)}
                                 conversion = {Math.PI}
                                 defaultValue = {curve.angleEnd / Math.PI}
@@ -283,9 +286,10 @@ function ChartControls(props) {
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Offset</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
+                                labelWidth = {.2}
                                 label = {String.fromCharCode(0xfeff0398)}
                                 step = {0.01}
-                                fixedDecimals = {2}
+                                maxDecimals = {2}
                                 unitSymbol = {String.fromCharCode(0x3c0)}
                                 conversion = {Math.PI}
                                 defaultValue = {curve.angleOffset / Math.PI}
@@ -306,20 +310,22 @@ function ChartControls(props) {
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Translation</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
+                                labelWidth = {.2}
                                 label = 'X'
                                 step = {0.01}
-                                fixedDecimals = {2}
-                                defaultValue = {curve.translation.x.toPrecision(2)}
+                                maxDecimals = {2}
+                                defaultValue = {curve.translation.x}
                                 handleChange = {(value) => onParamChange('translateX', value)}
                             />
                         </div>
 
                         <div className = 'col-sm-5'>
                             <SmartInput
+                                labelWidth = {.2}
                                 label = 'Y'
                                 step = {0.01}
-                                fixedDecimals = {2}
-                                defaultValue = {curve.translation.y.toPrecision(2)}
+                                maxDecimals = {2}
+                                defaultValue = {curve.translation.y}
                                 handleChange = {(value) => onParamChange('translateY', value)}
                             />
                         </div>
@@ -333,20 +339,22 @@ function ChartControls(props) {
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Scale</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
+                                labelWidth = {.2}
                                 label = 'X'
                                 step = {0.01}
-                                fixedDecimals = {2}
-                                defaultValue = {curve.scale.x.toPrecision(2)}
+                                maxDecimals = {2}
+                                defaultValue = {curve.scale.x}
                                 handleChange = {(value) => onParamChange('scaleX', value)}
                             />
                         </div>
 
                         <div className = 'col-sm-5'>
                             <SmartInput
+                                labelWidth = {.2}
                                 label = 'Y'
                                 step = {0.01}
-                                fixedDecimals = {2}
-                                defaultValue = {curve.scale.y.toPrecision(2)}
+                                maxDecimals = {2}
+                                defaultValue = {curve.scale.y}
                                 handleChange = {(value) => onParamChange('scaleY', value)}
                             />
                         </div>
@@ -358,10 +366,13 @@ function ChartControls(props) {
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Rotation</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
+                                labelWidth = {.2} 
                                 label = {String.fromCharCode(0xfeff0398)}
                                 step = {0.01}
-                                fixedDecimals = {2}
-                                defaultValue = {curve.rotation.toPrecision(2)}
+                                maxDecimals = {2}
+                                unitSymbol = {String.fromCharCode(0x3c0)}
+                                conversion = {Math.PI}
+                                defaultValue = {curve.rotation / Math.PI}
                                 handleChange = {(value) => onParamChange('rotate', value)}
                             />
                         </div>

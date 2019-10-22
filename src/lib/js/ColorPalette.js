@@ -17,18 +17,46 @@ export default class ColorPalette {
         if(typeof hsCurve === 'string') {
 
             this.setHsCurve(hsCurve);
-            this.hsCurve.setDefaultRotation();
-            this.hsCurve.setDefaultTranslation();
-            this.hsCurve.setDefaultScale();
+
+            // where defaults for the curve exist, set them
+            this.hsCurve.setDefaultRotation && this.hsCurve.setDefaultRotation();
+            this.hsCurve.setDefaultTranslation && this.hsCurve.setDefaultTranslation();
+            this.hsCurve.setDefaultScale && this.hsCurve.setDefaultScale();
+            this.hsCurve.setDefaultRadius && this.hsCurve.setDefaultRadius();
+            this.hsCurve.setDefaultAngleStart && this.hsCurve.setDefaultAngleStart();
+            this.hsCurve.setDefaultAngleEnd && this.hsCurve.setDefaultAngleEnd();
+            this.hsCurve.setDefaultAngleOffset && this.hsCurve.setDefaultAngleOffset();
 
         } else if(typeof hsCurve === 'object') {
 
             this.setHsCurve(hsCurve.type);
+
+            // where params are specified, use them, but fall back to defaults (that exist)
             hsCurve.variation && this.hsCurve.setVariation && this.hsCurve.setVariation(hsCurve.variation);
-            hsCurve.translation ? this.hsCurve.setTranslation(hsCurve.translation) : this.hsCurve.setDefaultTranslation();
-            hsCurve.scale ? this.hsCurve.setScale(hsCurve.scale) : this.hsCurve.setDefaultScale();
-            hsCurve.rotation ? this.hsCurve.setRotation(hsCurve.rotation) : this.hsCurve.setDefaultRotation();
-            hsCurve.overflow && this.hsCurve.setOverflow(hsCurve.overflow)
+            hsCurve.translation ? 
+                this.hsCurve.setTranslation(hsCurve.translation): 
+                this.hsCurve.setDefaultTranslation && this.hsCurve.setDefaultTranslation();
+            hsCurve.scale ? 
+                this.hsCurve.setScale(hsCurve.scale): 
+                this.hsCurve.setDefaultScale && this.hsCurve.setDefaultScale();
+            hsCurve.rotation ? 
+                this.hsCurve.setRotation(hsCurve.rotation):
+                this.hsCurve.setDefaultRotation && this.hsCurve.setDefaultRotation();
+            hsCurve.radius ? 
+                this.hsCurve.setRadius(hsCurve.radius):
+                this.hsCurve.setDefaultRadius && this.hsCurve.setDefaultRadius();
+            hsCurve.angleStart ? 
+                this.hsCurve.setAngleStart(hsCurve.angleStart): 
+                this.hsCurve.setDefaultAngleStart && this.hsCurve.setDefaultAngleStart();
+            hsCurve.angleEnd ? 
+                this.hsCurve.setAngleEnd(hsCurve.angleEnd): 
+                this.hsCurve.setDefaultAngleEnd && this.hsCurve.setDefaultAngleEnd();
+            hsCurve.angleOffset ? 
+                this.hsCurve.setAngleOffset(hsCurve.angleOffset): 
+                this.hsCurve.setDefaultAngleOffset && this.hsCurve.setDefaultAngleOffset();
+            hsCurve.overflow ? 
+                this.hsCurve.setOverflow(hsCurve.overflow): 
+                this.hsCurve.setOverflow('clamp');
             hsCurve.overflow === 'clamp' && this.hsCurve.setClampBounds();
 
         } else {
@@ -43,18 +71,46 @@ export default class ColorPalette {
         if(typeof lCurve === 'string') {
 
             this.setLCurve(lCurve);
-            this.lCurve.setDefaultRotation();
-            this.lCurve.setDefaultTranslation();
-            this.lCurve.setDefaultScale();
+
+            // where defaults for the curve exist, set them
+            this.lCurve.setDefaultRotation && this.lCurve.setDefaultRotation();
+            this.lCurve.setDefaultTranslation && this.lCurve.setDefaultTranslation();
+            this.lCurve.setDefaultScale && this.lCurve.setDefaultScale();
+            this.lCurve.setDefaultRadius && this.lCurve.setDefaultRadius();
+            this.lCurve.setDefaultAngleStart && this.lCurve.setDefaultAngleStart();
+            this.lCurve.setDefaultAngleEnd && this.lCurve.setDefaultAngleEnd();
+            this.lCurve.setDefaultAngleOffset && this.lCurve.setDefaultAngleOffset();
 
         } else if(typeof lCurve === 'object') {
 
             this.setLCurve(lCurve.type);
+
+            // where params are specified, use them, but fall back to defaults (that exist)
             lCurve.variation && this.lCurve.setVariation && this.lCurve.setVariation(lCurve.variation);
-            lCurve.translation ? this.lCurve.setTranslation(lCurve.translation) : this.lCurve.setDefaultTranslation();
-            lCurve.scale ? this.lCurve.setScale(lCurve.scale) : this.lCurve.setDefaultScale();
-            lCurve.rotation ? this.lCurve.setRotation(lCurve.rotation) : this.lCurve.setDefaultRotation();
-            lCurve.overflow && this.lCurve.setOverflow(lCurve.overflow)
+            lCurve.translation ? 
+                this.lCurve.setTranslation(lCurve.translation): 
+                this.lCurve.setDefaultTranslation && this.lCurve.setDefaultTranslation();
+            lCurve.scale ? 
+                this.lCurve.setScale(lCurve.scale): 
+                this.lCurve.setDefaultScale && this.lCurve.setDefaultScale();
+            lCurve.rotation ? 
+                this.lCurve.setRotation(lCurve.rotation):
+                this.lCurve.setDefaultRotation && this.lCurve.setDefaultRotation();
+            lCurve.radius ? 
+                this.lCurve.setRadius(lCurve.radius):
+                this.lCurve.setDefaultRadius && this.lCurve.setDefaultRadius();
+            lCurve.angleStart ? 
+                this.lCurve.setAngleStart(lCurve.angleStart): 
+                this.lCurve.setDefaultAngleStart && this.lCurve.setDefaultAngleStart();
+            lCurve.angleEnd ? 
+                this.lCurve.setAngleEnd(lCurve.angleEnd): 
+                this.lCurve.setDefaultAngleEnd && this.lCurve.setDefaultAngleEnd();
+            lCurve.angleOffset ? 
+                this.lCurve.setAngleOffset(lCurve.angleOffset): 
+                this.lCurve.setDefaultAngleOffset && this.lCurve.setDefaultAngleOffset();
+            lCurve.overflow ? 
+                this.lCurve.setOverflow(lCurve.overflow): 
+                this.lCurve.setOverflow('clamp');
             lCurve.overflow === 'clamp' && this.lCurve.setClampBounds();
 
 
@@ -86,7 +142,9 @@ export default class ColorPalette {
 
     }
 
-    exportPaletteParams() {
+    exportPaletteParams(precision) {
+
+        const p = precision || 5;
 
         // initiatialize string representation of HS curve
         let hsParams = "{";
@@ -99,10 +157,22 @@ export default class ColorPalette {
                 hsParams += `variation: "${this.hsCurve.variation}", `;
             }
 
-            // all curve have tranform properties
-            hsParams += `translation: {x: ${this.hsCurve.translation.x.toFixed(5)}, y: ${this.hsCurve.translation.y.toFixed(5)}}, `;
-            hsParams += `scale: {x: ${this.hsCurve.scale.x.toFixed(5)}, y: ${this.hsCurve.scale.y.toFixed(5)}}, `
-            hsParams += `rotation: ${this.hsCurve.rotation.toFixed(5)}`;
+            // arcs have angle parameters
+            if(this.getHsCurveType() === 'arc') {
+                hsParams += `radius: ${this.hsCurve.r.toFixed(p)}, `;
+                hsParams += `angleStart: ${this.hsCurve.angleStart.toFixed(p)}, `;
+                hsParams += `angleEnd: ${this.hsCurve.angleEnd.toFixed(p)}, `;
+                hsParams += `angleOffset: ${this.hsCurve.angleOffset.toFixed(p)}, `;
+            }
+
+            // all curve have translation
+            hsParams += `translation: {x: ${this.hsCurve.translation.x.toFixed(p)}, y: ${this.hsCurve.translation.y.toFixed(p)}}, `;
+
+            // some curves have scale and rotation
+            if(this.getHsCurveType() !== 'arc') {
+                hsParams += `scale: {x: ${this.hsCurve.scale.x.toFixed(p)}, y: ${this.hsCurve.scale.y.toFixed(p)}}, `
+                hsParams += `rotation: ${this.hsCurve.rotation.toFixed(p)}`;
+            }
 
             // close
             hsParams += `}`;
@@ -118,10 +188,22 @@ export default class ColorPalette {
                 lParams += `variation: "${this.lCurve.variation}", `;
             }
 
-            // all curve have tranform properties
-            lParams += `translation: {x: ${this.lCurve.translation.x.toFixed(5)}, y: ${this.lCurve.translation.y.toFixed(5)}}, `;
-            lParams += `scale: {x: ${this.lCurve.scale.x.toFixed(5)}, y: ${this.lCurve.scale.y.toFixed(5)}}, `
-            lParams += `rotation: ${this.lCurve.rotation.toFixed(5)}`;
+            // arcs have angle parameters and radius
+            if(this.getLCurveType() === 'arc') {
+                lParams += `radius: ${this.lCurve.r.toFixed(p)}, `;
+                lParams += `angleStart: ${this.lCurve.angleStart.toFixed(p)}, `;
+                lParams += `angleEnd: ${this.lCurve.angleEnd.toFixed(p)}, `;
+                lParams += `angleOffset: ${this.lCurve.angleOffset.toFixed(p)}, `;
+            }
+
+            // all curve have translation
+            lParams += `translation: {x: ${this.lCurve.translation.x.toFixed(p)}, y: ${this.lCurve.translation.y.toFixed(p)}}, `;
+
+            // some curves have scale and rotation
+            if(this.getLCurveType() !== 'arc') {
+                lParams += `scale: {x: ${this.lCurve.scale.x.toFixed(p)}, y: ${this.lCurve.scale.y.toFixed(p)}}, `
+                lParams += `rotation: ${this.lCurve.rotation.toFixed(p)}`;
+            }
 
             // close
             lParams += `}`;

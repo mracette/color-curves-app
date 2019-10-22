@@ -20,6 +20,16 @@ function Presets() {
             palette: new ColorPalette({type: "exponential", variation: "in", translation: {x: -0.66000, y: -0.58000}, scale: {x: 1.61000, y: 0.76000}, rotation: 0.84000}, {type: "sinusoidal", variation: "out", translation: {x: 0.00000, y: 0.37000}, scale: {x: 1.00000, y: 0.24000}, rotation: 0.00000}, { paletteStart: 0.05, paletteEnd: 1 })
         },
         {
+            name: 'All Around',
+            author: 'Color Curves',
+            palette: new ColorPalette({type: "arc", radius: 0.50000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.00000, y: 0.00000}, }, {type: "arc", radius: 0.25000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.50000, y: 0.50000}, }, { paletteStart: 0, paletteEnd: 1 })
+        },
+        {
+            name: 'Trix Sky',
+            author: 'Color Curves',
+            palette: new ColorPalette({type: "exponential", variation: "in", translation: {x: -1.31000, y: -0.38268}, scale: {x: 1.84776, y: 0.76537}, rotation: 5.81000}, {type: "linear", translation: {x: 0.00000, y: 0.34000}, scale: {x: 1.00000, y: 0.50000}, rotation: 0.00000}, { paletteStart: 0, paletteEnd: 1 })
+        },
+        {
             name: 'Coral Scrub',
             author: 'Color Curves',
             palette: new ColorPalette({type: "linear", translation: {x: -0.97000, y: 0.11000}, scale: {x: 1.80000, y: 0.52000}, rotation: 0.00000}, {type: "linear", translation: {x: 0.00000, y: 0.39000}, scale: {x: 0.93000, y: 0.27000}, rotation: 0.00000}, { paletteStart: 0, paletteEnd: 1 })
