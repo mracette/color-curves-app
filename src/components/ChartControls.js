@@ -188,25 +188,25 @@ function ChartControls(props) {
                     {/* CURVE OPTIONS LINE 2 */}
                     <div className = 'row'>
 
-                    {/* CURVE DIRECTION */}
-                    <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'direction-select'>Direction</label>
-                    <div className = 'col-lg-5'>
-                        <select 
-                            id = 'direction-select'
-                            className = 'form-control form-control-sm'
-                            defaultValue = 'normal'
-                            onChange = {(e) => {
-                                const value = e.target.value !== 'normal';
-                                onParamChange('reverse', value);
-                        }}>
-                            <option value = 'normal'>Normal</option>
-                            <option value = 'reverse'>Reverse</option>
-                        </select>
-                    </div>
+                        {/* CURVE DIRECTION */}
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'direction-select'>Direction</label>
+                        <div className = 'col-lg-5'>
+                            <select 
+                                id = 'direction-select'
+                                className = 'form-control form-control-sm'
+                                defaultValue = 'normal'
+                                onChange = {(e) => {
+                                    const value = e.target.value !== 'normal';
+                                    onParamChange('reverse', value);
+                            }}>
+                                <option value = 'normal'>Normal</option>
+                                <option value = 'reverse'>Reverse</option>
+                            </select>
+                        </div>
 
-                    {/* CURVE OVERFLOW */}
-                    <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'off-grid-select'>Overflow</label>
-                    <div className = 'col-lg-3'>
+                        {/* CURVE OVERFLOW */}
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'off-grid-select'>Overflow</label>
+                        <div className = 'col-lg-3'>
                         <select 
                             id = 'overflow-select'
                             className = 'form-control form-control-sm'
@@ -225,13 +225,13 @@ function ChartControls(props) {
                 </div>
 
                 {/* CONDITIONAL ARC PARAMETERS */}
-                {true && <div className = 'form-group'>
+                {curveType === 'arc' && <div className = 'form-group'>
 
                     {/* RADIUS */}
                     <div className = 'row'>
 
                         {/* RADIUS */}
-                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Translation</label>
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Radius</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
                                 label = 'r'
@@ -248,7 +248,7 @@ function ChartControls(props) {
                     <div className = 'row'>
 
                         {/* ANGLE START */}
-                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Translation</label>
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Range</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
                                 label = {<>{String.fromCharCode(0xfeff0398)}<sub>0</sub></>}
@@ -256,7 +256,7 @@ function ChartControls(props) {
                                 fixedDecimals = {2}
                                 unitSymbol = {String.fromCharCode(0x3c0)}
                                 conversion = {Math.PI}
-                                defaultValue = {curve.angleStart}
+                                defaultValue = {curve.angleStart / Math.PI}
                                 handleChange = {(value) => onParamChange('angleStart', value)}
                             />
                         </div>
@@ -267,25 +267,29 @@ function ChartControls(props) {
                                 label = {<>{String.fromCharCode(0xfeff0398)}<sub>1</sub></>}
                                 step = {0.01}
                                 fixedDecimals = {2}
-                                defaultValue = {curve.angleEnd}
+                                unitSymbol = {String.fromCharCode(0x3c0)}
+                                conversion = {Math.PI}
+                                defaultValue = {curve.angleEnd / Math.PI}
                                 handleChange = {(value) => onParamChange('angleEnd', value)}
                             />
                         </div>
 
                     </div>
 
-                    {/* RADIUS */}
+                    {/* ANGLE OFFSET */}
                     <div className = 'row'>
 
                         {/* ANGLE START */}
-                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Translation</label>
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Offset</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
-                                label = 'X'
+                                label = {String.fromCharCode(0xfeff0398)}
                                 step = {0.01}
                                 fixedDecimals = {2}
-                                defaultValue = {curve.translation.x.toPrecision(2)}
-                                handleChange = {(value) => onParamChange('translateX', value)}
+                                unitSymbol = {String.fromCharCode(0x3c0)}
+                                conversion = {Math.PI}
+                                defaultValue = {curve.angleOffset / Math.PI}
+                                handleChange = {(value) => onParamChange('angleOffset', value)}
                             />
                         </div>
 
@@ -323,7 +327,7 @@ function ChartControls(props) {
                     </div>
 
                     {/* SCALE */}
-                    <div className = 'row'>
+                    {curveType !== 'arc' && <div className = 'row'>
 
                         {/* CURVE TYPE */}
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Scale</label>
@@ -347,10 +351,10 @@ function ChartControls(props) {
                             />
                         </div>
 
-                    </div>
+                    </div>}
 
                     {/* ROTATION */}
-                    <div className = 'row'>
+                    {curveType !== 'arc' && <div className = 'row'>
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Rotation</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
@@ -361,7 +365,7 @@ function ChartControls(props) {
                                 handleChange = {(value) => onParamChange('rotate', value)}
                             />
                         </div>
-                    </div>
+                    </div>}
 
                 </div>
 

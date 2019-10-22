@@ -1,21 +1,74 @@
 import { cartToPolar, polarToCart } from '../../utils/math';
+import UnitCircle from '../surfaces/UnitCircle';
+import UnitSquare from '../surfaces/UnitSquare';
 import Relation from '../Relation';
 
 export default class Arc extends Relation {
 
-    constructor(surface, cx, cy, r, angleStart, angleEnd, angleOffset) {
+    constructor(surface) {
+
+        // initialize a new surface class if an instance isn't passed in
+        if(surface.type === undefined) {
+            if(surface === 'unitSquare') {
+                surface = new UnitSquare();
+            } else if(surface === 'unitCircle') {
+                surface = new UnitCircle();
+            } else {
+                console.warning(
+                    "Invalid surface type. Options are 'unitCircle' (for H/S components) or 'unitSquare' (for L component). ",
+                    "Using unitSquare instead."
+                );
+                surface = new UnitSquare();
+            }
+        }
 
         super(surface);
 
-        this.cx = typeof cx === 'number' ? cx : 0;
-        this.cy = typeof cy === 'number' ? cy : 0;
-        this.r = typeof r === 'number' ? r : 1;
+        this.cx = 0;
+        this.cy = 0;
+        this.r = 1;
 
-        this.angleStart = typeof angleStart === 'number' ? angleStart : 0;
-        this.angleEnd = typeof angleEnd === 'number' ? angleEnd : Math.PI * 2;
-        this.angleOffset = typeof angleOffset === 'number' ? angleOffset : 0;
+        this.angleStart = 0;
+        this.angleEnd = Math.PI * 2;
+        this.angleOffset = 0;
 
         this.curveCategory = 'geometry';
+
+        console.log(this.surface);
+
+        // set initial tranformations according to the surface type
+        this.setDefaultTranslation();
+        this.setDefaultRadius();
+
+    }
+
+    setDefaultTranslation() {
+
+        if(this.surface.type === 'unitSquare') {
+
+            this.setTranslation({x: 0.5, y: 0.5});
+
+        } else if (this.surface.type === 'unitCircle') {
+
+            console.log(this.surface.type);
+
+            this.setTranslation({x: 0, y: 0});
+            
+        }
+
+    }
+
+    setDefaultRadius() {
+
+        if(this.surface.type === 'unitSquare') {
+
+            this.setRadius(0.25);
+
+        } else if (this.surface.type === 'unitCircle') {
+
+            this.setRadius(0.5);
+            
+        }
 
     }
 

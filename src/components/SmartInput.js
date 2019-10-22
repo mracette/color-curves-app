@@ -21,9 +21,6 @@ function FunctionParams(props) {
             // convert the value to float
             startValue = parseFloat(startValue);
 
-            // if there is a conversion, "upwrap" the value to its raw version
-            props.conversion && (startValue *= props.conversion);
-
             // capture the movement and compare to startPosition
             const delta = parseFloat(e.clientX - startPosition);
 
@@ -37,22 +34,19 @@ function FunctionParams(props) {
             if(props.min !== undefined) newValue = Math.max(props.min, newValue);
             if(props.max !== undefined) newValue = Math.min(props.max, newValue);
 
-            // send the "raw" value to the handler
+            // send the value to the handler
             props.handleChange && props.handleChange(newValue);
 
-            // "wrap" back into converted units
-            props.conversion && (newValue /= props.conversion);
+            // replace the current value with the new raw or converted version
+            if(props.conversion !== undefined) {
+                newValue /= props.conversion;
+            }
 
             // truncate if necessary
-            newValue = props.fixedDecimals !== undefined ? 
-                (startValue + stepDelta).toFixed(props.fixedDecimals) :
-                (startValue + stepDelta);
+            props.fixedDecimals !== undefined && (newValue = newValue.toFixed(props.fixedDecimals));
 
-            // tack on units
-            props.unitSymbol && (newValue = `${newValue} ${props.unitSymbol}`)
-
-            // replace the current value
-            inputRef.current.value = newValue;
+            // send to input
+            inputRef.current.value = newValue + (props.unitSymbol || "");
 
         }
             
@@ -84,7 +78,11 @@ function FunctionParams(props) {
                 onMouseDown = {(e) => {
                     const startPosition = e.clientX;
                     const startValue = parseFloat(inputRef.current.value);
-                    handleMouseDown(startPosition, startValue);
+                    if(props.conversion !== undefined) {
+                        handleMouseDown(startPosition, startValue * props.conversion);
+                    } else {
+                        handleMouseDown(startPosition, startValue);
+                    }
                 }}
                 style = {
                     (props.defaultStyles !== false) && {
@@ -111,10 +109,14 @@ function FunctionParams(props) {
                 ref = {inputRef}
                 onClick={handleClick}
                 onChange = {(e) => {
-                    const value = parseFloat(e.target.value);
-                    props.handleChange(value);
+                    let value = e.target.value;
+                    if(props.conversion !== undefined) {
+                        props.handleChange(value * props.conversion);
+                    } else {
+                        props.handleChange(value);
+                    }
                 }}
-                defaultValue = {props.defaultValue || 0}
+                defaultValue = {props.unitSymbol ? props.defaultValue + props.unitSymbol : (props.defaultValue || 0)}
                 type = 'text'
                 style = {
                     (props.defaultStyles !== false) && {

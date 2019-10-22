@@ -346,15 +346,7 @@ export default class ColorPalette {
         switch(curveType) {
 
             case 'arc': 
-                return new Arc(
-                    surface,
-                    surface.type === 'unitSquare' ? surface.x1 / 2 : 0,
-                    surface.type === 'unitSquare' ? surface.y1 / 2 : 0,
-                    0.5,
-                    0,
-                    Math.PI * 2,
-                    0
-                );
+                return new Arc(surface);
             case 'linear': 
                 return new Linear(surface);
             case 'polynomial': 
