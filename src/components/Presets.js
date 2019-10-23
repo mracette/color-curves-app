@@ -25,6 +25,16 @@ function Presets() {
             palette: new ColorPalette({type: "arc", radius: 0.50000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.00000, y: 0.00000}, }, {type: "arc", radius: 0.25000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.50000, y: 0.50000}, }, { paletteStart: 0, paletteEnd: 1 })
         },
         {
+            name: 'Candy Paint',
+            author: 'Color Curves',
+            palette: new ColorPalette({type: "exponential", variation: "in", translation: {x: -0.92388, y: -0.45000}, scale: {x: 1.84776, y: 0.77000}, rotation: 0.00000}, {type: "linear", translation: {x: 0.00000, y: 0.25000}, scale: {x: 1.00000, y: 0.50000}, rotation: 4.54142}, { paletteStart: 0.02, paletteEnd: 1 })
+        },
+        {
+            name: 'Goldfish Deluxe',
+            author: 'Color Curves',
+            palette: new ColorPalette({type: "exponential", variation: "in", translation: {x: -0.92388, y: -0.38268}, scale: {x: 1.84776, y: 0.76537}, rotation: 3.17142}, {type: "linear", translation: {x: 0.00000, y: 0.05000}, scale: {x: 1.00000, y: 0.44000}, rotation: 2.69000}, { paletteStart: 0, paletteEnd: 1 })
+        },
+        {
             name: 'Trix Sky',
             author: 'Color Curves',
             palette: new ColorPalette({type: "exponential", variation: "in", translation: {x: -1.31000, y: -0.38268}, scale: {x: 1.84776, y: 0.76537}, rotation: 5.81000}, {type: "linear", translation: {x: 0.00000, y: 0.34000}, scale: {x: 1.00000, y: 0.50000}, rotation: 0.00000}, { paletteStart: 0, paletteEnd: 1 })
