@@ -2,6 +2,8 @@ export default class UnitSquare {
 
     constructor() {
         this.type = 'unitSquare';
+        this.cx = 0.5;
+        this.cy = 0.5;
         this.x0 = 0;
         this.x1 = 1;
         this.y0 = 0;

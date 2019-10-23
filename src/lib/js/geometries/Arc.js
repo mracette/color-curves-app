@@ -1,9 +1,9 @@
 import { cartToPolar, polarToCart } from '../../utils/math';
 import UnitCircle from '../surfaces/UnitCircle';
 import UnitSquare from '../surfaces/UnitSquare';
-import Relation from '../Relation';
+import Curve from '../Curve';
 
-export default class Arc extends Relation {
+export default class Arc extends Curve {
 
     constructor(surface) {
 

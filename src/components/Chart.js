@@ -8,6 +8,42 @@ function Chart(props) {
 
     const canvasRef = useRef(null);
 
+    const drawEndPoints = (curve, canvas) => {
+
+        const ctx = canvas.getContext('2d');
+        let s, e;
+
+        if(curve.overflow === 'clamp') {
+
+            // use clamp start/end
+            s = curve.getCartesianCoordsAt(curve.clampStart);
+            e = curve.getCartesianCoordsAt(curve.clampEnd);
+
+        } else {
+
+            // use 0 and 1
+            s = curve.getCartesianCoordsAt(0);
+            e = curve.getCartesianCoordsAt(1);
+            
+        }
+
+        ctx.lineWidth = canvas.width / 50;
+
+        ctx.beginPath();
+        ctx.fillStyle = "lightgreen";
+        ctx.arc(nx(s.x), ny(s.y), canvas.width/100, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle = "palevioletred";
+        ctx.moveTo(nx(e.x), ny(e.y));
+        ctx.arc(nx(e.x), ny(e.y), canvas.width/100, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fill();
+
+    }
+
     // for each chart type, the following must be defined
     let nx, ny, drawBlankChart, drawCurve
 
@@ -90,7 +126,7 @@ function Chart(props) {
                 // get canvas and context
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d', {alpha: false});
-                ctx.lineWidth = canvas.width / 100;
+                ctx.lineWidth = canvas.width / 120;
         
                 const lineSegments = 128;
         
@@ -122,6 +158,8 @@ function Chart(props) {
                     prevCoords = coords;
         
                 }
+
+                drawEndPoints(props.palette.hsCurve, canvas);
         
                 // if curve is redrawn, also update the palettes
                 props.updatePalettes();
@@ -135,7 +173,7 @@ function Chart(props) {
         case 'cartesian': {
 
             // expressed as a percentage of the chart size
-            const chartPadding = 0.01;
+            const chartPadding = 0.02;
 
             // Normalize x such that: nx(0) = 0 && nx(1) = width
             nx = (x) => {
@@ -184,7 +222,7 @@ function Chart(props) {
                 // get canvas and context
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d', {alpha: false});
-                ctx.lineWidth = canvas.width / 100;
+                ctx.lineWidth = canvas.width / 120;
         
                 const lineSegments = 128;
         
@@ -215,6 +253,8 @@ function Chart(props) {
         
                 }
         
+                drawEndPoints(props.palette.lCurve, canvas);
+
                 // if curve is redrawn, also update the palettes
                 props.updatePalettes();
                         

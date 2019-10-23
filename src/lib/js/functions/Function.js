@@ -1,7 +1,7 @@
 import { polarToCart, cartToPolar } from '../../utils/math';
-import Relation from '../Relation';
+import Curve from '../Curve';
 
-export default class Function extends Relation {
+export default class Function extends Curve {
     
     constructor(surface, fn) {
 
@@ -74,8 +74,9 @@ export default class Function extends Relation {
         const sin = Math.sin(this.rotation);
         const cos = Math.cos(this.rotation);
 
-        const xRot = x * cos - y * sin;
-        const yRot = x * sin + y * cos;
+        // rotation is along the surface's center point
+        const xRot = (x - this.surface.cx) * cos - (y - this.surface.cy) * sin + this.surface.cx;
+        const yRot = (x - this.surface.cx) * sin + (y - this.surface.cy) * cos + this.surface.cy;
         
         // clamp methodology depends on the surface type
         if(this.surface.type === 'unitSquare') {
