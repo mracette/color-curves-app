@@ -25,6 +25,11 @@ function Presets() {
             palette: new ColorPalette({type: "arc", radius: 0.50000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.00000, y: 0.00000}, }, {type: "arc", radius: 0.25000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.50000, y: 0.50000}, }, { paletteStart: 0, paletteEnd: 1 })
         },
         {
+            name: 'Un-American',
+            author: 'Color Curves',
+            palette: new ColorPalette({type: "polynomial", variation: "out", translation: {x: -0.92388, y: -0.38268}, scale: {x: 1.84776, y: 0.76537}, rotation: 2.75000}, {type: "linear", translation: {x: 0.00000, y: 0.25000}, scale: {x: 1.00000, y: 0.74000}, rotation: 0.00000}, { paletteStart: 0, paletteEnd: 1 })
+        },
+        {
             name: 'Candy Paint',
             author: 'Color Curves',
             palette: new ColorPalette({type: "exponential", variation: "in", translation: {x: -0.92388, y: -0.45000}, scale: {x: 1.84776, y: 0.77000}, rotation: 0.00000}, {type: "linear", translation: {x: 0.00000, y: 0.25000}, scale: {x: 1.00000, y: 0.50000}, rotation: 4.54142}, { paletteStart: 0.02, paletteEnd: 1 })
@@ -63,6 +68,7 @@ function Presets() {
 
     useEffect(() => {
         presets.forEach((preset) => {
+            console.log(preset);
             const canvas = document.getElementById(preset.name);
             preset.palette.drawContinuousPalette(canvas, 128);
         });

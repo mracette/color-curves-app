@@ -157,6 +157,16 @@ export default class ColorPalette {
                 hsParams += `variation: "${this.hsCurve.variation}", `;
             }
 
+            // polynomial curves have exponent
+            if(this.getHsCurveType() === 'polynomial') {
+                hsParams += `exponent: "${this.hsCurve.exponent}`
+            }
+
+            // curves have exponent
+            if(this.getHsCurveType() === 'polynomial') {
+                hsParams += `exponent: "${this.hsCurve.exponent}`
+            }
+
             // arcs have angle parameters
             if(this.getHsCurveType() === 'arc') {
                 hsParams += `radius: ${this.hsCurve.r.toFixed(p)}, `;
@@ -165,14 +175,10 @@ export default class ColorPalette {
                 hsParams += `angleOffset: ${this.hsCurve.angleOffset.toFixed(p)}, `;
             }
 
-            // all curve have translation
+            // all curve have translation, scale, and rotation
             hsParams += `translation: {x: ${this.hsCurve.translation.x.toFixed(p)}, y: ${this.hsCurve.translation.y.toFixed(p)}}, `;
-
-            // some curves have scale and rotation
-            if(this.getHsCurveType() !== 'arc') {
-                hsParams += `scale: {x: ${this.hsCurve.scale.x.toFixed(p)}, y: ${this.hsCurve.scale.y.toFixed(p)}}, `
-                hsParams += `rotation: ${this.hsCurve.rotation.toFixed(p)}`;
-            }
+            hsParams += `scale: {x: ${this.hsCurve.scale.x.toFixed(p)}, y: ${this.hsCurve.scale.y.toFixed(p)}}, `
+            hsParams += `rotation: ${this.hsCurve.rotation.toFixed(p)}`;
 
             // close
             hsParams += `}`;
@@ -196,14 +202,10 @@ export default class ColorPalette {
                 lParams += `angleOffset: ${this.lCurve.angleOffset.toFixed(p)}, `;
             }
 
-            // all curve have translation
+            // some curves have translation, scale and rotation
             lParams += `translation: {x: ${this.lCurve.translation.x.toFixed(p)}, y: ${this.lCurve.translation.y.toFixed(p)}}, `;
-
-            // some curves have scale and rotation
-            if(this.getLCurveType() !== 'arc') {
-                lParams += `scale: {x: ${this.lCurve.scale.x.toFixed(p)}, y: ${this.lCurve.scale.y.toFixed(p)}}, `
-                lParams += `rotation: ${this.lCurve.rotation.toFixed(p)}`;
-            }
+            lParams += `scale: {x: ${this.lCurve.scale.x.toFixed(p)}, y: ${this.lCurve.scale.y.toFixed(p)}}, `
+            lParams += `rotation: ${this.lCurve.rotation.toFixed(p)}`;
 
             // close
             lParams += `}`;

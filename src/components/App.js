@@ -1,5 +1,6 @@
 // libs
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import ColorPalette from '../lib/js/ColorPalette';
 import 'bootstrap';
 
 // components
@@ -10,6 +11,13 @@ import Presets from './Presets';
 import '../styles/app.scss';
 
 function App() {
+
+  const canvasBanner = useRef(null);
+  const bannerPalette = new ColorPalette({type: "arc", radius: 0.50000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.00000, y: 0.00000}, }, {type: "arc", radius: 0.25000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.50000, y: 0.50000}, }, { paletteStart: 0, paletteEnd: 1 });
+
+  useEffect(() => {
+    canvasBanner.current && bannerPalette.drawDiscretePalette(canvasBanner.current, 24);
+  }, [canvasBanner])
 
   // const [theme, setTheme] = useState('light');
   const [nav, setNav] = useState('editor');
@@ -26,9 +34,11 @@ function App() {
 
   document.body.classList.add('bg-light');
 
-  return (
+  return (<>
 
-    <div className = 'container-fluid no-focus-outline' id = 'app'>
+    <canvas id = 'canvas-banner' ref = {canvasBanner}/>
+
+    <div className = 'container' id = 'app'>
 
       <div className = 'row' id = 'header'>
 
@@ -64,7 +74,7 @@ function App() {
 
     </div>
 
-  );
+  </>);
 
 }
 

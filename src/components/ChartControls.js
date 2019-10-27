@@ -47,7 +47,10 @@ function ChartControls(props) {
         if(curve.rotation) params['rotation'] = curve.rotation;
         if(curve.variation) params['variation'] = curve.variation;
         if(curve.reverse) params['reverse'] = curve.reverse;
-
+        if(curve.exponent) params['exponent'] = curve.exponent;
+        if(curve.overshoot) params['overshoot'] = curve.overshoot;
+        if(curve.amplitude) params['amplitude'] = curve.amplitude;
+        if(curve.period) params['period'] = curve.period;
         return params;
      
     }
@@ -96,6 +99,10 @@ function ChartControls(props) {
             case 'reverse': curve.setReverse(value); break;
             case 'radius': curve.setRadius(value); break;
             case 'overflow': curve.setOverflow(value); break;
+            case 'exponent': curve.setExponent(value); break;
+            case 'overshoot': curve.setOvershoot(value); break;
+            case 'amplitude': curve.setAmplitude(value); break;
+            case 'period': curve.setPeriod(value); break;
             default: break;
         }
 
@@ -185,6 +192,93 @@ function ChartControls(props) {
                     
                     </div>
 
+                    {/* CONDITIONAL CURVE PARAMS */}
+                    {curveType === 'polynomial' &&
+                    <div className = 'row justify-content-end'>
+
+                            <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'variation-select'>Exponent</label>
+                            <div className = 'col-lg-3'>
+                                <SmartInput 
+                                    labelWidth = {.2} 
+                                    label = {"e"}
+                                    step = {0.01}
+                                    maxDecimals = {2}
+                                    min = {0.01}
+                                    defaultValue = {curve.exponent}
+                                    resetButton = {true}
+                                    resetAction = {() => {
+                                        curve.setDefaultExponent();
+                                        onParamChange('exponent', curve.exponent);
+                                    }}
+                                    handleChange = {(value) => onParamChange('exponent', value)}
+                                />
+                            </div>
+                    </div>}
+
+                    {/* CONDITIONAL CURVE PARAMS */}
+                    {curveType === 'back' &&
+                    <div className = 'row justify-content-end'>
+                            <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'variation-select'>Overshoot</label>
+                            <div className = 'col-lg-3'>
+                                <SmartInput 
+                                    labelWidth = {.2} 
+                                    label = {"s"}
+                                    step = {0.01}
+                                    maxDecimals = {2}
+                                    defaultValue = {curve.overshoot}
+                                    resetButton = {true}
+                                    resetAction = {() => {
+                                        curve.setDefaultOvershoot();
+                                        onParamChange('overshoot', curve.overshoot);
+                                    }}
+                                    handleChange = {(value) => onParamChange('overshoot', value)}
+                                />
+                            </div>
+                    </div>}
+
+                    {/* CONDITIONAL CURVE PARAMS */}
+                    {curveType === 'elastic' && <>
+                    <div className = 'row justify-content-end'>
+                            <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'variation-select'>Amplitude</label>
+                            <div className = 'col-lg-3'>
+                                <SmartInput 
+                                    labelWidth = {.2} 
+                                    label = {"a"}
+                                    step = {0.01}
+                                    maxDecimals = {2}
+                                    min = {1}
+                                    defaultValue = {curve.amplitude}
+                                    resetButton = {true}
+                                    resetAction = {() => {
+                                        curve.setDefaultAmplitude();
+                                        onParamChange('amplitude', curve.amplitude);
+                                    }}
+                                    handleChange = {(value) => onParamChange('amplitude', value)}
+                                />
+                            </div>
+                    </div>
+                    <div className = 'row justify-content-end'>
+                        <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'variation-select'>Period</label>
+                        <div className = 'col-lg-3'>
+                            <SmartInput 
+                                labelWidth = {.2} 
+                                label = {"p"}
+                                step = {0.01}
+                                maxDecimals = {2}
+                                min = {0.01}
+                                defaultValue = {curve.period}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultPeriod();
+                                    onParamChange('period', curve.period);
+                                }}
+                                handleChange = {(value) => onParamChange('period', value)}
+                            />
+                        </div>
+                    </div>
+                    </>}
+
+
                     {/* CURVE OPTIONS LINE 2 */}
                     <div className = 'row'>
 
@@ -239,6 +333,11 @@ function ChartControls(props) {
                                 step = {0.01}
                                 maxDecimals = {2}
                                 defaultValue = {curve.r}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultRadius();
+                                    onParamChange('radius', curve.r);
+                                }}
                                 handleChange = {(value) => onParamChange('radius', value)}
                             />
                         </div>
@@ -259,6 +358,11 @@ function ChartControls(props) {
                                 unitSymbol = {String.fromCharCode(0x3c0)}
                                 conversion = {Math.PI}
                                 defaultValue = {curve.angleStart / Math.PI}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultAngleStart();
+                                    onParamChange('angleStart', curve.angleStart);
+                                }}
                                 handleChange = {(value) => onParamChange('angleStart', value)}
                             />
                         </div>
@@ -273,6 +377,11 @@ function ChartControls(props) {
                                 unitSymbol = {String.fromCharCode(0x3c0)}
                                 conversion = {Math.PI}
                                 defaultValue = {curve.angleEnd / Math.PI}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultAngleEnd();
+                                    onParamChange('angleEnd', curve.angleEnd);
+                                }}
                                 handleChange = {(value) => onParamChange('angleEnd', value)}
                             />
                         </div>
@@ -293,6 +402,11 @@ function ChartControls(props) {
                                 unitSymbol = {String.fromCharCode(0x3c0)}
                                 conversion = {Math.PI}
                                 defaultValue = {curve.angleOffset / Math.PI}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultAngleOffset();
+                                    onParamChange('angleOffset', curve.angleOffset);
+                                }}
                                 handleChange = {(value) => onParamChange('angleOffset', value)}
                             />
                         </div>
@@ -315,6 +429,11 @@ function ChartControls(props) {
                                 step = {0.01}
                                 maxDecimals = {2}
                                 defaultValue = {curve.translation.x}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultTranslateX();
+                                    onParamChange('translateX', curve.translation.x);
+                                }}
                                 handleChange = {(value) => onParamChange('translateX', value)}
                             />
                         </div>
@@ -326,6 +445,11 @@ function ChartControls(props) {
                                 step = {0.01}
                                 maxDecimals = {2}
                                 defaultValue = {curve.translation.y}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultTranslateY();
+                                    onParamChange('translateY', curve.translation.y);
+                                }}
                                 handleChange = {(value) => onParamChange('translateY', value)}
                             />
                         </div>
@@ -333,7 +457,7 @@ function ChartControls(props) {
                     </div>
 
                     {/* SCALE */}
-                    {curveType !== 'arc' && <div className = 'row'>
+                    <div className = 'row'>
 
                         {/* CURVE TYPE */}
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Scale</label>
@@ -344,6 +468,11 @@ function ChartControls(props) {
                                 step = {0.01}
                                 maxDecimals = {2}
                                 defaultValue = {curve.scale.x}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultScaleX();
+                                    onParamChange('scaleX', curve.scale.x);
+                                }}
                                 handleChange = {(value) => onParamChange('scaleX', value)}
                             />
                         </div>
@@ -355,14 +484,19 @@ function ChartControls(props) {
                                 step = {0.01}
                                 maxDecimals = {2}
                                 defaultValue = {curve.scale.y}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultScaleY();
+                                    onParamChange('scaleY', curve.scale.y);
+                                }}
                                 handleChange = {(value) => onParamChange('scaleY', value)}
                             />
                         </div>
 
-                    </div>}
+                    </div>
 
                     {/* ROTATION */}
-                    {curveType !== 'arc' && <div className = 'row'>
+                    <div className = 'row'>
                         <label className = 'col-lg-2 col-form-label-sm' htmlFor = 'type-select'>Rotation</label>
                         <div className = 'col-sm-5'>
                             <SmartInput
@@ -373,10 +507,15 @@ function ChartControls(props) {
                                 unitSymbol = {String.fromCharCode(0x3c0)}
                                 conversion = {Math.PI}
                                 defaultValue = {curve.rotation / Math.PI}
+                                resetButton = {true}
+                                resetAction = {() => {
+                                    curve.setDefaultRotation();
+                                    onParamChange('rotate', curve.rotation);
+                                }}
                                 handleChange = {(value) => onParamChange('rotate', value)}
                             />
                         </div>
-                    </div>}
+                    </div>
 
                 </div>
 

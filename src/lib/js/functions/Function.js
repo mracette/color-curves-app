@@ -23,34 +23,54 @@ export default class Function extends Curve {
 
     setDefaultTranslation() {
         
-        if(this.surface.type === 'unitSquare') {
-
-            this.setTranslation({x: 0, y: 0.25});
-
-        } else if (this.surface.type === 'unitCircle') {
-
-            this.setTranslation({
-                x: Math.cos(Math.PI * (9/8)), 
-                y: Math.sin(Math.PI * (9/8))
-            });
-            
-        }
+        this.setDefaultTranslateX();
+        this.setDefaultTranslateY();
 
     }
 
     setDefaultScale() {
         
+        this.setDefaultScaleX();
+        this.setDefaultScaleY();
+
+    }
+
+    setDefaultTranslateX() {
+
         if(this.surface.type === 'unitSquare') {
-
-            this.setScale({x: 1, y: 0.5});
-
+            this.setTranslateX(0);
         } else if (this.surface.type === 'unitCircle') {
+            this.setTranslateX(Math.cos(Math.PI * (9/8)));
+        }
 
-            this.setScale({
-                x: Math.cos(Math.PI * (9/8)) * -2, 
-                y: Math.sin(Math.PI * (9/8)) * -2
-            });
-            
+    }
+
+    setDefaultTranslateY() {
+
+        if(this.surface.type === 'unitSquare') {
+            this.setTranslateY(0.25);
+        } else if (this.surface.type === 'unitCircle') {
+            this.setTranslateY(Math.sin(Math.PI * (9/8)));
+        }
+
+    }
+
+    setDefaultScaleX() {
+
+        if(this.surface.type === 'unitSquare') {
+            this.setScaleX(1);
+        } else if (this.surface.type === 'unitCircle') {
+            this.setScaleX(Math.cos(Math.PI * (9/8)) * -2);
+        }
+
+    }
+
+    setDefaultScaleY() {
+
+        if(this.surface.type === 'unitSquare') {
+            this.setScaleY(0.5);
+        } else if (this.surface.type === 'unitCircle') {
+            this.setScaleY(Math.sin(Math.PI * (9/8)) * -2);
         }
 
     }

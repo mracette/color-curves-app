@@ -29,6 +29,9 @@ export default class Back extends Function {
         // initialize parent class with default function
         super(surface, d3.easeBackIn);
 
+        // additional parameters for this curve
+        this.setDefaultOvershoot();
+
         // override function if a variation is specified
         if(params && params.variation) {
             this.setVariation(params.variation);
@@ -43,14 +46,19 @@ export default class Back extends Function {
 
     }
 
+    setDefaultOvershoot() {
+        this.overshoot = 1.70158;
+        this.setVariation(this.overshoot);
+    }
+
     setVariation(variation) {
 
         if(variation === 'in' || variation === 'out' || variation === 'in-out'){
 
             switch(variation) {
-                case 'in': this.setFn(d3.easeBackIn); break;
-                case 'out': this.setFn(d3.easeBackOut); break;
-                case 'in-out': this.setFn(d3.easeBackInOut); break;
+                case 'in': this.setFn(d3.easeBackIn.overshoot(this.overshoot)); break;
+                case 'out': this.setFn(d3.easeBackOut.overshoot(this.overshoot)); break;
+                case 'in-out': this.setFn(d3.easeBackInOut.overshoot(this.overshoot)); break;
                 default: break;
             }
     
@@ -62,6 +70,15 @@ export default class Back extends Function {
 
         }
 
+    }
+
+    setOvershoot(s) {
+        if(typeof s === 'number') {
+            this.overshoot = s;
+            this.setVariation(this.variation);
+        } else {
+            
+        }
     }
 
 }

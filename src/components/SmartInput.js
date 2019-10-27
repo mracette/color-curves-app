@@ -72,8 +72,9 @@ function FunctionParams(props) {
                     height: '2rem',
                     width: '100%',
                     color: '#555',
-                    backgroundColor: '#FFF',
-                    border: '1px solid #CCC',
+                    backgroundColor: 'hsl(0, 0%, 97%)',
+                    // border: '1px solid #CCC',
+                    border: 'none',
                     borderRadius: '4px'
             }}
         >
@@ -148,10 +149,40 @@ function FunctionParams(props) {
                         padding: '0px 12px',
                         margin: '0',
                         border: 'none',
+                        backgroundColor: 'hsl(0, 0%, 97%)',
                         borderRadius: '4px'
                 }}
             >
             </input>
+            {props.resetButton && 
+                <button
+                    onClick = {(e) => {
+                        e.preventDefault();
+                        props.resetAction && props.resetAction();
+                    }}
+                    style = {
+                        (props.defaultStyles !== false) && {
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexGrow: '0',
+                            flexShrink: '0',
+                            flexBasis: '2rem',
+                            height: '100%',
+                            cursor: 'pointer',
+                            fontSize: '0.875rem',
+                            padding: '0px 12px',
+                            margin: '0',
+                            border: 'none',
+                            backgroundColor: '#EEE',
+                            borderTopRightRadius: '4px',
+                            borderBottomRightRadius: '4px'
+                    }}
+                >
+                {String.fromCharCode(0x21ba)}
+                </button>
+            }
         </div>
     )
 

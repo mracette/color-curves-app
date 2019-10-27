@@ -29,6 +29,9 @@ export default class Polynomial extends Function {
         // initialize parent class with default function
         super(surface, d3.easePolyIn);
 
+        // additional parameters for this curve
+        this.setDefaultExponent();
+
         // override function if a variation is specified
         if(params && params.variation) {
             this.setVariation(params.variation);
@@ -41,6 +44,7 @@ export default class Polynomial extends Function {
         this.setDefaultTranslation();
         this.setDefaultScale();
 
+
     }
 
     setVariation(variation) {
@@ -48,9 +52,9 @@ export default class Polynomial extends Function {
         if(variation === 'in' || variation === 'out' || variation === 'in-out'){
 
             switch(variation) {
-                case 'in': this.setFn(d3.easePolyIn); break;
-                case 'out': this.setFn(d3.easePolyOut); break;
-                case 'in-out': this.setFn(d3.easePolyInOut); break;
+                case 'in': this.setFn(d3.easePolyIn.exponent(this.exponent)); break;
+                case 'out': this.setFn(d3.easePolyOut.exponent(this.exponent)); break;
+                case 'in-out': this.setFn(d3.easePolyInOut.exponent(this.exponent)); break;
                 default: break;
             }
     
@@ -58,10 +62,24 @@ export default class Polynomial extends Function {
 
         } else {
 
-            console.warning("variation must be 'in', 'out', or 'in-out'");
+            console.warn("variation must be 'in', 'out', or 'in-out'");
 
         }
 
+    }
+
+    setDefaultExponent() {
+        this.exponent = 3;
+        this.setVariation(this.variation);
+    }
+
+    setExponent(e) {
+        if(typeof e === 'number' && e > 0) {
+            this.exponent = e;
+            this.setVariation(this.variation);
+        } else {
+            console.warn('exponent must be a number greater than 0');
+        }
     }
 
 }

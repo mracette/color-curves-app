@@ -31,7 +31,9 @@ export default class Arc extends Curve {
 
         // set initial tranformations according to the surface type
         this.setDefaultTranslation();
+        this.setDefaultRotation();
         this.setDefaultRadius();
+        this.setDefaultScale();
         this.setDefaultAngleStart();
         this.setDefaultAngleEnd();
         this.setDefaultAngleOffset();
@@ -50,6 +52,25 @@ export default class Arc extends Curve {
         this.angleOffset = 0;
     }
 
+    setDefaultScale() {
+        
+        this.setDefaultScaleX();
+        this.setDefaultScaleY();
+
+    }
+
+    setDefaultScaleX() {
+
+        this.setScaleX(1);
+
+    }
+
+    setDefaultScaleY() {
+
+        this.setScaleY(1);
+
+    }
+
     setDefaultTranslation() {
 
         if(this.surface.type === 'unitSquare') {
@@ -61,6 +82,40 @@ export default class Arc extends Curve {
             this.setTranslation({x: 0, y: 0});
             
         }
+
+    }
+
+    setDefaultTranslateX() {
+
+        if(this.surface.type === 'unitSquare') {
+
+            this.setTranslateX(0.5);
+
+        } else if (this.surface.type === 'unitCircle') {
+
+            this.setTranslateX(0);
+            
+        }
+
+    }
+
+    setDefaultTranslateY() {
+
+        if(this.surface.type === 'unitSquare') {
+
+            this.setTranslateY(0.5);
+
+        } else if (this.surface.type === 'unitCircle') {
+
+            this.setTranslateY(0);
+            
+        }
+        
+    }
+
+    setDefaultRotation() {
+
+        this.setRotation(0);
 
     }
 
@@ -91,23 +146,43 @@ export default class Arc extends Curve {
         const theta = this.angleOffset + this.angleStart + arcAngle;
 
         // these coordinates could be outside of the unit circle 
-        const x = this.cx + this.translation.x + this.r * Math.cos(theta);
-        const y = this.cy + this.translation.y + this.r * Math.sin(theta);
+        const x = this.scale.x * (this.cx + this.translation.x + this.r * Math.cos(theta));
+        const y = this.scale.y * (this.cy + this.translation.y + this.r * Math.sin(theta));
 
-        // convert to polar in order to clamp the radius
-        const polarCoords = cartToPolar(x, y);
+        const sin = Math.sin(this.rotation);
+        const cos = Math.cos(this.rotation);
 
-        // assign clamped flag
-        const clamped = polarCoords.r > 1 || polarCoords.r < -1;
+        // rotation is along the surface's center point
+        const xRot = (x - this.surface.cx) * cos - (y - this.surface.cy) * sin + this.surface.cx;
+        const yRot = (x - this.surface.cx) * sin + (y - this.surface.cy) * cos + this.surface.cy;
 
-        // convert clamped polar coordinates back to cartesian x and y
-        const cartCoordsClamped = polarToCart(Math.max(0, Math.min(1, polarCoords.r)), polarCoords.theta);
+        // clamp methodology depends on the surface type
+        if(this.surface.type === 'unitSquare') {
 
-        return {
-            x: cartCoordsClamped.x, 
-            y: cartCoordsClamped.y,
-            clamped
-        };
+            const clamped = (xRot < 0 || xRot > 1 || yRot < 0 || yRot > 1);
+            const xClamp = Math.min(1, Math.max(0, xRot));
+            const yClamp = Math.min(1, Math.max(0, yRot));
+
+            return {
+                x: xClamp,
+                y: yClamp,
+                clamped
+            };
+
+        } else if(this.surface.type === 'unitCircle') {
+
+            // convert to polar in order to clamp the radius
+            const polarCoords = cartToPolar(xRot, yRot);
+            const clamped = polarCoords.r > 1 || polarCoords.r < -1;
+            const cartCoordsClamped = polarToCart(Math.max(-1, Math.min(1, polarCoords.r)), polarCoords.theta);
+
+            return {
+                x: cartCoordsClamped.x,
+                y: cartCoordsClamped.y,
+                clamped
+            };
+
+        }
 
     }
 

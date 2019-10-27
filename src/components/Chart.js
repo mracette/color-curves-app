@@ -419,7 +419,7 @@ function Chart(props) {
                     <div className = 'col-md-12'>
 
                         <canvas
-                            className = 'chart'
+                            className = 'chart square-canvas'
                             ref = {canvasRef}
                         />
 

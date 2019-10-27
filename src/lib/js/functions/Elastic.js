@@ -29,6 +29,10 @@ export default class Elastic extends Function {
         // initialize parent class with default function
         super(surface, d3.easeElasticIn);
 
+        // additional parameters for this curve
+        this.setDefaultAmplitude();
+        this.setDefaultPeriod();
+
         // override function if a variation is specified
         if(params && params.variation) {
             this.setVariation(params.variation);
@@ -43,14 +47,24 @@ export default class Elastic extends Function {
 
     }
 
+    setDefaultAmplitude() {
+        this.amplitude = 1;
+        this.setVariation(this.variation);
+    }
+
+    setDefaultPeriod() {
+        this.period = 0.3;
+        this.setVariation(this.variation);
+    }
+
     setVariation(variation) {
 
         if(variation === 'in' || variation === 'out' || variation === 'in-out'){
 
             switch(variation) {
-                case 'in': this.setFn(d3.easeElasticIn); break;
-                case 'out': this.setFn(d3.easeElasticOut); break;
-                case 'in-out': this.setFn(d3.easeElasticInOut); break;
+                case 'in': this.setFn(d3.easeElasticIn.amplitude(this.amplitude).period(this.period)); break;
+                case 'out': this.setFn(d3.easeElasticOut.amplitude(this.amplitude).period(this.period)); break;
+                case 'in-out': this.setFn(d3.easeElasticInOut.amplitude(this.amplitude).period(this.period)); break;
                 default: break;
             }
     
@@ -58,10 +72,28 @@ export default class Elastic extends Function {
 
         } else {
 
-            console.warning("variation must be 'in', 'out', or 'in-out'");
+            console.warn("variation must be 'in', 'out', or 'in-out'");
 
         }
 
+    }
+
+    setAmplitude(a) {
+        if(typeof a === 'number' && a > 1) {
+            this.amplitude = a;
+            this.setVariation(this.variation);
+        } else {
+            console.warn('amplitude must be a number greater than 1');
+        }
+    }
+
+    setPeriod(p) {
+        if(typeof p === 'number' && p > 0) {
+            this.period = p;
+            this.setVariation(this.variation);
+        } else {
+            console.warn('period must be a number greater than 0');
+        }
     }
 
 }

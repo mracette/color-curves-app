@@ -62,13 +62,8 @@ function Editor() {
   const [showModal, setShowModal] = useState(false);
   const [paletteParams, setPaletteParams] = useState(null);
 
-  // initialize palette
-// const defaultPalette = new ColorPalette({type: "linear",variation: "in", translation: {x: -0.9238795325112868, y: -0.38268343236508967}, scale: {x: 1.8477590650225737, y: 1.8477590650225737}, rotation: 0}, {type: "linear", translation: {x: 0, y: 0.25}, scale: {x: 1, y: 1}, rotation: 0}, {
-//     paletteStart: 0,
-//     paletteEnd: 1
-// });
-
-const defaultPalette = new ColorPalette();
+  const defaultPalette = new ColorPalette();
+  // console.log(defaultPalette);
 
   defaultPalette.hsCurve.setClampBounds();
   defaultPalette.lCurve.setClampBounds();
@@ -153,7 +148,7 @@ const defaultPalette = new ColorPalette();
                   step = {1}
                   min = {1}
                   max = {32}
-                  fixedDecimals = {0}
+                  maxDecimals = {0}
                   defaultValue = {numStops}
                   handleChange = {(value) => setNumStops(parseInt(value))}
                 />
@@ -175,7 +170,7 @@ const defaultPalette = new ColorPalette();
                   step = {.01}
                   min = {0}
                   max = {paletteRange[1]}
-                  fixedDecimals = {2}
+                  maxDecimals = {2}
                   defaultValue = {paletteRange[0]}
                   handleChange = {(value) => {
                     palette.setPaletteStart(parseFloat(value));
@@ -191,7 +186,7 @@ const defaultPalette = new ColorPalette();
                   step = {.01}
                   min = {paletteRange[0]}
                   max = {1}
-                  fixedDecimals = {2}
+                  maxDecimals = {2}
                   defaultValue = {paletteRange[1]}
                   handleChange = {(value) => {
                     palette.setPaletteEnd(parseFloat(value));
@@ -227,7 +222,11 @@ const defaultPalette = new ColorPalette();
           <ExportModal 
             show = {showModal}
             setShow = {setShowModal}
-            paletteParams = {paletteParams}
+            palette = {palette}
+            numStops = {numStops}
+            setNumStops = {setNumStops}
+            paletteType = {paletteType}
+            setPaletteType = {setPaletteType}
           />
 
         </div>
