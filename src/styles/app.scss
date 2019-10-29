@@ -6,11 +6,11 @@ body, #root {
   padding: 0;
 }
 
-#export-canvas {
+#export-canvas, #hex-canvas {
   display: block;
   margin: 0 auto;
   width: 100%;
-  height: 30rem;
+  height: 3rem;
 }
 
 canvas.chart {

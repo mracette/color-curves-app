@@ -1,20 +1,26 @@
 
 export const downloadCanvas = (canvas, filename) => {
 
-    // create an "off-screen" anchor tag
-    const link = document.createElement('a');
+    return new Promise((resolve, reject) => {
 
-    link.download = filename;
-    link.href = canvas.toDataURL("image/png;base64");
+        // create an "off-screen" anchor tag
+        const link = document.createElement('a');
 
-    // fire moust event to trigger download
-    const e = document.createEvent("MouseEvents");
+        link.download = filename;
+        link.href = canvas.toDataURL("image/png;base64");
 
-    e.initMouseEvent("click", true, true, window,
-        0, 0, 0, 0, 0, false, false, false,
-        false, 0, null);
+        // fire moust event to trigger download
+        const e = document.createEvent("MouseEvents");
 
-    link.dispatchEvent(e);
+        e.initMouseEvent("click", true, true, window,
+            0, 0, 0, 0, 0, false, false, false,
+            false, 0, null);
+
+        link.dispatchEvent(e);
+
+        resolve();
+
+    })
 
 }
 
