@@ -368,7 +368,7 @@ export default class ColorPalette {
         for(let i = 0; i < stops; i++) {
     
             // get hsl values
-            const hsl = this.hslValueAt(i / stops);
+            const hsl = this.hslValueAt((i + 0.5) / stops);
     
             ctx.fillStyle = hsl;
             ctx.fillRect(i * canvas.width / stops, 0, canvas.width * 1.1 / stops, canvas.height);

@@ -18,7 +18,7 @@ export default class Sinusoidal extends Function {
             } else if(surface === 'unitCircle') {
                 surface = new UnitCircle();
             } else {
-                console.warning(
+                console.warn(
                     "Invalid surface type. Options are 'unitCircle' (for H/S components) or 'unitSquare' (for L component). ",
                     "Using unitSquare instead."
                 );
@@ -58,7 +58,7 @@ export default class Sinusoidal extends Function {
 
         } else {
 
-            console.warning("variation must be 'in', 'out', or 'in-out'");
+            console.warn("variation must be 'in', 'out', or 'in-out'");
 
         }
 

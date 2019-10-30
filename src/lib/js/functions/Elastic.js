@@ -18,7 +18,7 @@ export default class Elastic extends Function {
             } else if(surface === 'unitCircle') {
                 surface = new UnitCircle();
             } else {
-                console.warning(
+                console.warn(
                     "Invalid surface type. Options are 'unitCircle' (for H/S components) or 'unitSquare' (for L component). ",
                     "Using unitSquare instead."
                 );

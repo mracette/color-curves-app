@@ -11,7 +11,7 @@ import ColorPalette from '../lib/js/ColorPalette';
 function Presets() {
 
     const [showModal, setShowModal] = useState(false);
-    const [paletteParams, setPaletteParams] = useState(null);
+    const [selectedPalette, setSelectedPalette] = useState(null);
 
     const presets = [
         {
@@ -68,32 +68,31 @@ function Presets() {
 
     useEffect(() => {
         presets.forEach((preset) => {
-            console.log(preset);
-            const canvas = document.getElementById(preset.name);
-            preset.palette.drawContinuousPalette(canvas, 128);
+            preset.palette.drawContinuousPalette(document.getElementById(preset.name+'-continuous'), 128);
+            preset.palette.drawDiscretePalette(document.getElementById(preset.name+'-discrete'), 12);
         });
     }, [presets]);
 
-    return (
-        presets.map((preset, i) => {
-            return (<>
-            <div
-                onClick = {(e) => {
-                    setPaletteParams(preset.palette.exportPaletteParams());
-                    setShowModal(true);
-                }}
-                className = 'preset palette-wrapper border'>
-                <h4>{preset.name}</h4>
-                <canvas id = {preset.name} height={50} width = {500}></canvas>
-            </div>
-            {i === presets.length - 1 &&
-            <ExportModal 
-                show = {showModal}
-                setShow = {setShowModal}
-                paletteParams = {paletteParams}
-            />}
-            </>)
-        })
+    return (<>
+        {presets.map((preset, i) => {
+            return (
+                <div
+                    onClick = {(e) => {
+                        setSelectedPalette(preset.palette);
+                        setShowModal(true);
+                    }}
+                    className = 'preset palette-wrapper border'>
+                    <h4>{preset.name}</h4>
+                    <canvas className = 'preset-canvas' id = {`${preset.name}-continuous`}/>
+                    <canvas className = 'preset-canvas' id = {`${preset.name}-discrete`}/>
+                </div>
+            )
+        })}
+        <ExportModal 
+            show = {showModal}
+            setShow = {setShowModal}
+            palette = {selectedPalette}
+        /></>
     );
 
 }

@@ -63,7 +63,7 @@ function FunctionParams(props) {
 
     return (    
         <div 
-            className = 'smart-input'
+            className = 'smart-input border'
             style = {
                 (props.defaultStyles !== false) && {
                     display: 'flex',
@@ -72,8 +72,7 @@ function FunctionParams(props) {
                     height: '2rem',
                     width: '100%',
                     color: '#555',
-                    backgroundColor: 'hsl(0, 0%, 97%)',
-                    // border: '1px solid #CCC',
+                    border: '1px solid #CCC',
                     border: 'none',
                     borderRadius: '4px'
             }}
@@ -145,11 +144,12 @@ function FunctionParams(props) {
                     (props.defaultStyles !== false) && {
                         flex: '0 1 auto',
                         width: '100%',
+                        height: '100%',
                         fontSize: '0.875rem',
                         padding: '0px 12px',
                         margin: '0',
                         border: 'none',
-                        backgroundColor: 'hsl(0, 0%, 97%)',
+                        // backgroundColor: 'hsl(0, 0%, 97%)',
                         borderRadius: '4px'
                 }}
             >

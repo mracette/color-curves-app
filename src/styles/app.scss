@@ -6,6 +6,20 @@ body, #root {
   padding: 0;
 }
 
+.code-block {
+  background-color: hsl(0, 0%, 97%)
+}
+
+canvas {
+  display: inline-block;
+}
+
+.preset-canvas {
+  width: 100%;
+  height: 3rem;
+  margin: 0;
+}
+
 #export-canvas, #hex-canvas {
   display: block;
   margin: 0 auto;

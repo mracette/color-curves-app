@@ -22,16 +22,6 @@ function App() {
   // const [theme, setTheme] = useState('light');
   const [nav, setNav] = useState('editor');
 
-  // Listen to tab events to enable outlines (accessibility improvement)
-  // See: https://jmperezperez.com/outline-focus-ring-a11y/
-  // Let me know if you have a better solution!
-
-  document.body.addEventListener('keyup', function(e) {
-    if (e.which === 9) /* tab */ {
-      document.getElementById('app').classNameList.remove('no-focus-outline');
-    }
-  })
-
   document.body.classList.add('bg-light');
 
   return (<>
