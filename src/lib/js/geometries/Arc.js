@@ -1,127 +1,76 @@
-import { cartToPolar, polarToCart } from '../../utils/math';
-import UnitCircle from '../surfaces/UnitCircle';
-import UnitSquare from '../surfaces/UnitSquare';
 import Curve from '../Curve';
+
+/**
+ * Represents a segment of a circle
+ * @extends Curve
+ */
 
 export default class Arc extends Curve {
 
-    constructor(surface) {
+    /**
+     * Creates a new Arc.
+     * @param {object} [options] Optional properties of the arc
+     * @param {number} [options.radius] Radius of the arc
+     * @param {number} [options.angleStart = 0] The angle in radians of the segment start
+     * @param {number} [options.angleEnd = 2PI] The angle in radians of the segment end
+     * @param {number} [options.angleOffset = 0] The degrees in radians by which the angleStart and angleEnd are offset
+     * @param {...*} [curveOptions] See {@link Curve}
+     */
 
-        // initialize a new surface class if an instance isn't passed in
-        if(surface.type === undefined) {
-            if(surface === 'unitSquare') {
-                surface = new UnitSquare();
-            } else if(surface === 'unitCircle') {
-                surface = new UnitCircle();
-            } else {
-                console.warn(
-                    "Invalid surface type. Options are 'unitCircle' (for H/S components) or 'unitSquare' (for L component). ",
-                    "Using unitSquare instead."
-                );
-                surface = new UnitSquare();
+    constructor(options) {
+
+        const {
+            radius,
+            angleStart = 0,
+            angleEnd = Math.PI * 2,
+            angleOffset = 0
+        } = options
+
+        super({...options});;
+
+        this.type = 'arc';
+        this.category = 'geometry';
+        this._fn = null;
+
+        this.setRadius(radius);
+        this.setAngleStart(angleStart);
+        this.setAngleEnd(angleEnd);
+        this.setAngleOffset(angleOffset);
+
+        this.setFunction();
+
+
+    }
+
+    setFunction() {
+
+        this._fn = (n) => {
+
+            const arcAngle = n * (this.angleEnd - this.angleStart);
+            const theta = this.angleOffset + this.angleStart + arcAngle;
+
+            return {
+                x: this.radius * Math.cos(theta),
+                y: this.radius * Math.sin(theta)
             }
-        }
 
-        super(surface);
-
-        this.cx = 0;
-        this.cy = 0;
-
-        this.curveCategory = 'geometry';
-
-        // set initial tranformations according to the surface type
-        this.setDefaultTranslation();
-        this.setDefaultRotation();
-        this.setDefaultRadius();
-        this.setDefaultScale();
-        this.setDefaultAngleStart();
-        this.setDefaultAngleEnd();
-        this.setDefaultAngleOffset();
-
-    }
-
-    setDefaultAngleStart() {
-        this.angleStart = 0;
-    }
-
-    setDefaultAngleEnd() {
-        this.angleEnd = Math.PI * 2;
-    }
-
-    setDefaultAngleOffset() {
-        this.angleOffset = 0;
-    }
-
-    setDefaultScale() {
-        
-        this.setDefaultScaleX();
-        this.setDefaultScaleY();
-
-    }
-
-    setDefaultScaleX() {
-
-        this.setScaleX(1);
-
-    }
-
-    setDefaultScaleY() {
-
-        this.setScaleY(1);
-
-    }
-
-    setDefaultTranslation() {
-
-        if(this.surface.type === 'unitSquare') {
-
-            this.setTranslation({x: 0.5, y: 0.5});
-
-        } else if (this.surface.type === 'unitCircle') {
-
-            this.setTranslation({x: 0, y: 0});
-            
         }
 
     }
 
-    setDefaultTranslateX() {
 
-        if(this.surface.type === 'unitSquare') {
+    /**
+     * Sets the radius of the arc. If no value is passed a default is set based on the surface type.
+     * @param {object} [radius] Radius of the arc
+     */
 
-            this.setTranslateX(0.5);
+    setRadius(radius) {
 
-        } else if (this.surface.type === 'unitCircle') {
+        if(typeof radius === 'number') {
 
-            this.setTranslateX(0);
-            
-        }
+            this.radius = radius;
 
-    }
-
-    setDefaultTranslateY() {
-
-        if(this.surface.type === 'unitSquare') {
-
-            this.setTranslateY(0.5);
-
-        } else if (this.surface.type === 'unitCircle') {
-
-            this.setTranslateY(0);
-            
-        }
-        
-    }
-
-    setDefaultRotation() {
-
-        this.setRotation(0);
-
-    }
-
-    setDefaultRadius() {
-
-        if(this.surface.type === 'unitSquare') {
+        } else if(this.surface.type === 'unitSquare') {
 
             this.setRadius(0.25);
 
@@ -133,73 +82,37 @@ export default class Arc extends Curve {
 
     }
 
-    getCartesianCoordsAt(n) {
+    /**
+     * Sets the angle in radians of the ending point of the segment.
+     * @param {object} [angleStart = 0] The angle in radians
+     */
 
-        if(n < 0 || n > 1) {
-            console.error('n must be a number in the range [0, 1]');
-            return null;
-        }
+    setAngleStart(angleStart = 0) {
 
-        if(this.reverse) n = (1 - n);
-
-        const arcAngle = n * (this.angleEnd - this.angleStart);
-        const theta = this.angleOffset + this.angleStart + arcAngle;
-
-        // these coordinates could be outside of the unit circle 
-        const x = this.scale.x * (this.cx + this.translation.x + this.r * Math.cos(theta));
-        const y = this.scale.y * (this.cy + this.translation.y + this.r * Math.sin(theta));
-
-        const sin = Math.sin(this.rotation);
-        const cos = Math.cos(this.rotation);
-
-        // rotation is along the surface's center point
-        const xRot = (x - this.surface.cx) * cos - (y - this.surface.cy) * sin + this.surface.cx;
-        const yRot = (x - this.surface.cx) * sin + (y - this.surface.cy) * cos + this.surface.cy;
-
-        // clamp methodology depends on the surface type
-        if(this.surface.type === 'unitSquare') {
-
-            const clamped = (xRot < 0 || xRot > 1 || yRot < 0 || yRot > 1);
-            const xClamp = Math.min(1, Math.max(0, xRot));
-            const yClamp = Math.min(1, Math.max(0, yRot));
-
-            return {
-                x: xClamp,
-                y: yClamp,
-                clamped
-            };
-
-        } else if(this.surface.type === 'unitCircle') {
-
-            // convert to polar in order to clamp the radius
-            const polarCoords = cartToPolar(xRot, yRot);
-            const clamped = polarCoords.r > 1 || polarCoords.r < -1;
-            const cartCoordsClamped = polarToCart(Math.max(-1, Math.min(1, polarCoords.r)), polarCoords.theta);
-
-            return {
-                x: cartCoordsClamped.x,
-                y: cartCoordsClamped.y,
-                clamped
-            };
-
-        }
+        this.angleStart = angleStart;
 
     }
 
-    setRadius(value) {
-        this.r = value;
+    /**
+     * Sets the angle in radians of the starting point of the segment.
+     * @param {object} [angleEnd = 0] The angle in radians
+     */
+
+    setAngleEnd(angleEnd = 0) {
+
+        this.angleEnd = angleEnd;
+
     }
 
-    setAngleStart(value) {
-        this.angleStart = value;
-    }
+    /**
+     * Sets the degrees in radians by which the angleStart and angleEnd are offset
+     * @param {object} [angleOffset = 0] The degrees in radians
+     */
 
-    setAngleEnd(value) {
-        this.angleEnd = value;
-    }
+    setAngleOffset(angleOffset = 0) {
 
-    setAngleOffset(value) {
-        this.angleOffset = value;
+        this.angleOffset = angleOffset;
+
     }
 
 }

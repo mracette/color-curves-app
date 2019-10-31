@@ -1,63 +1,127 @@
+
+import UnitSquare from '../js/surfaces/UnitSquare';
+import UnitCircle from '../js/surfaces/UnitCircle';
+import { cartToPolar, polarToCart } from '../utils/math';
+
 /**
- * Class representing a relationship between inputs and outputs and a set of 
- * transformations. Not to be invoked directly
+ * Represents a relationship between a 1-dimensional input bounded by [0, 1] and a 2-dimensional
+ * output bounded by the perimeter of the surface on which the curve lies.
+ * 
+ * The surface must be either a unit circle (to represent the Hue-Saturation space) or a 
+ * unit square (to represent the lightness space).
+ * 
+ * Curves are not instantiated directly.
  */
-export default class Relation {
+export default class Curve {
 
-    constructor(surface) {
+    /**
+     * Creates a new Curve.
+     * @param {object} [options] Optional properties of the curve
+     * @param {object} [options.overflow] Defines how to adjust output that extends past the surface perimeter
+     * @param {boolean} [options.reverse] Whether to reverse the direction of the curve
+     * @param {number} [options.rotation] Z-axis rotation of the curve in radians
+     * @param {object} [options.scale] 2-dimensional scale of the curve
+     * @param {number} [options.scale.x] Translation along the local X axis
+     * @param {number} [options.scale.y] Translation along the local Y axis
+     * @param {string} [options.surface] The surface on which to draw the curve
+     * @param {object} [options.translation] 2-dimensional translation of the curve
+     * @param {number} [options.translation.x] Translation along the local X axis
+     * @param {number} [options.translation.y] Translation along the local Y axis
+     */
+    constructor(options) {
 
-        this.surface = surface;
-        this.reverse = false;
-        this.rotation = 0;
-        this.translation = {x: 0, y: 0};
-        this.scale = {x: 1, y: 1};
-        this.minValue = 0;
-        this.maxValue = 1;
-        this.overflow = 'clamp';
-        this.clampStart = 0;
-        this.clampEnd = 1;
+        const {
+            overflow,
+            reverse,
+            rotation,
+            scale,
+            surface,
+            translation
+        } = options;
+
+        this.isCurve = true;
+        this.scale = {};
+        this.translation = {};
+        this._fn = (n) => n;
+
+        this.setOverflow(overflow);
+        this.setReverse(reverse);
+        this.setRotation(rotation);
+        this.setScale(scale);
+        this.setSurface(surface);
+        this.setTranslation(translation);
 
     }
 
-    setClampBounds(resolution) {
+    /**
+     * Set the curve's surface.
+     * @param {object|string} surface The surface on which to draw the curve
+     */
+    setSurface(surface = 'unitSquare') {
 
-        const res = typeof resolution === 'number' ? resolution : 128;
+        if(surface === 'unitSquare') {
+
+            this.surface = new UnitSquare();
+
+        } else if(surface === 'unitCircle') {
+
+            this.surface = new UnitCircle();
+
+        } else {
+
+            console.warn(
+                "Invalid surface type. Options are 'unitCircle' (for H/S components) or 'unitSquare' (for L component). ",
+                "Using unitSquare instead."
+            );
+
+            surface = new UnitSquare();
+
+        }
+
+    }
+
+    /**
+     * Samples the curve and sets clampStart and clampEnd to the input values where the curve intersects the perimeter. If the 
+     * outputs at 0 or 1 are inside of the surface then the clampStart and clampEnd are set to 0 and 1, respectively.
+     * @param {number} [resolution = 128] Number of samples used to determine the clamp bounds
+     */
+    setClampBounds(resolution = 128) {
 
         let prevCoords;
         let clampStart = null;
         let clampEnd = null;
         let i = 0;
 
-        while(i <= res && (clampStart === null || clampEnd === null)) {
+        while(i <= resolution && (clampStart === null || clampEnd === null)) {
 
-            const coords = this.getCartesianCoordsAt(i / res);
+            const coords = this.getCurveCoordsAt(i / resolution);
 
             if(i === 0) {
 
                 // if the starting point is inside the surface, then the clamp start is the same as the start
-                if(!coords.clamped) clampStart = i / res;
+                if(!coords.clamped) clampStart = i / resolution;
 
             } else {
 
                 // set start clamp if the prev point is outside the surface, but the current point is inside
                 if(clampStart === null && prevCoords.clamped && !coords.clamped) {
-                    clampStart = i / res;
+                    clampStart = i / resolution;
                 }
 
                 // set end clamp if the prev point is inside the surface, but the current point is outside
                 if(clampEnd === null && !prevCoords.clamped && coords.clamped) {
-                    clampEnd = i / res;
+                    clampEnd = i / resolution;
                 }
 
             }
 
-            if(i === res && coords.clamped && clampStart === null && clampEnd === null) {
+            // if the entire curve is outside of the surface, set the clampEnd to 0
+            if(i === resolution && coords.clamped && clampStart === null && clampEnd === null) {
                 clampEnd = 0;
             }
 
             prevCoords = coords
             i++;
-
 
         }
 
@@ -66,80 +130,240 @@ export default class Relation {
 
     }
 
-    setOverflow(value) {
+    /**
+     * Sets the overflow behavior.
+     * @param {string} [overflow = 'clamp'] Method for adjusting output that extends past the surface perimeter
+     */
+    setOverflow(overflow = 'clamp') {
 
-        if(!(value === 'clamp' || value === 'project')) {
+        if(overflow === 'clamp' || overflow === 'project') {
 
-            console.warn("Overflow value must be either 'clamp' or 'project'");
-
+            this.overflow = overflow;
+            
         } else {
-
-            this.overflow = value;
+            
+            console.warn("Overflow value must be either 'clamp' or 'project'. Using clamp.");
+            this.overflow = 'clamp';
 
         }
 
     }
 
-    setReverse(bool) {
-        this.reverse = bool;
+    /**
+     * Sets the reverse flag.
+     * @param {boolean} [reverse = false] Whether to reverse the direction of the curve
+     */
+    setReverse(reverse = false) {
+
+        this.reverse = reverse;
+
     }
 
-    setminValue(n) {
-        this.minValue = Math.max(0, Math.min(this.maxValue, Math.min(1, n)));
+    /**
+     * Sets the rotation of the curve
+     * @param {boolean} [rotation = 0] Z-Axis rotation of the curve in radians
+     */
+    setRotation(rotation = 0) {
+
+        this.rotation = rotation;
+
     }
 
-    setmaxValue(n) {
-        this.maxValue = Math.max(0, Math.max(this.minValue, Math.min(1, n)));
-    }
-
-    setTranslateX(value) {
-        this.translation.x = value;
-    }
-
-    setTranslateY(value) {
-        this.translation.y = value;
-    }
-
-    setTranslation(translation) {
-        this.setTranslateX(translation.x);
-        this.setTranslateY(translation.y);
-    }
-
-    translateX(amount) {
-        this.translation.x += amount;
-    }
-
-    translateY(amount) {
-        this.translation.y += amount;
-    }
-
-    setScaleX(value) {
-        this.scale.x = value;
-    }
-
-    setScaleY(value) {
-        this.scale.y = value;
-    }
-
+    /**
+     * Sets the scale of the curve
+     * @param {object} [options.scale] 2-dimensional scale of the curve
+     * @param {number} [options.scale.x] Scale along the local X axis
+     * @param {number} [options.scale.y] Scale along the local Y axis
+     */
     setScale(scale) {
-        this.setScaleX(scale.x);
-        this.setScaleY(scale.y);
+
+        if(typeof scale === 'object' && typeof scale.x === 'number') {
+
+            this.setScaleX(scale.x);
+            
+        } else {
+
+            this.setScaleX();
+
+        }
+
+        if(typeof scale === 'object' && typeof scale.y !== 'number') {
+
+            this.setScaleY(scale.y);
+
+        } else {
+
+            this.setScaleY();
+
+        }
+
     }
 
-    scaleX(amount) {
-        this.scale.x += amount;
+    /**
+     * Sets the X scale of the curve
+     * @param {number} [x = 1] Scale along the local X axis
+     */
+    setScaleX(x = 1) {
+
+        this.scale.x = x;
+
     }
 
-    scaleY(amount) {
-        this.scale.y += amount;
+    /**
+     * Sets the Y scale of the curve
+     * @param {number} [y = 1] Scale along the local Y axis
+     */
+    setScaleY(y = 1) {
+
+        this.scale.y = y;
+
     }
 
-    setRotation(value) {
-        this.rotation = value;
+    /**
+     * Sets the translation of the curve
+     * @param {object} [options.translation] 2-dimensional translation of the curve
+     * @param {number} [options.translation.x] Translation along the local X axis
+     * @param {number} [options.translation.y] Translation along the local Y axis
+     */
+    setTranslation(translation) {
+
+        if(typeof translation === 'object' && typeof translation.x === 'number') {
+
+            this.setTranslateX(translation.x);
+            
+        } else {
+
+            this.setTranslateX();
+
+        }
+
+        if(typeof translation === 'object' && typeof translation.y !== 'number') {
+
+            this.setTranslateY(translation.y);
+
+        } else {
+
+            this.setTranslateY();
+
+        }
+
     }
 
-    rotate(amount) {
-        this.rotation += amount;
+    /**
+     * Sets the translation of the curve along the local X axis. The default values depends on the surface type.
+     * @param {number} [x] Translation along the local X axis
+     */
+    setTranslateX(x) {
+
+        if(typeof x === 'number') {
+
+            this.translation.x = x;
+
+        } else if(this.surface.type === 'unitSquare') {
+
+            this.translation.x = 0.5;
+
+        } else if (this.surface.type === 'unitCircle') {
+
+            this.translation.x = 0;
+            
+        }
+
+    }
+
+    /**
+     * Sets the translation of the curve along the local Y axis. The default values depends on the surface type.
+     * @param {number} [y] Translation along the local Y axis
+     */
+    setTranslateY(y) {
+
+        if(typeof y === 'number') {
+
+            this.translation.y = y;
+
+        } else if(this.surface.type === 'unitSquare') {
+
+            this.translation.y = 0.5;
+
+        } else if (this.surface.type === 'unitCircle') {
+
+            this.translation.y = 0;
+            
+        }
+
+    }
+
+    /**
+     * Returns the x and y coordinates associated with a number n in the range [0, 1].
+     * @param {object} n A number between 0 and 1 representing the proportion of the curve to traverse
+     * @returns {object.<string, number>} The x and y coordinates of the function at a point n
+     */
+    
+    getFnCoordsAt(n) {
+
+        return this._fn(n);
+
+    }
+
+
+    /**
+     * Applies transformation to the coordinates of the underlying function for the curve. Returns an object containing
+     * the new x and y coordinates and well as a 'clamped' flag that is true for coordinates outside of the surface perimeter.
+     * @param {object} n A number between 0 and 1 representing the proportion of the curve to traverse
+     * @returns {object.<string, number|boolean>} The x and y coordinates of the curve at a point n
+     */
+
+    getCurveCoordsAt(n) {
+
+        if(n < 0 || n > 1) {
+            console.error('n must be a number in the range [0, 1]');
+            return null;
+        }
+
+        // take mirror of n if reversed
+        if(this.reverse) n = (1 - n);
+
+        // get base coords from the curve
+        let {x, y} = this.getFnCoordsAt(n);
+
+        // translate each point according to the curve's overall translation
+        x += this.translation.x;
+        y += this.translation.y;
+
+        // apply rotation around the surface's center point
+        const sin = Math.sin(this.rotation);
+        const cos = Math.cos(this.rotation);
+        x = (x - this.surface.cx) * cos - (y - this.surface.cy) * sin + this.surface.cx;
+        y = (x - this.surface.cx) * sin + (y - this.surface.cy) * cos + this.surface.cy;
+
+        // clamp methodology depends on the surface type
+        if(this.surface.type === 'unitSquare') {
+
+            const clamped = (x < 0 || x > 1 || y < 0 || y > 1);
+            const xClamp = Math.min(1, Math.max(0, x));
+            const yClamp = Math.min(1, Math.max(0, x));
+
+            return {
+                x: xClamp,
+                y: yClamp,
+                clamped
+            };
+
+        } else if(this.surface.type === 'unitCircle') {
+
+            // convert to polar in order to clamp the radius
+            const polarCoords = cartToPolar(x, y);
+            const clamped = polarCoords.r > 1 || polarCoords.r < -1;
+            const cartCoordsClamped = polarToCart(Math.max(-1, Math.min(1, polarCoords.r)), polarCoords.theta);
+
+            return {
+                x: cartCoordsClamped.x,
+                y: cartCoordsClamped.y,
+                clamped
+            };
+
+        }
+
     }
 
 }

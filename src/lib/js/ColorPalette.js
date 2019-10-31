@@ -14,131 +14,59 @@ export default class ColorPalette {
 
     constructor(hsCurve, lCurve, palette) {
 
-        if(typeof hsCurve === 'string') {
+        this.setHsCurve(hsCurve);
+        this.setLCurve(lCurve);
 
-            this.setHsCurve(hsCurve);
+        this.paletteStart = 0;
+        this.paletteEnd = 1;
 
-            // where defaults for the curve exist, set them
-            this.hsCurve.setDefaultRotation && this.hsCurve.setDefaultRotation();
-            this.hsCurve.setDefaultTranslation && this.hsCurve.setDefaultTranslation();
-            this.hsCurve.setDefaultScale && this.hsCurve.setDefaultScale();
-            this.hsCurve.setDefaultRadius && this.hsCurve.setDefaultRadius();
-            this.hsCurve.setDefaultAngleStart && this.hsCurve.setDefaultAngleStart();
-            this.hsCurve.setDefaultAngleEnd && this.hsCurve.setDefaultAngleEnd();
-            this.hsCurve.setDefaultAngleOffset && this.hsCurve.setDefaultAngleOffset();
+    }
+
+    setHsCurve(hsCurve) {
+
+        if(hsCurve && hsCurve.isCurve) {
+
+            this.hsCurve = hsCurve;
 
         } else if(typeof hsCurve === 'object') {
 
-            this.setHsCurve(hsCurve.type);
+            this.hsCurve = this.initializeCurve(hsCurve.type, {...hsCurve});
 
-            // where params are specified, use them, but fall back to defaults (that exist)
-            hsCurve.variation && this.hsCurve.setVariation && this.hsCurve.setVariation(hsCurve.variation);
-            hsCurve.translation ? 
-                this.hsCurve.setTranslation(hsCurve.translation): 
-                this.hsCurve.setDefaultTranslation && this.hsCurve.setDefaultTranslation();
-            hsCurve.scale ? 
-                this.hsCurve.setScale(hsCurve.scale): 
-                this.hsCurve.setDefaultScale && this.hsCurve.setDefaultScale();
-            hsCurve.rotation ? 
-                this.hsCurve.setRotation(hsCurve.rotation):
-                this.hsCurve.setDefaultRotation && this.hsCurve.setDefaultRotation();
-            hsCurve.radius ? 
-                this.hsCurve.setRadius(hsCurve.radius):
-                this.hsCurve.setDefaultRadius && this.hsCurve.setDefaultRadius();
-            hsCurve.angleStart ? 
-                this.hsCurve.setAngleStart(hsCurve.angleStart): 
-                this.hsCurve.setDefaultAngleStart && this.hsCurve.setDefaultAngleStart();
-            hsCurve.angleEnd ? 
-                this.hsCurve.setAngleEnd(hsCurve.angleEnd): 
-                this.hsCurve.setDefaultAngleEnd && this.hsCurve.setDefaultAngleEnd();
-            hsCurve.angleOffset ? 
-                this.hsCurve.setAngleOffset(hsCurve.angleOffset): 
-                this.hsCurve.setDefaultAngleOffset && this.hsCurve.setDefaultAngleOffset();
-            hsCurve.overflow ? 
-                this.hsCurve.setOverflow(hsCurve.overflow): 
-                this.hsCurve.setOverflow('clamp');
-            hsCurve.overflow === 'clamp' && this.hsCurve.setClampBounds();
+        } else if(typeof hsCurve === 'string') {
+
+            this.hsCurve = this.initializeCurve(hsCurve);
 
         } else {
 
-            this.setHsCurve('exponential');
-            this.hsCurve.setDefaultRotation();
-            this.hsCurve.setDefaultTranslation();
-            this.hsCurve.setDefaultScale();
+            this.hsCurve = this.initializeCurve('exponential');
 
         }
 
-        if(typeof lCurve === 'string') {
+        this.hsCurve.overflow === 'clamp' && this.hsCurve.setClampBounds();
 
-            this.setLCurve(lCurve);
+    }
 
-            // where defaults for the curve exist, set them
-            this.lCurve.setDefaultRotation && this.lCurve.setDefaultRotation();
-            this.lCurve.setDefaultTranslation && this.lCurve.setDefaultTranslation();
-            this.lCurve.setDefaultScale && this.lCurve.setDefaultScale();
-            this.lCurve.setDefaultRadius && this.lCurve.setDefaultRadius();
-            this.lCurve.setDefaultAngleStart && this.lCurve.setDefaultAngleStart();
-            this.lCurve.setDefaultAngleEnd && this.lCurve.setDefaultAngleEnd();
-            this.lCurve.setDefaultAngleOffset && this.lCurve.setDefaultAngleOffset();
+    setLCurve(lCurve) {
+
+        if(lCurve && lCurve.isCurve) {
+
+            this.lCurve = lCurve;
 
         } else if(typeof lCurve === 'object') {
 
-            this.setLCurve(lCurve.type);
+            this.lCurve = this.initializeCurve(lCurve.type, {...lCurve});
 
-            // where params are specified, use them, but fall back to defaults (that exist)
-            lCurve.variation && this.lCurve.setVariation && this.lCurve.setVariation(lCurve.variation);
-            lCurve.translation ? 
-                this.lCurve.setTranslation(lCurve.translation): 
-                this.lCurve.setDefaultTranslation && this.lCurve.setDefaultTranslation();
-            lCurve.scale ? 
-                this.lCurve.setScale(lCurve.scale): 
-                this.lCurve.setDefaultScale && this.lCurve.setDefaultScale();
-            lCurve.rotation ? 
-                this.lCurve.setRotation(lCurve.rotation):
-                this.lCurve.setDefaultRotation && this.lCurve.setDefaultRotation();
-            lCurve.radius ? 
-                this.lCurve.setRadius(lCurve.radius):
-                this.lCurve.setDefaultRadius && this.lCurve.setDefaultRadius();
-            lCurve.angleStart ? 
-                this.lCurve.setAngleStart(lCurve.angleStart): 
-                this.lCurve.setDefaultAngleStart && this.lCurve.setDefaultAngleStart();
-            lCurve.angleEnd ? 
-                this.lCurve.setAngleEnd(lCurve.angleEnd): 
-                this.lCurve.setDefaultAngleEnd && this.lCurve.setDefaultAngleEnd();
-            lCurve.angleOffset ? 
-                this.lCurve.setAngleOffset(lCurve.angleOffset): 
-                this.lCurve.setDefaultAngleOffset && this.lCurve.setDefaultAngleOffset();
-            lCurve.overflow ? 
-                this.lCurve.setOverflow(lCurve.overflow): 
-                this.lCurve.setOverflow('clamp');
-            lCurve.overflow === 'clamp' && this.lCurve.setClampBounds();
+        } else if(typeof lCurve === 'string') {
 
+            this.lCurve = this.initializeCurve(lCurve);
 
         } else {
 
-            this.setLCurve('linear');
-            this.lCurve.setDefaultRotation();
-            this.lCurve.setDefaultTranslation();
-            this.lCurve.setDefaultScale();
+            this.lCurve = this.initializeCurve('exponential');
 
         }
 
-        if(typeof palette === 'object') {
-
-            palette.paletteStart ? 
-                this.paletteStart = palette.paletteStart :
-                this.paletteStart = 0;
-
-            palette.paletteEnd ? 
-                this.paletteEnd = palette.paletteEnd : 
-                this.paletteEnd = 1;
-
-        } else {
-
-            this.paletteStart = 0;
-            this.paletteEnd = 1;
-
-        }
+        this.lCurve.overflow === 'clamp' && this.lCurve.setClampBounds();
 
     }
 
@@ -220,128 +148,19 @@ export default class ColorPalette {
 
     }
 
-/*     runAnalysis(resolution) {
-
-        const res = resolution || 128;
-
-
-        let hsCount = 0, lCount = 0;
-        let hTotal = 0, sTotal = 0, lTotal = 0;
-        let hVarTotal = 0, sVarTotal = 0, lVarTotal = 0;
-        let hPrev, sPrev, lPrev;
-
-
-        let hsClampedPrev = null;
-        let lClampedPrev = null;
-        let hsClampStart = null;
-        let hsClampEnd = null;
-        let lClampStart = null;
-        let lClampEnd = null;
-
-        const range = this.drawEnd - this.drawStart;
-        const start = this.drawStart;
-
-        for(let i = 0; i <= res; i++) {
-
-            const n = start + range * i / res;
-
-
-            // get hs and l curve values
-            const hsCartCoords = this.hsCurve.getCartesianCoordsAt(n);
-            const hsPolarCoords = cartToPolar(hsCartCoords.x, hsCartCoords.y);
-            const lCartCoords = this.lCurve.getCartesianCoordsAt(n);
-
-            const hueDeg = radToDeg(hsPolarCoords.theta);
-            const huePos = hueDeg < 0 ? 360 + hueDeg % 360 : hueDeg % 360;
-            const hue = huePos;
-            hTotal += hue;
-            if(i !== 0) hVarTotal += Math.abs(hPrev - hue);
-
-            const sat = Math.max(0, Math.min(1, hsPolarCoords.r));
-            sTotal += sat;
-            if(i !== 0) sVarTotal += Math.abs(sPrev - sat);
-
-            const lightness = Math.max(0, Math.min(1, lCartCoords.y));
-            lTotal += lightness;
-            if(i !== 0) lVarTotal += Math.abs(lPrev - lightness);
-
-
-            if(i === 0) {
-
-                // if the starting point is inside the surface, then the clamp start is the same as the start
-                if(!hsCartCoords.clamped) hsClampStart = n;
-                if(!lCartCoords.clamped) lClampStart = n;
-
-            } else {
-
-                // set start clamp if the prev point is outside the surface, but the current point is inside
-
-                if(hsClampStart === null && hsClampedPrev && !hsCartCoords.clamped) {
-                    hsClampStart = n;
-                }
-
-                if(lClampStart === null && lClampedPrev && !lCartCoords.clamped) {
-                    lClampStart = n;
-                }
-
-                // set end clamp if the prev point is inside the surface, but the current point is outside
-
-                if(hsClampEnd === null && !hsClampedPrev && hsCartCoords.clamped) {
-                    hsClampEnd = n;
-                }
-
-                if(lClampEnd === null && !lClampedPrev && lCartCoords.clamped) {
-                    lClampEnd = n;
-                }
-
-            }
-
-            // only increment if the curve isn't clamped based on its position and settings
-
-            if(this.hsCurve.overflow === 'project' ||
-                (this.hsCurve.overflow === 'clamp' && !hsCartCoords.clamped)
-            ) {
-                hsCount++;
-            }
-
-            if(this.lCurve.overflow === 'project' ||
-            (this.lCurve.overflow === 'clamp' && !hsCartCoords.clamped)
-            ) {
-                lCount++;
-            }
-
-            hPrev = hue;
-            sPrev = sat;
-            lPrev = lightness;
-
-            hsClampedPrev = hsCartCoords.clamped;
-            lClampedPrev = lCartCoords.clamped;
-
-        }
-
-        return {
-            hAvg: hTotal / hsCount,
-            sAvg: sTotal / hsCount,
-            lAvg: lTotal / lCount,
-            hVar: hVarTotal / hsCount,
-            sVar: sVarTotal / hsCount,
-            lVar: lVarTotal / lCount,
-            hsClampStart,
-            hsClampEnd,
-            lClampStart,
-            lClampEnd
-        };
-
-    } */
-
     setPaletteStart(start) {
 
         if(start > this.paletteEnd) {
+
             console.warn('Palette start cannot be greater than palette end.');
             console.log('Setting palette start to palette end.')
+
             this.paletteStart = this.paletteEnd;
+
         } else {
+
             this.paletteStart = start;
+
         }
 
     }
@@ -349,11 +168,16 @@ export default class ColorPalette {
     setPaletteEnd(end) {
 
         if(end < this.paletteStart) {
+
             console.warn('Palette end cannot be less than than palette start.');
             console.log('Setting palette end to palette start.');
+
             this.paletteEnd = this.paletteStart;
+
         } else {
+
             this.paletteEnd = end;
+
         }
 
     }
@@ -399,16 +223,6 @@ export default class ColorPalette {
 
     }
 
-    setHsCurve(curveType, params) {
-        this.hsCurve = this.initializeCurve(curveType, 'unitCircle', params);
-        this.hsCurveType = curveType;
-    }
-
-    setLCurve(curveType, params) {
-        this.lCurve = this.initializeCurve(curveType, 'unitSquare', params);
-        this.lCurveType = curveType;
-    }
-
     getHsCurveCategory() {
         return this.hsCurve.curveCategory;
     }
@@ -425,29 +239,21 @@ export default class ColorPalette {
         return this.lCurveType;
     }
 
-    initializeCurve(curveType, surface) {
+    initializeCurve(curveType, options) {
 
         switch(curveType) {
 
-            case 'arc': 
-                return new Arc(surface);
-            case 'linear': 
-                return new Linear(surface);
-            case 'polynomial': 
-                return new Polynomial(surface);
-            case 'sinusoidal':
-                return new Sinusoidal(surface);
-            case 'exponential':
-                return new Exponential(surface);
-            case 'elastic':
-                return new Elastic(surface);
-            case 'back':
-                return new Back(surface);
-            case 'bounce':
-                return new Bounce(surface);
+            case 'arc': return new Arc({...options});
+            case 'linear': return new Linear({...options});
+            case 'polynomial': return new Polynomial({...options});
+            case 'sinusoidal': return new Sinusoidal({...options});
+            case 'exponential': return new Exponential({...options});
+            case 'elastic': return new Elastic({...options});
+            case 'back': return new Back({...options});
+            case 'bounce': return new Bounce({...options});
             default: 
-                console.warn('Specified curve type is not supported. Using default instead.');
-                return new Linear(surface);
+                console.warn('Specified curve type is not supported. Using default (linear) instead.');
+                return new Linear({...options});
 
         }
 
@@ -472,14 +278,16 @@ export default class ColorPalette {
             this.paletteEnd;
 
         // get hue and saturation values from the hsCurve
-        const hsCartCoords = this.hsCurve.getCartesianCoordsAt(hsStart + n * (hsEnd - hsStart));
+        const hsCartCoords = this.hsCurve.getCurveCoordsAt(hsStart + n * (hsEnd - hsStart));
         const hsPolarCoords = cartToPolar(hsCartCoords.x, hsCartCoords.y);
         const hue = radToDeg(hsPolarCoords.theta) % 360;
         const sat = Math.max(0, Math.min(1, hsPolarCoords.r));
 
         // get lightness values from the lightCurve
-        const lCartCoords = this.lCurve.getCartesianCoordsAt(lStart + n * (lEnd - lStart));
+        const lCartCoords = this.lCurve.getCurveCoordsAt(lStart + n * (lEnd - lStart));
         const lightness = Math.max(0, Math.min(1, lCartCoords.y));
+
+        console.log(this, lCartCoords, hsCartCoords);
 
         return {
             h: hue,

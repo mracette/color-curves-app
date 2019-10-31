@@ -1,65 +1,52 @@
 import Function from './Function';
-import UnitCircle from '../surfaces/UnitCircle';
-import UnitSquare from '../surfaces/UnitSquare';
 import * as d3 from 'd3-ease';
 
 /**
- * Creates an sinusoidal curve.
- * @param {Object|string} [surface = 'unitSquare'] The surface on which to draw the curve
+ * Creates an ease "sinusoidal" curve.
+ * @param {object} [options] Optional properties of the function
+ * @param {string} [options.variation] The contour of the function (see https://easings.net)
  */
+
 export default class Sinusoidal extends Function {
 
-    constructor(surface, params) {
+    constructor(options) {
 
-        // initialize a new surface class if an instance isn't passed in
-        if(surface.type === undefined) {
-            if(surface === 'unitSquare') {
-                surface = new UnitSquare();
-            } else if(surface === 'unitCircle') {
-                surface = new UnitCircle();
-            } else {
-                console.warn(
-                    "Invalid surface type. Options are 'unitCircle' (for H/S components) or 'unitSquare' (for L component). ",
-                    "Using unitSquare instead."
-                );
-                surface = new UnitSquare();
-            }
-        }
+        const {
+            variation
+        } = options;
+        
+        super({...options});
 
-        // initialize parent class with default function
-        super(surface, d3.easeSinIn);
+        this.type = 'sinusoidal';
+        this._fn = null;
 
-        // override function if a variation is specified
-        if(params && params.variation) {
-            this.setVariation(params.variation);
-        } else {
-            this.variation = 'in';
-        }
-
-        // set initial tranformations according to the surface type
-        this.setDefaultRotation();
-        this.setDefaultTranslation();
-        this.setDefaultScale();
+        this.setVariation(variation);
+        this.setFunction();
 
     }
 
-    setVariation(variation) {
+    setVariation(variation = 'in') {
 
         if(variation === 'in' || variation === 'out' || variation === 'in-out'){
 
-            switch(variation) {
-                case 'in': this.setFn(d3.easeSinIn); break;
-                case 'out': this.setFn(d3.easeSinOut); break;
-                case 'in-out': this.setFn(d3.easeSinInOut); break;
-                default: break;
-            }
-    
             this.variation = variation;
+            this.setFunction();
 
         } else {
 
             console.warn("variation must be 'in', 'out', or 'in-out'");
 
+        }
+
+    }
+
+    setFunction() {
+
+        switch(this.variation) {
+            case 'in': this._fn = (d3.easeSinIn); break;
+            case 'out': this._fn = (d3.easeSinOut); break;
+            case 'in-out': this._fn = (d3.easeSinInOut); break;
+            default: break;
         }
 
     }

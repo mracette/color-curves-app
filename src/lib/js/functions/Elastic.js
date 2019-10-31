@@ -1,74 +1,70 @@
 import Function from './Function';
-import UnitCircle from '../surfaces/UnitCircle';
-import UnitSquare from '../surfaces/UnitSquare';
 import * as d3 from 'd3-ease';
 
 /**
- * Creates an elastic curve.
- * @param {Object|string} [surface = 'unitSquare'] The surface on which to draw the curve
+ * Creates an ease "elastic" curve.
+ * @param {object} [options] Optional properties of the function
+ * @param {string} [options.amplitude] The amplitude of the function
+ * @param {number} [options.period] The period of the function
  */
+
 export default class Elastic extends Function {
 
-    constructor(surface, params) {
+    constructor(options) {
 
-        // initialize a new surface class if an instance isn't passed in
-        if(surface.type === undefined) {
-            if(surface === 'unitSquare') {
-                surface = new UnitSquare();
-            } else if(surface === 'unitCircle') {
-                surface = new UnitCircle();
-            } else {
-                console.warn(
-                    "Invalid surface type. Options are 'unitCircle' (for H/S components) or 'unitSquare' (for L component). ",
-                    "Using unitSquare instead."
-                );
-                surface = new UnitSquare();
-            }
-        }
+        const {
+            variation,
+            amplitude,
+            period
+        } = options;
+        
+        super({...options});
 
-        // initialize parent class with default function
-        super(surface, d3.easeElasticIn);
+        this.type = 'elastic';
+        this._fn = null;
 
-        // additional parameters for this curve
-        this.setDefaultAmplitude();
-        this.setDefaultPeriod();
+        this.setAmplitude(amplitude);
+        this.setPeriod(period);
+        this.setVariation(variation);
+        this.setFunction();
 
-        // override function if a variation is specified
-        if(params && params.variation) {
-            this.setVariation(params.variation);
+    }
+
+    setAmplitude(a = 1) {
+
+        if(a > 1) {
+
+            this.amplitude = a;
+            this.setFunction();
+
         } else {
-            this.variation = 'in';
+
+            console.error('Amplitude must be a number greater than 1');
+
         }
 
-        // set initial tranformations according to the surface type
-        this.setDefaultRotation();
-        this.setDefaultTranslation();
-        this.setDefaultScale();
-
     }
 
-    setDefaultAmplitude() {
-        this.amplitude = 1;
-        this.setVariation(this.variation);
+    setPeriod(p = 0.3) {
+
+        if(p > 0) {
+
+            this.period = p;
+            this.setFunction();
+            
+        } else {
+
+            console.error('Period must be a number greater than 0.');
+
+        }
     }
 
-    setDefaultPeriod() {
-        this.period = 0.3;
-        this.setVariation(this.variation);
-    }
-
-    setVariation(variation) {
+    setVariation(variation = 'in') {
 
         if(variation === 'in' || variation === 'out' || variation === 'in-out'){
 
-            switch(variation) {
-                case 'in': this.setFn(d3.easeElasticIn.amplitude(this.amplitude).period(this.period)); break;
-                case 'out': this.setFn(d3.easeElasticOut.amplitude(this.amplitude).period(this.period)); break;
-                case 'in-out': this.setFn(d3.easeElasticInOut.amplitude(this.amplitude).period(this.period)); break;
-                default: break;
-            }
-    
             this.variation = variation;
+            this.setFunction();
 
         } else {
 
@@ -78,22 +74,15 @@ export default class Elastic extends Function {
 
     }
 
-    setAmplitude(a) {
-        if(typeof a === 'number' && a > 1) {
-            this.amplitude = a;
-            this.setVariation(this.variation);
-        } else {
-            console.warn('amplitude must be a number greater than 1');
-        }
-    }
+    setFunction() {
 
-    setPeriod(p) {
-        if(typeof p === 'number' && p > 0) {
-            this.period = p;
-            this.setVariation(this.variation);
-        } else {
-            console.warn('period must be a number greater than 0');
+        switch(this.variation) {
+            case 'in': this.setFn(d3.easeElasticIn.amplitude(this.amplitude).period(this.period)); break;
+            case 'out': this.setFn(d3.easeElasticOut.amplitude(this.amplitude).period(this.period)); break;
+            case 'in-out': this.setFn(d3.easeElasticInOut.amplitude(this.amplitude).period(this.period)); break;
+            default: break;
         }
+        
     }
 
 }

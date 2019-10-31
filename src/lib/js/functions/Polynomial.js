@@ -1,64 +1,54 @@
 import Function from './Function';
-import UnitCircle from '../surfaces/UnitCircle';
-import UnitSquare from '../surfaces/UnitSquare';
 import * as d3 from 'd3-ease';
 
 /**
- * Creates a polynomial curve.
- * @param {Object|string} [surface = 'unitSquare'] The surface on which to draw the curve
+ * Creates an ease "elastic" curve.
+ * @param {object} [options] Optional properties of the function
+ * @param {string} [options.exponent] The exponent of the function
  */
+
 export default class Polynomial extends Function {
 
-    constructor(surface, params) {
+    constructor(options) {
 
-        // initialize a new surface class if an instance isn't passed in
-        if(surface.type === undefined) {
-            if(surface === 'unitSquare') {
-                surface = new UnitSquare();
-            } else if(surface === 'unitCircle') {
-                surface = new UnitCircle();
-            } else {
-                console.warn(
-                    "Invalid surface type. Options are 'unitCircle' (for H/S components) or 'unitSquare' (for L component). ",
-                    "Using unitSquare instead."
-                );
-                surface = new UnitSquare();
-            }
-        }
+        const {
+            variation,
+            exponent
+        } = options;
+        
+        super({...options});
 
-        // initialize parent class with default function
-        super(surface, d3.easePolyIn);
+        this.type = 'polynomial';
+        this._fn = null;
 
-        // additional parameters for this curve
-        this.setDefaultExponent();
 
-        // override function if a variation is specified
-        if(params && params.variation) {
-            this.setVariation(params.variation);
-        } else {
-            this.variation = 'in';
-        }
-
-        // set initial tranformations according to the surface type
-        this.setDefaultRotation();
-        this.setDefaultTranslation();
-        this.setDefaultScale();
-
+        this.setExponent(exponent);
+        this.setVariation(variation);
+        this.setFunction();
 
     }
 
-    setVariation(variation) {
+    setExponent(e = 3) {
+
+        if(e > 0) {
+
+            this.exponent = e;
+            this.setFunction();
+
+        } else {
+
+            console.error('Exponent must be a number greater than 0');
+
+        }
+
+    }
+
+    setVariation(variation = 'in') {
 
         if(variation === 'in' || variation === 'out' || variation === 'in-out'){
 
-            switch(variation) {
-                case 'in': this.setFn(d3.easePolyIn.exponent(this.exponent)); break;
-                case 'out': this.setFn(d3.easePolyOut.exponent(this.exponent)); break;
-                case 'in-out': this.setFn(d3.easePolyInOut.exponent(this.exponent)); break;
-                default: break;
-            }
-    
             this.variation = variation;
+            this.setFunction();
 
         } else {
 
@@ -68,18 +58,15 @@ export default class Polynomial extends Function {
 
     }
 
-    setDefaultExponent() {
-        this.exponent = 3;
-        this.setVariation(this.variation);
-    }
+    setFunction() {
 
-    setExponent(e) {
-        if(typeof e === 'number' && e > 0) {
-            this.exponent = e;
-            this.setVariation(this.variation);
-        } else {
-            console.warn('exponent must be a number greater than 0');
+        switch(this.variation) {
+            case 'in': this._fn = (d3.easePolyIn.exponent(this.exponent)); break;
+            case 'out': this._fn = (d3.easePolyOut.exponent(this.exponent)); break;
+            case 'in-out': this._fn = (d3.easePolyInOut.exponent(this.exponent)); break;
+            default: break;
         }
+        
     }
 
 }
