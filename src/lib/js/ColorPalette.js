@@ -12,13 +12,18 @@ import { hslToRgb, rgbToHex, printRgb, printHsl } from '../utils/color';
 
 export default class ColorPalette {
 
-    constructor(hsCurve, lCurve, palette) {
+    constructor(hsCurve, lCurve, palette = {}) {
 
         this.setHsCurve(hsCurve);
         this.setLCurve(lCurve);
 
-        this.paletteStart = 0;
-        this.paletteEnd = 1;
+        const {
+            start,
+            end
+        } = palette;
+
+        this.setPaletteStart(start);
+        this.setPaletteEnd(end);
 
     }
 
@@ -42,8 +47,6 @@ export default class ColorPalette {
 
         }
 
-        this.hsCurve.overflow === 'clamp' && this.hsCurve.setClampBounds();
-
     }
 
     setLCurve(lCurve) {
@@ -66,8 +69,6 @@ export default class ColorPalette {
 
         }
 
-        this.lCurve.overflow === 'clamp' && this.lCurve.setClampBounds();
-
     }
 
     exportPaletteParams(precision) {
@@ -81,22 +82,22 @@ export default class ColorPalette {
             hsParams += `type: "${this.hsCurveType}", `;
 
             // some curves have variation
-            if(this.getHsCurveCategory() === 'function' && this.hsCurveType !== 'linear') {
+            if(this.hsCurve.category === 'function' && this.hsCurveType !== 'linear') {
                 hsParams += `variation: "${this.hsCurve.variation}", `;
             }
 
             // polynomial curves have exponent
-            if(this.getHsCurveType() === 'polynomial') {
+            if(this.hsCurve.type === 'polynomial') {
                 hsParams += `exponent: "${this.hsCurve.exponent}`
             }
 
             // curves have exponent
-            if(this.getHsCurveType() === 'polynomial') {
+            if(this.hsCurve.type === 'polynomial') {
                 hsParams += `exponent: "${this.hsCurve.exponent}`
             }
 
             // arcs have angle parameters
-            if(this.getHsCurveType() === 'arc') {
+            if(this.hsCurve.type === 'arc') {
                 hsParams += `radius: ${this.hsCurve.r.toFixed(p)}, `;
                 hsParams += `angleStart: ${this.hsCurve.angleStart.toFixed(p)}, `;
                 hsParams += `angleEnd: ${this.hsCurve.angleEnd.toFixed(p)}, `;
@@ -115,15 +116,15 @@ export default class ColorPalette {
         let lParams = "{";
 
             // all curves have a type
-            lParams += `type: "${this.lCurveType}", `;
+            lParams += `type: "${this.lCurve.type}", `;
 
             // some curves have variation
-            if(this.getLCurveCategory() === 'function' && this.lCurveType !== 'linear') {
+            if(this.lCurve.category === 'function' && this.lCurve.type !== 'linear') {
                 lParams += `variation: "${this.lCurve.variation}", `;
             }
 
             // arcs have angle parameters and radius
-            if(this.getLCurveType() === 'arc') {
+            if(this.lCurve.type === 'arc') {
                 lParams += `radius: ${this.lCurve.r.toFixed(p)}, `;
                 lParams += `angleStart: ${this.lCurve.angleStart.toFixed(p)}, `;
                 lParams += `angleEnd: ${this.lCurve.angleEnd.toFixed(p)}, `;
@@ -150,10 +151,13 @@ export default class ColorPalette {
 
     setPaletteStart(start) {
 
-        if(start > this.paletteEnd) {
+        if(start === undefined) {
 
-            console.warn('Palette start cannot be greater than palette end.');
-            console.log('Setting palette start to palette end.')
+            this.paletteStart = 0;
+
+        } else if(start > this.paletteEnd) {
+
+            console.warn('Palette start cannot be greater than palette end. Setting palette start to palette end.');
 
             this.paletteStart = this.paletteEnd;
 
@@ -167,10 +171,13 @@ export default class ColorPalette {
 
     setPaletteEnd(end) {
 
-        if(end < this.paletteStart) {
+        if(end === undefined) {
 
-            console.warn('Palette end cannot be less than than palette start.');
-            console.log('Setting palette end to palette start.');
+            this.paletteEnd = 1;
+
+        } else if(end < this.paletteStart) {
+
+            console.warn('Palette end cannot be less than than palette start. Setting palette end to palette start.');
 
             this.paletteEnd = this.paletteStart;
 
@@ -183,6 +190,8 @@ export default class ColorPalette {
     }
 
     drawDiscretePalette(canvas, numStops) {
+
+        this.updateCurveClampBound();
 
         canvas.width = canvas.clientWidth * 4;
         canvas.height = canvas.clientHeight * 4;
@@ -203,6 +212,8 @@ export default class ColorPalette {
 
     drawContinuousPalette(canvas, resolution) {
 
+        this.updateCurveClampBound();
+
         const ctx = canvas.getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
         const stops = resolution || 32;
@@ -221,22 +232,6 @@ export default class ColorPalette {
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    }
-
-    getHsCurveCategory() {
-        return this.hsCurve.curveCategory;
-    }
-
-    getLCurveCategory() {
-        return this.lCurve.curveCategory;
-    }
-
-    getHsCurveType() {
-        return this.hsCurveType;
-    }
-
-    getLCurveType() {
-        return this.lCurveType;
     }
 
     initializeCurve(curveType, options) {
@@ -259,23 +254,24 @@ export default class ColorPalette {
 
     }
 
-    getCurveValues(n) {
+    updateCurveClampBound() {
 
-        let hsStart = this.hsCurve.overflow === 'clamp' ? 
-            Math.max(this.paletteStart, this.hsCurve.clampStart) :
-            this.paletteStart;
+        /* 
+        If overflow === 'clamp', the palette should only sample the first continuous segment of non-clamped values.
+        Update the clamp values here to ensure that they are adjusted to the curves current transformations.
+        */
 
-        let hsEnd = this.hsCurve.overflow === 'clamp' ? 
-            Math.min(this.paletteEnd, this.hsCurve.clampEnd) :
-            this.paletteEnd;
+        this.hsCurve.overflow === 'clamp' && this.hsCurve.setClampBounds();
+        this.lCurve.overflow === 'clamp' && this.lCurve.setClampBounds();
 
-        let lStart = this.lCurve.overflow === 'clamp' ? 
-            Math.max(this.paletteStart, this.lCurve.clampStart) :
-            this.paletteStart;
+    }
 
-        let lEnd = this.lCurve.overflow === 'clamp' ? 
-            Math.min(this.paletteEnd, this.lCurve.clampEnd) : 
-            this.paletteEnd;
+    getColorValues(n) {
+
+        const hsStart = this.hsCurve.overflow === 'clamp' ? Math.max(this.paletteStart, this.hsCurve.clampStart) : this.paletteStart;
+        const hsEnd = this.hsCurve.overflow === 'clamp' ? Math.min(this.paletteEnd, this.hsCurve.clampEnd) : this.paletteEnd;
+        const lStart = this.lCurve.overflow === 'clamp' ? Math.max(this.paletteStart, this.lCurve.clampStart) : this.paletteStart;
+        const lEnd = this.lCurve.overflow === 'clamp' ? Math.min(this.paletteEnd, this.lCurve.clampEnd) : this.paletteEnd;
 
         // get hue and saturation values from the hsCurve
         const hsCartCoords = this.hsCurve.getCurveCoordsAt(hsStart + n * (hsEnd - hsStart));
@@ -287,8 +283,6 @@ export default class ColorPalette {
         const lCartCoords = this.lCurve.getCurveCoordsAt(lStart + n * (lEnd - lStart));
         const lightness = Math.max(0, Math.min(1, lCartCoords.y));
 
-        console.log(this, lCartCoords, hsCartCoords);
-
         return {
             h: hue,
             s: sat,
@@ -299,14 +293,14 @@ export default class ColorPalette {
 
     hslValueAt(n) {
 
-        const {h, s, l} = this.getCurveValues(n);
+        const {h, s, l} = this.getColorValues(n);
         return printHsl(h, s, l);
 
     }
 
     rgbValueAt(n) {
 
-        const {h, s, l} = this.getCurveValues(n);
+        const {h, s, l} = this.getColorValues(n);
         const {r, g, b} = hslToRgb(h, s, l);
         return printRgb(r, g, b);
 
@@ -314,7 +308,7 @@ export default class ColorPalette {
 
     hexValueAt(n) {
 
-        const {h, s, l} = this.getCurveValues(n);
+        const {h, s, l} = this.getColorValues(n);
         const {r, g, b} = hslToRgb(h, s, l);
         return rgbToHex(r, g, b);
         

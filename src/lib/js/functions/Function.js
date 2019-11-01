@@ -8,6 +8,14 @@ export default class Function extends Curve {
 
         this.category = 'function';
 
+        this._fn = (n) => n;
+
+    }
+
+    setScaleY(y = 0.5) {
+
+        this.scale.y = y;
+
     }
 
     setTranslateX(translateX) {

@@ -21,7 +21,6 @@ export default class Exponential extends Function {
         this._fn = null;
 
         this.setVariation(variation);
-        this.setFunction();
 
     }
 
@@ -43,9 +42,9 @@ export default class Exponential extends Function {
     setFunction() {
 
         switch(this.variation) {
-            case 'in': this._fn = (d3.easeExpIn); break;
-            case 'out': this._fn = (d3.easeExpOut); break;
-            case 'in-out': this._fn = (d3.easeExpInOut); break;
+            case 'in': this._fn = (n) => ({x: n, y: d3.easeExpIn(n)}); break;
+            case 'out': this._fn = (n) => ({x: n, y: d3.easeExpOut(n)}); break;
+            case 'in-out': this._fn = (n) => ({x: n, y: d3.easeExpInOut(n)}); break;
             default: break;
         }
 

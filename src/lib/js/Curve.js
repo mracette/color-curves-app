@@ -42,7 +42,6 @@ export default class Curve {
         this.isCurve = true;
         this.scale = {};
         this.translation = {};
-        this._fn = (n) => n;
 
         this.setOverflow(overflow);
         this.setReverse(reverse);
@@ -301,6 +300,8 @@ export default class Curve {
     
     getFnCoordsAt(n) {
 
+        console.log(n, this._fn, this._fn(n));
+
         return this._fn(n);
 
     }
@@ -326,6 +327,8 @@ export default class Curve {
         // get base coords from the curve
         let {x, y} = this.getFnCoordsAt(n);
 
+        console.log(this, x, y);
+
         // translate each point according to the curve's overall translation
         x += this.translation.x;
         y += this.translation.y;
@@ -341,7 +344,7 @@ export default class Curve {
 
             const clamped = (x < 0 || x > 1 || y < 0 || y > 1);
             const xClamp = Math.min(1, Math.max(0, x));
-            const yClamp = Math.min(1, Math.max(0, x));
+            const yClamp = Math.min(1, Math.max(0, y));
 
             return {
                 x: xClamp,

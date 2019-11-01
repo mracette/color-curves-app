@@ -16,14 +16,14 @@ function Chart(props) {
         if(curve.overflow === 'clamp') {
 
             // use clamp start/end
-            s = curve.getCartesianCoordsAt(curve.clampStart);
-            e = curve.getCartesianCoordsAt(curve.clampEnd);
+            s = curve.getCurveCoordsAt(curve.clampStart);
+            e = curve.getCurveCoordsAt(curve.clampEnd);
 
         } else {
 
             // use 0 and 1
-            s = curve.getCartesianCoordsAt(0);
-            e = curve.getCartesianCoordsAt(1);
+            s = curve.getCurveCoordsAt(0);
+            e = curve.getCurveCoordsAt(1);
             
         }
 
@@ -252,7 +252,7 @@ function Chart(props) {
         
                     ctx.beginPath();
                     
-                    const coords = props.palette.hsCurve.getCartesianCoordsAt(start + (i / lineSegments) * (end - start));
+                    const coords = props.palette.hsCurve.getCurveCoordsAt(start + (i / lineSegments) * (end - start));
         
                     ctx.strokeStyle = 'black';
         
@@ -340,7 +340,7 @@ function Chart(props) {
         
                     ctx.beginPath();
         
-                    const coords = props.palette.lCurve.getCartesianCoordsAt(i / lineSegments);
+                    const coords = props.palette.lCurve.getCurveCoordsAt(i / lineSegments);
                 
                     ctx.strokeStyle = 'black';
 

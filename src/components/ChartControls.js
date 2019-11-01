@@ -17,17 +17,17 @@ function ChartControls(props) {
 
     const getCurveType = () => {
         if(props.chartType === 'polar') {
-            return props.palette.getHsCurveType();
+            return props.palette.hsCurve.type;
         } else {
-            return props.palette.getLCurveType();
+            return props.palette.lCurve.type;
         }
     }
 
     const getCurveCategory = () => {
         if(props.chartType === 'polar') {
-            return props.palette.getHsCurveCategory();
+            return props.palette.hsCurve.category;
         } else {
-            return props.palette.getLCurveCategory();
+            return props.palette.lCurve.category;
         }
     }
 
