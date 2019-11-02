@@ -18,10 +18,9 @@ export default class Sinusoidal extends Function {
         super({...options});
 
         this.type = 'sinusoidal';
-        this._fn = null;
+        this.fn = null;
 
         this.setVariation(variation);
-        this.setFunction();
 
     }
 
@@ -43,9 +42,9 @@ export default class Sinusoidal extends Function {
     setFunction() {
 
         switch(this.variation) {
-            case 'in': this._fn = (d3.easeSinIn); break;
-            case 'out': this._fn = (d3.easeSinOut); break;
-            case 'in-out': this._fn = (d3.easeSinInOut); break;
+            case 'in': this.fn = d3.easeSinIn; break;
+            case 'out': this.fn = d3.easeSinOut; break;
+            case 'in-out': this.fn = d3.easeSinInOut; break;
             default: break;
         }
 

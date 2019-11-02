@@ -18,10 +18,9 @@ export default class Bounce extends Function {
         super({...options});
 
         this.type = 'bounce';
-        this._fn = null;
+        this.fn = null;
 
         this.setVariation(variation);
-        this.setFunction();
 
     }
 
@@ -43,9 +42,9 @@ export default class Bounce extends Function {
     setFunction() {
 
         switch(this.variation) {
-            case 'in': this._fn = (d3.easeBounceIn); break;
-            case 'out': this._fn = (d3.easeBounceOut); break;
-            case 'in-out': this._fn = (d3.easeBounceInOut); break;
+            case 'in': this.fn = d3.easeBounceIn; break;
+            case 'out': this.fn = d3.easeBounceOut; break;
+            case 'in-out': this.fn = d3.easeBounceInOut; break;
             default: break;
         }
 

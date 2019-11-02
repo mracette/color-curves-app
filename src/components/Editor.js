@@ -11,8 +11,6 @@ import ColorPalette from '../lib/js/ColorPalette';
 
 function Editor() {
 
-  // the config defines all options for curve types and their corresponding
-  // display names and constructors
   const config = [
       {
         id: 'arc',
@@ -60,27 +58,44 @@ function Editor() {
   const [numStops, setNumStops] = useState(12);
   const [paletteRange, setPaletteRange] = useState([0,1]);
   const [showModal, setShowModal] = useState(false);
-  const [paletteParams, setPaletteParams] = useState(null);
 
-  const defaultPalette = new ColorPalette();
-  // console.log(defaultPalette);
-
-  defaultPalette.hsCurve.setClampBounds();
-  defaultPalette.lCurve.setClampBounds();
-
-  // initialize default color palette state
-  const [palette] = useState(defaultPalette);
+  // use default color palette and curve
+  const [palette] = useState(new ColorPalette());
+  const [hsCurve, setHsCurve] = useState(palette.hsCurve);
+  const [lCurve, setLCurve] = useState(palette.lCurve);
 
   // initialize refs
   const paletteCanvas = useRef(null);
   const paletteWrapper = useRef(null);
 
+  const updateCurveType = (curve, newType) => {
+
+    if(curve === 'hsCurve') {
+
+      palette.setHsCurve(newType);
+
+      setHsCurve(palette.hsCurve);
+
+    } else if(curve === 'lCurve') {
+
+      palette.setLCurve(newType);
+
+      setLCurve(palette.lCurve);
+
+    }
+
+  }
+
   const updatePalettes = () => {
 
     if(paletteType === 'continuous') {
+
       palette.drawContinuousPalette(paletteCanvas.current);
+
     } else if(paletteType === 'discrete') {
+      
       palette.drawDiscretePalette(paletteCanvas.current, numStops);
+
     }
 
   }
@@ -210,7 +225,6 @@ function Editor() {
 
           <button 
             onClick = {() => {
-              setPaletteParams(palette.exportPaletteParams());
               setShowModal(!showModal);
             }}
             type="button" 
@@ -235,17 +249,17 @@ function Editor() {
 
             <Chart 
               title = 'Hue + Saturation'
-              chartType = 'polar'
+              setCurve = { (type) => updateCurveType('hsCurve', type) }
+              curve = { palette.hsCurve }
               config = { config }
-              palette = { palette }
               updatePalettes = { updatePalettes }
             />
 
             <Chart 
               title = 'Lightness'
-              chartType = 'cartesian'
+              setCurve = { (type) => updateCurveType('lCurve', type) } 
+              curve = { palette.lCurve }
               config = { config }
-              palette = { palette }
               updatePalettes = { updatePalettes }
             />
             

@@ -20,11 +20,10 @@ export default class Back extends Function {
         super({...options});
 
         this.type = 'back';
-        this._fn = null;
+        this.fn = null;
 
         this.setOvershoot(overshoot);
         this.setVariation(variation);
-        this.setFunction();
 
     }
 
@@ -54,9 +53,9 @@ export default class Back extends Function {
     setFunction() {
 
         switch(this.variation) {
-            case 'in': this._fn = (d3.easeBackIn.overshoot(this.overshoot)); break;
-            case 'out': this._fn = (d3.easeBackOut.overshoot(this.overshoot)); break;
-            case 'in-out': this._fn = (d3.easeBackInOut.overshoot(this.overshoot)); break;
+            case 'in': this.fn = d3.easeBackIn.overshoot(this.overshoot); break;
+            case 'out': this.fn = d3.easeBackOut.overshoot(this.overshoot); break;
+            case 'in-out': this.fn = d3.easeBackInOut.overshoot(this.overshoot); break;
             default: break;
         }
 

@@ -30,7 +30,7 @@ export default class Arc extends Curve {
 
         this.type = 'arc';
         this.category = 'geometry';
-        this._fn = null;
+        this.fn = null;
 
         this.setRadius(radius);
         this.setAngleStart(angleStart);
@@ -39,12 +39,11 @@ export default class Arc extends Curve {
 
         this.setFunction();
 
-
     }
 
     setFunction() {
 
-        this._fn = (n) => {
+        this.fn = (n) => {
 
             const arcAngle = n * (this.angleEnd - this.angleStart);
             const theta = this.angleOffset + this.angleStart + arcAngle;
@@ -52,12 +51,11 @@ export default class Arc extends Curve {
             return {
                 x: this.radius * Math.cos(theta),
                 y: this.radius * Math.sin(theta)
-            }
+            };
 
         }
 
     }
-
 
     /**
      * Sets the radius of the arc. If no value is passed a default is set based on the surface type.

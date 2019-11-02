@@ -160,9 +160,9 @@ function Chart(props) {
     // expressed as a percentage of the chart size
     const chartPadding = .10;
 
-    switch(props.chartType) {
+    switch(props.curve.surface.type) {
 
-        case 'polar': {
+        case 'unitCircle': {
 
             // Normalize x such that: nx(0) = width / 2 && nx(1) = width && nx(-1) = 0
             nx = (x) => {
@@ -242,17 +242,17 @@ function Chart(props) {
         
                 let prevCoords;
 
-                const start = props.palette.hsCurve.overflow === 'clamp' ? 
-                    props.palette.hsCurve.clampStart : 0;
+                const start = props.curve.overflow === 'clamp' ? 
+                    props.curve.clampStart : 0;
 
-                const end = props.palette.hsCurve.overflow === 'clamp' ? 
-                    props.palette.hsCurve.clampEnd : 1
+                const end = props.curve.overflow === 'clamp' ? 
+                    props.curve.clampEnd : 1
         
                 for(let i = 0; i <= lineSegments; i++) {
         
                     ctx.beginPath();
                     
-                    const coords = props.palette.hsCurve.getCurveCoordsAt(start + (i / lineSegments) * (end - start));
+                    const coords = props.curve.getCurveCoordsAt(start + (i / lineSegments) * (end - start));
         
                     ctx.strokeStyle = 'black';
         
@@ -269,8 +269,8 @@ function Chart(props) {
         
                 }
 
-                drawEndPoints(props.palette.hsCurve, canvas);
-                drawOrientation(props.palette.hsCurve, canvas);
+                drawEndPoints(props.curve, canvas);
+                drawOrientation(props.curve, canvas);
 
                 // if curve is redrawn, also update the palettes
                 props.updatePalettes();
@@ -281,7 +281,7 @@ function Chart(props) {
 
         }
 
-        case 'cartesian': {
+        case 'unitSquare': {
 
             // Normalize x such that: nx(0) = 0 && nx(1) = width
             nx = (x) => {
@@ -340,11 +340,11 @@ function Chart(props) {
         
                     ctx.beginPath();
         
-                    const coords = props.palette.lCurve.getCurveCoordsAt(i / lineSegments);
+                    const coords = props.curve.getCurveCoordsAt(i / lineSegments);
                 
                     ctx.strokeStyle = 'black';
 
-                    if(props.palette.lCurve.overflow === 'project' || !coords.clamped) {
+                    if(props.curve.overflow === 'project' || !coords.clamped) {
         
                         if(i === 0) {
                             ctx.moveTo(nx(coords.x), ny(coords.y));
@@ -361,8 +361,8 @@ function Chart(props) {
         
                 }
         
-                drawEndPoints(props.palette.lCurve, canvas);
-                drawOrientation(props.palette.lCurve, canvas);
+                drawEndPoints(props.curve, canvas);
+                drawOrientation(props.curve, canvas);
 
                 // if curve is redrawn, also update the palettes
                 props.updatePalettes();
@@ -381,8 +381,7 @@ function Chart(props) {
 
     const updateCurve = () => { 
         if(
-            (props.chartType === 'polar' && props.palette.hsCurve) ||
-            (props.chartType === 'cartesian' && props.palette.lCurve)
+            props.curve
         ) {
             drawBlankChart();
             drawCurve();
@@ -410,7 +409,8 @@ function Chart(props) {
                 <ChartControls 
                     chartType = { props.chartType }
                     config = { props.config }
-                    palette = { props.palette }
+                    curve = { props.curve }
+                    setCurve = { props. ve }
                     updateCurve = { updateCurve }
                 />
         

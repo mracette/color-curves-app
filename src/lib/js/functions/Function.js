@@ -8,13 +8,47 @@ export default class Function extends Curve {
 
         this.category = 'function';
 
-        this._fn = (n) => n;
+        this.fn = (n) => n;
+
+        // override parents default settings
+        this.setTranslation();
+        this.setScale();
 
     }
 
-    setScaleY(y = 0.5) {
+    setScaleY(y) {
 
-        this.scale.y = y;
+        if(typeof y === 'number') {
+
+            this.scale.y = y;
+
+        } else if(this.surface.type === 'unitSquare') {
+
+            this.scale.y = 0.5;
+
+        } else if (this.surface.type === 'unitCircle') {
+
+            this.scale.y = Math.sin(Math.PI * (9/8)) * -2;
+
+        }
+
+    }
+
+    setScaleX(x) {
+
+        if(typeof x === 'number') {
+
+            this.scale.x = x;
+
+        } else if(this.surface.type === 'unitSquare') {
+
+            this.scale.x = 1;
+
+        } else if (this.surface.type === 'unitCircle') {
+
+            this.scale.x = Math.cos(Math.PI * (9/8)) * -2;
+
+        }
 
     }
 

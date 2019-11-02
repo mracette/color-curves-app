@@ -19,12 +19,11 @@ export default class Polynomial extends Function {
         super({...options});
 
         this.type = 'polynomial';
-        this._fn = null;
+        this.fn = null;
 
 
         this.setExponent(exponent);
         this.setVariation(variation);
-        this.setFunction();
 
     }
 
@@ -61,9 +60,9 @@ export default class Polynomial extends Function {
     setFunction() {
 
         switch(this.variation) {
-            case 'in': this._fn = (d3.easePolyIn.exponent(this.exponent)); break;
-            case 'out': this._fn = (d3.easePolyOut.exponent(this.exponent)); break;
-            case 'in-out': this._fn = (d3.easePolyInOut.exponent(this.exponent)); break;
+            case 'in': this.fn = d3.easePolyIn.exponent(this.exponent); break;
+            case 'out': this.fn = d3.easePolyOut.exponent(this.exponent); break;
+            case 'in-out': this.fn = d3.easePolyInOut.exponent(this.exponent); break;
             default: break;
         }
         

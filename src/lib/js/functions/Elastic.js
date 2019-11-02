@@ -21,12 +21,11 @@ export default class Elastic extends Function {
         super({...options});
 
         this.type = 'elastic';
-        this._fn = null;
+        this.fn = null;
 
         this.setAmplitude(amplitude);
         this.setPeriod(period);
         this.setVariation(variation);
-        this.setFunction();
 
     }
 
@@ -77,9 +76,9 @@ export default class Elastic extends Function {
     setFunction() {
 
         switch(this.variation) {
-            case 'in': this.setFn(d3.easeElasticIn.amplitude(this.amplitude).period(this.period)); break;
-            case 'out': this.setFn(d3.easeElasticOut.amplitude(this.amplitude).period(this.period)); break;
-            case 'in-out': this.setFn(d3.easeElasticInOut.amplitude(this.amplitude).period(this.period)); break;
+            case 'in': this.fn = d3.easeElasticIn.amplitude(this.amplitude).period(this.period); break;
+            case 'out': this.fn = d3.easeElasticOut.amplitude(this.amplitude).period(this.period); break;
+            case 'in-out': this.fn = d3.easeElasticInOut.amplitude(this.amplitude).period(this.period); break;
             default: break;
         }
         

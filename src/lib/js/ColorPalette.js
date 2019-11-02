@@ -10,9 +10,26 @@ import Bounce from '../js/functions/Bounce';
 import { cartToPolar, radToDeg } from '../utils/math';
 import { hslToRgb, rgbToHex, printRgb, printHsl } from '../utils/color';
 
+/**
+ * A continuous color palette created by overlaying curves onto surfaces in the HSL color space.
+ * 
+ * A ColorPalette has exactly two curves. The "hs" curve maps to hue and saturation values and lies in a unit circle
+ * in the HS space. The "l" curve maps it's y-coordinate to lightness, and lies in a unit square in the L space.
+ * 
+ */
+
 export default class ColorPalette {
 
-    constructor(hsCurve, lCurve, palette = {}) {
+    /**
+     * Creates a new Color Palette.
+     * @param {object|string} [hsCurve] The curve object or curve type of the "hs" curve
+     * @param {object|string} [lCurve] The curve object or curve type of the "l" curve
+     * @param {object} [options = {}] Optional properties of the color palette
+     * @param {number} [options.start] Starts the palette at a certain point along the curve
+     * @param {number} [options.end] Ends the palette at a certain point along the curve
+     */
+
+    constructor(hsCurve, lCurve, options = {}) {
 
         this.setHsCurve(hsCurve);
         this.setLCurve(lCurve);
@@ -20,30 +37,44 @@ export default class ColorPalette {
         const {
             start,
             end
-        } = palette;
+        } = options;
 
         this.setPaletteStart(start);
         this.setPaletteEnd(end);
 
     }
 
+    /**
+     * Sets the "hs" curve for this palette.
+     * @param {object|string} [hsCurve] An object or string describing the "hs" curve. See {@link Curve}
+     */
+
     setHsCurve(hsCurve) {
 
         if(hsCurve && hsCurve.isCurve) {
 
-            this.hsCurve = hsCurve;
+            if(hsCurve.surface.type === 'unitCircle') {
+
+                this.hsCurve = hsCurve;
+
+            } else {
+
+                console.error("Due to the nature of the HSL colorspace, the hsCurve is required to have a surface of type 'unitCircle'.")
+
+            }
+
 
         } else if(typeof hsCurve === 'object') {
 
-            this.hsCurve = this.initializeCurve(hsCurve.type, {...hsCurve});
+            this.hsCurve = this.initializeCurve(hsCurve.type, {surface: 'unitCircle', ...hsCurve});
 
         } else if(typeof hsCurve === 'string') {
 
-            this.hsCurve = this.initializeCurve(hsCurve);
+            this.hsCurve = this.initializeCurve(hsCurve, {surface: 'unitCircle'});
 
         } else {
 
-            this.hsCurve = this.initializeCurve('exponential');
+            this.hsCurve = this.initializeCurve('exponential', {surface: 'unitCircle'});
 
         }
 
@@ -57,15 +88,15 @@ export default class ColorPalette {
 
         } else if(typeof lCurve === 'object') {
 
-            this.lCurve = this.initializeCurve(lCurve.type, {...lCurve});
+            this.lCurve = this.initializeCurve(lCurve.type, {surface: 'unitSquare', ...lCurve});
 
         } else if(typeof lCurve === 'string') {
 
-            this.lCurve = this.initializeCurve(lCurve);
+            this.lCurve = this.initializeCurve(lCurve, {surface: 'unitSquare'});
 
         } else {
 
-            this.lCurve = this.initializeCurve('exponential');
+            this.lCurve = this.initializeCurve('linear', {surface: 'unitSquare'});
 
         }
 

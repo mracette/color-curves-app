@@ -40,6 +40,7 @@ export default class Curve {
         } = options;
 
         this.isCurve = true;
+        this.surface = {};
         this.scale = {};
         this.translation = {};
 
@@ -199,22 +200,38 @@ export default class Curve {
     }
 
     /**
-     * Sets the X scale of the curve
-     * @param {number} [x = 1] Scale along the local X axis
+     * Sets the X scale of the curve. Default depends on the surface type.
+     * @param {number} [x] Scale along the local X axis
      */
-    setScaleX(x = 1) {
+    setScaleX(x) {
 
-        this.scale.x = x;
+        if(typeof x === 'number') {
+
+            this.scale.x = x;
+
+        } else {
+
+            this.scale.x = 1;
+
+        }
 
     }
 
     /**
-     * Sets the Y scale of the curve
-     * @param {number} [y = 1] Scale along the local Y axis
+     * Sets the Y scale of the curve. Default depends on the surface type.
+     * @param {number} [y] Scale along the local Y axis
      */
-    setScaleY(y = 1) {
+    setScaleY(y) {
 
-        this.scale.y = y;
+        if(typeof y === 'number') {
+
+            this.scale.y = y;
+
+        } else {
+
+            this.scale.y = 1;
+
+        }
 
     }
 
@@ -300,9 +317,15 @@ export default class Curve {
     
     getFnCoordsAt(n) {
 
-        console.log(n, this._fn, this._fn(n));
+        if(this.category === 'geometry') {
 
-        return this._fn(n);
+            return this.fn(n);
+
+        } else if (this.category === 'function') {
+
+            return {x: n, y: this.fn(n)}
+            
+        }
 
     }
 
@@ -324,27 +347,29 @@ export default class Curve {
         // take mirror of n if reversed
         if(this.reverse) n = (1 - n);
 
-        // get base coords from the curve
+        // get x and y from the curve's function
         let {x, y} = this.getFnCoordsAt(n);
 
-        console.log(this, x, y);
+        // scale each point
+        x *= this.scale.x;
+        y *= this.scale.y;
 
-        // translate each point according to the curve's overall translation
+        // translate each point
         x += this.translation.x;
         y += this.translation.y;
 
-        // apply rotation around the surface's center point
+        // rotate around surface center
         const sin = Math.sin(this.rotation);
         const cos = Math.cos(this.rotation);
-        x = (x - this.surface.cx) * cos - (y - this.surface.cy) * sin + this.surface.cx;
-        y = (x - this.surface.cx) * sin + (y - this.surface.cy) * cos + this.surface.cy;
+        const xRot = ((x - this.surface.cx) * cos - (y - this.surface.cy) * sin + this.surface.cx);
+        const yRot = ((x - this.surface.cy) * sin + (y - this.surface.cy) * cos + this.surface.cy);
 
         // clamp methodology depends on the surface type
         if(this.surface.type === 'unitSquare') {
 
-            const clamped = (x < 0 || x > 1 || y < 0 || y > 1);
-            const xClamp = Math.min(1, Math.max(0, x));
-            const yClamp = Math.min(1, Math.max(0, y));
+            const clamped = (xRot < 0 || xRot > 1 || yRot < 0 || yRot > 1);
+            const xClamp = Math.min(1, Math.max(0, xRot));
+            const yClamp = Math.min(1, Math.max(0, yRot));
 
             return {
                 x: xClamp,
@@ -355,7 +380,7 @@ export default class Curve {
         } else if(this.surface.type === 'unitCircle') {
 
             // convert to polar in order to clamp the radius
-            const polarCoords = cartToPolar(x, y);
+            const polarCoords = cartToPolar(xRot, yRot);
             const clamped = polarCoords.r > 1 || polarCoords.r < -1;
             const cartCoordsClamped = polarToCart(Math.max(-1, Math.min(1, polarCoords.r)), polarCoords.theta);
 
