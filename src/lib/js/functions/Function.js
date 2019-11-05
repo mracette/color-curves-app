@@ -2,17 +2,22 @@ import Curve from '../Curve';
 
 export default class Function extends Curve {
     
-    constructor(options) {
+    constructor(options = {}) {
 
         super({...options});
+
+        const {
+            scale,
+            translation
+        } = options;
 
         this.category = 'function';
 
         this.fn = (n) => n;
 
         // override parents default settings
-        this.setTranslation();
-        this.setScale();
+        this.setTranslation(translation);
+        this.setScale(scale);
 
     }
 

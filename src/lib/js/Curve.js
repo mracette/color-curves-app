@@ -12,6 +12,7 @@ import { cartToPolar, polarToCart } from '../utils/math';
  * 
  * Curves are not instantiated directly.
  */
+
 export default class Curve {
 
     /**
@@ -50,7 +51,7 @@ export default class Curve {
         this.setScale(scale);
         this.setSurface(surface);
         this.setTranslation(translation);
-
+    
     }
 
     /**

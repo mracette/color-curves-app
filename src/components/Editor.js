@@ -1,5 +1,5 @@
 // libs
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 
 // components
 import Chart from './Chart';
@@ -68,10 +68,10 @@ function Editor() {
   const paletteCanvas = useRef(null);
   const paletteWrapper = useRef(null);
 
-  const updateCurveType = (curve, newType) => {
+  const updateCurveType = useCallback((curve, newType) => {
 
     if(curve === 'hsCurve') {
-
+      
       palette.setHsCurve(newType);
 
       setHsCurve(palette.hsCurve);
@@ -84,7 +84,7 @@ function Editor() {
 
     }
 
-  }
+  })
 
   const updatePalettes = () => {
 
@@ -110,8 +110,8 @@ function Editor() {
             <div className = 'col-auto align-items-center'>
               <h2>Palette</h2>
             </div>
-            <div className = 'col-auto ml-auto d-flex align-items-center'>
-              <form>
+            <div className = 'col-auto ml-auto d-flex'>
+              <form className = 'm-auto'>
               <div className="custom-control custom-switch">
                 <input 
                   type="checkbox" 
@@ -250,7 +250,7 @@ function Editor() {
             <Chart 
               title = 'Hue + Saturation'
               setCurve = { (type) => updateCurveType('hsCurve', type) }
-              curve = { palette.hsCurve }
+              curve = { hsCurve }
               config = { config }
               updatePalettes = { updatePalettes }
             />
@@ -258,7 +258,7 @@ function Editor() {
             <Chart 
               title = 'Lightness'
               setCurve = { (type) => updateCurveType('lCurve', type) } 
-              curve = { palette.lCurve }
+              curve = { lCurve }
               config = { config }
               updatePalettes = { updatePalettes }
             />

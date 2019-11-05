@@ -31,7 +31,7 @@ export default class Elastic extends Function {
 
     setAmplitude(a = 1) {
 
-        if(a > 1) {
+        if(a >= 1) {
 
             this.amplitude = a;
             this.setFunction();

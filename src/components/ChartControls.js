@@ -31,7 +31,6 @@ function ChartControls(props) {
     const onCurveChange = (newCurveType) => {
 
         props.setCurve(newCurveType);
-        props.updateCurve();
 
     }
     

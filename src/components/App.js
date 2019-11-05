@@ -12,21 +12,10 @@ import '../styles/app.scss';
 
 function App() {
 
-  const canvasBanner = useRef(null);
-  const bannerPalette = new ColorPalette({type: "arc", radius: 0.50000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.00000, y: 0.00000}, }, {type: "arc", radius: 0.25000, angleStart: 0.00000, angleEnd: 6.28319, angleOffset: 0.00000, translation: {x: 0.50000, y: 0.50000}, }, { paletteStart: 0, paletteEnd: 1 });
-
-  useEffect(() => {
-    canvasBanner.current && bannerPalette.drawDiscretePalette(canvasBanner.current, 24);
-  }, [canvasBanner])
-
-  // const [theme, setTheme] = useState('light');
+  const [darkMode, setDarkMode] = useState(false);
   const [nav, setNav] = useState('editor');
 
-  document.body.classList.add('bg-light');
-
   return (<>
-
-    <canvas id = 'canvas-banner' ref = {canvasBanner}/>
 
     <div className = 'container' id = 'app'>
 
@@ -39,27 +28,53 @@ function App() {
       </div>
       
       <ul className="nav nav-pills">
+
         <li className="nav-item">
-          <button className={`nav-link ${nav === 'editor' ? 'active' : ''}`} onClick = {() => setNav('editor')}>Editor</button>
+          <button id = "editor-button" className={`nav-link ${nav === 'editor' ? 'active' : ''}`} onClick = {() => setNav('editor')}>Editor</button>
         </li>
+
         <li className="nav-item">
-          <button className={`nav-link ${nav === 'presets' ? 'active' : ''}`} onClick = {() => setNav('presets')}>Presets</button>
+          <button id="presets-button" className={`nav-link ${nav === 'presets' ? 'active' : ''}`} onClick = {() => setNav('presets')}>Presets</button>
         </li>
+
         <li className="nav-item">
-          <button className={`nav-link ${nav === 'about' ? 'active' : ''}`} onClick = {() => setNav('about')}>About</button>
+          <button id="about-button" className={`nav-link ${nav === 'about' ? 'active' : ''}`} onClick = {() => setNav('about')}>About</button>
         </li>
+
+        <li className="d-flex align-items-middle  ">
+          <form className = 'm-auto'>
+          <div className="custom-control custom-switch">
+            <input 
+              type="checkbox" 
+              id='dark-mode-switch'
+              className="custom-control-input" 
+              defaultChecked = {darkMode} 
+              onChange = {(e) => {
+                const value = e.target.checked;
+                setDarkMode(value)
+              }}
+            />
+            <label className="custom-control-label" htmlFor="dark-mode-switch">Dark Mode</label>
+          </div>
+          </form>
+        </li>
+
       </ul>
 
       <div className="tab-content">
-        <div className={`tab-pane fade ${nav === 'editor' ? 'show active' : ''}`} id="home" role="tabpanel" aria-labelledby="home-tab">
+
+        <div className={`tab-pane fade ${nav === 'editor' ? 'show active' : ''}`} id="home" role="tabpanel" aria-labelledby="editor-button">
           <Editor/>
         </div>
-        <div className={`tab-pane fade ${nav === 'presets' ? 'show active' : ''}`} id="presets" role="tabpanel" aria-labelledby="home-tab">
+
+        <div className={`tab-pane fade ${nav === 'presets' ? 'show active' : ''}`} id="presets" role="tabpanel" aria-labelledby="presets-button">
           <Presets/>
         </div>
-        <div className={`tab-pane fade ${nav === 'about' ? 'show active' : ''}`} id="about" role="tabpanel" aria-labelledby="home-tab">
+
+        <div className={`tab-pane fade ${nav === 'about' ? 'show active' : ''}`} id="about" role="tabpanel" aria-labelledby="about-button">
           about
         </div>
+
       </div>
 
     </div>
