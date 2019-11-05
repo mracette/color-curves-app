@@ -1,3 +1,4 @@
+import Curve from '../js/Curve';
 import Arc from '../js/geometries/Arc';
 import Linear from '../js/functions/Linear';
 import Polynomial from '../js/functions/Polynomial';
@@ -39,13 +40,19 @@ export default class ColorPalette {
             end
         } = options;
 
-        this.setPaletteStart(start);
-        this.setPaletteEnd(end);
+        this.setStart(start);
+        this.setEnd(end);
+
+    }
+
+    static getParamSet() {
+
+        return ['start', 'end'];
 
     }
 
     /**
-     * Sets the "hs" curve for this palette.
+     * Sets the "hs" (hue-saturation) curve for this palette.
      * @param {object|string} [hsCurve] An object or string describing the "hs" curve. See {@link Curve}
      */
 
@@ -80,6 +87,11 @@ export default class ColorPalette {
 
     }
 
+    /**
+     * Sets the "l" (lightness) curve for this palette.
+     * @param {object|string} [lCurve] An object or string describing the "hs" curve. See {@link Curve}
+     */
+
     setLCurve(lCurve) {
 
         if(lCurve && lCurve.isCurve) {
@@ -102,123 +114,127 @@ export default class ColorPalette {
 
     }
 
+    /**
+     * Returns a JSON representation of this palette, including representations for each of its curves and the palette itself.
+     * The returned string consists of three comma-separated JSON objects which map to hsCurve, lCurve, and paletteParams in the ColorPalette constructor.
+     * @param {number} [precision] The number of decimals to include in numerical parameters.
+     * @returns {string} The JSON representation of this palette.
+     */
+
     exportPaletteParams(precision) {
 
-        const p = precision || 5;
+        const p = precision || 3;
 
-        // initiatialize string representation of HS curve
-        let hsParams = "{";
+        // helper function to convert params to fixed digits
+        const pDigits = (x) => {
 
-            // all curves have a type
-            hsParams += `type: "${this.hsCurveType}", `;
-
-            // some curves have variation
-            if(this.hsCurve.category === 'function' && this.hsCurveType !== 'linear') {
-                hsParams += `variation: "${this.hsCurve.variation}", `;
+            switch(typeof x) {
+                case 'number': return x.toFixed(p);
+                case 'object': return Object.assign({}, ...Object.entries(x).map(([k, v]) => ({[k]: pDigits(v)})));
+                default: return x;
             }
 
-            // polynomial curves have exponent
-            if(this.hsCurve.type === 'polynomial') {
-                hsParams += `exponent: "${this.hsCurve.exponent}`
+        }
+
+        // get the set of all curve params, and make a collection of defined params for each curve
+        const curveParamsSet = Curve.getParamSet();
+
+        const lCurveParams = {};
+        const hsCurveParams = {};
+
+        curveParamsSet.forEach((param) => {
+
+            if(this.hsCurve[param] !== undefined && this.hsCurve[param] !== null) {
+
+                (hsCurveParams[param] = pDigits(this.hsCurve[param]));
+
             }
 
-            // curves have exponent
-            if(this.hsCurve.type === 'polynomial') {
-                hsParams += `exponent: "${this.hsCurve.exponent}`
+            if(this.lCurve[param] !== undefined && this.lCurve[param] !== null) {
+
+                (lCurveParams[param] = pDigits(this.lCurve[param]));
+
             }
 
-            // arcs have angle parameters
-            if(this.hsCurve.type === 'arc') {
-                hsParams += `radius: ${this.hsCurve.r.toFixed(p)}, `;
-                hsParams += `angleStart: ${this.hsCurve.angleStart.toFixed(p)}, `;
-                hsParams += `angleEnd: ${this.hsCurve.angleEnd.toFixed(p)}, `;
-                hsParams += `angleOffset: ${this.hsCurve.angleOffset.toFixed(p)}, `;
+        });
+
+        // get the set of all palette params, and make a collection of defined params for this palette
+        const paletteParamsSet = ColorPalette.getParamSet();
+
+        const paletteParams = {};
+
+        paletteParamsSet.forEach((param) => {
+
+            if(this[param] !== undefined && this[param] !== null) {
+
+                (paletteParams[param] = pDigits(this[param]));
+
             }
 
-            // all curve have translation, scale, and rotation
-            hsParams += `translation: {x: ${this.hsCurve.translation.x.toFixed(p)}, y: ${this.hsCurve.translation.y.toFixed(p)}}, `;
-            hsParams += `scale: {x: ${this.hsCurve.scale.x.toFixed(p)}, y: ${this.hsCurve.scale.y.toFixed(p)}}, `
-            hsParams += `rotation: ${this.hsCurve.rotation.toFixed(p)}`;
+        });
 
-            // close
-            hsParams += `}`;
-
-        // initiatialize string representation of L curve
-        let lParams = "{";
-
-            // all curves have a type
-            lParams += `type: "${this.lCurve.type}", `;
-
-            // some curves have variation
-            if(this.lCurve.category === 'function' && this.lCurve.type !== 'linear') {
-                lParams += `variation: "${this.lCurve.variation}", `;
-            }
-
-            // arcs have angle parameters and radius
-            if(this.lCurve.type === 'arc') {
-                lParams += `radius: ${this.lCurve.r.toFixed(p)}, `;
-                lParams += `angleStart: ${this.lCurve.angleStart.toFixed(p)}, `;
-                lParams += `angleEnd: ${this.lCurve.angleEnd.toFixed(p)}, `;
-                lParams += `angleOffset: ${this.lCurve.angleOffset.toFixed(p)}, `;
-            }
-
-            // some curves have translation, scale and rotation
-            lParams += `translation: {x: ${this.lCurve.translation.x.toFixed(p)}, y: ${this.lCurve.translation.y.toFixed(p)}}, `;
-            lParams += `scale: {x: ${this.lCurve.scale.x.toFixed(p)}, y: ${this.lCurve.scale.y.toFixed(p)}}, `
-            lParams += `rotation: ${this.lCurve.rotation.toFixed(p)}`;
-
-            // close
-            lParams += `}`;
-
-        // construct representation of palette
-        const paletteParams = `{
-            paletteStart: ${this.paletteStart},
-            paletteEnd: ${this.paletteEnd}
-        }`;
-
-        return `${hsParams}, ${lParams}, ${paletteParams}`;
+        return `
+            ${JSON.stringify(hsCurveParams)}, \
+            ${JSON.stringify(lCurveParams)}, \
+            ${JSON.stringify(paletteParams)}`;
 
     }
 
-    setPaletteStart(start) {
+    /**
+     * Sets the start point for the palette's curves
+     * @param {number} [start] A number in the range [0, 1]. Not to exceed the palette's end point.
+     */
+
+    setStart(start) {
 
         if(start === undefined) {
 
-            this.paletteStart = 0;
+            this.start = 0;
 
-        } else if(start > this.paletteEnd) {
+        } else if(start > this.end) {
 
             console.warn('Palette start cannot be greater than palette end. Setting palette start to palette end.');
 
-            this.paletteStart = this.paletteEnd;
+            this.start = this.end;
 
         } else {
 
-            this.paletteStart = start;
+            this.start = start;
 
         }
 
     }
 
-    setPaletteEnd(end) {
+    /**
+     * Sets the end point for the palette's curves
+     * @param {number} [end] A number in the range [0, 1]. Not to be exceeded by the palette's start point.
+     */
+
+    setEnd(end) {
 
         if(end === undefined) {
 
-            this.paletteEnd = 1;
+            this.end = 1;
 
-        } else if(end < this.paletteStart) {
+        } else if(end < this.start) {
 
             console.warn('Palette end cannot be less than than palette start. Setting palette end to palette start.');
 
-            this.paletteEnd = this.paletteStart;
+            this.end = this.start;
 
         } else {
 
-            this.paletteEnd = end;
+            this.end = end;
 
         }
 
     }
+
+    /**
+     * Draws a representation of the palette using evenly spaced stops.
+     * @param {object} canvas An HTML canvas on which to draw the palette.
+     * @param {number} numStops The number of distinct colors to use in the drawing.
+     */
 
     drawDiscretePalette(canvas, numStops) {
 
@@ -240,6 +256,12 @@ export default class ColorPalette {
         }
 
     }
+
+    /**
+     * Draws a representation of the palette using a continuous gradient.
+     * @param {object} canvas An HTML canvas on which to draw the palette.
+     * @param {number} [resolution = 32] The number of sub-gradients to use.
+     */
 
     drawContinuousPalette(canvas, resolution) {
 
@@ -264,6 +286,12 @@ export default class ColorPalette {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     }
+
+    /**
+     * Helper function that builds a curve from a specified string.
+     * @param {string} curveType A string that maps to one of the supported curve types.
+     * @param {object} [options] Options for the curve. See {@link Curve}.
+     */
 
     initializeCurve(curveType, options) {
 
@@ -299,10 +327,10 @@ export default class ColorPalette {
 
     getColorValues(n) {
 
-        const hsStart = this.hsCurve.overflow === 'clamp' ? Math.max(this.paletteStart, this.hsCurve.clampStart) : this.paletteStart;
-        const hsEnd = this.hsCurve.overflow === 'clamp' ? Math.min(this.paletteEnd, this.hsCurve.clampEnd) : this.paletteEnd;
-        const lStart = this.lCurve.overflow === 'clamp' ? Math.max(this.paletteStart, this.lCurve.clampStart) : this.paletteStart;
-        const lEnd = this.lCurve.overflow === 'clamp' ? Math.min(this.paletteEnd, this.lCurve.clampEnd) : this.paletteEnd;
+        const hsStart = this.hsCurve.overflow === 'clamp' ? Math.max(this.start, this.hsCurve.clampStart) : this.start;
+        const hsEnd = this.hsCurve.overflow === 'clamp' ? Math.min(this.end, this.hsCurve.clampEnd) : this.end;
+        const lStart = this.lCurve.overflow === 'clamp' ? Math.max(this.start, this.lCurve.clampStart) : this.start;
+        const lEnd = this.lCurve.overflow === 'clamp' ? Math.min(this.end, this.lCurve.clampEnd) : this.end;
 
         // get hue and saturation values from the hsCurve
         const hsCartCoords = this.hsCurve.getCurveCoordsAt(hsStart + n * (hsEnd - hsStart));

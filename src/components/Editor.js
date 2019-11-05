@@ -188,7 +188,7 @@ function Editor() {
                   maxDecimals = {2}
                   defaultValue = {paletteRange[0]}
                   handleChange = {(value) => {
-                    palette.setPaletteStart(parseFloat(value));
+                    palette.setStart(parseFloat(value));
                     setPaletteRange([parseFloat(value), paletteRange[1]]);
                   }}
                 />
@@ -204,7 +204,7 @@ function Editor() {
                   maxDecimals = {2}
                   defaultValue = {paletteRange[1]}
                   handleChange = {(value) => {
-                    palette.setPaletteEnd(parseFloat(value));
+                    palette.setEnd(parseFloat(value));
                     setPaletteRange([paletteRange[0], parseFloat(value)]);
                   }}
                 />

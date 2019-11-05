@@ -10,7 +10,9 @@ function ExportJS(props) {
                 <div className = 'col-12 code-block p-2'>
 
                     <code>
+
                         {"import ColorPalette from 'colorcurves'"}
+                        
                     </code>
 
                 </div>
@@ -22,7 +24,9 @@ function ExportJS(props) {
                 <div className = 'col-12 code-block p-2'>
 
                     <code>
+
                         {"const palette = new ColorPalette(" + props.palette.exportPaletteParams() + ");"}
+
                     </code>
 
                 </div>

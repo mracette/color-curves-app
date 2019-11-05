@@ -54,6 +54,22 @@ export default class Curve {
     
     }
 
+    static getParamSet() {
+
+        const paramsList = [
+            'type', 'overflow', 'reverse', // curve
+            'tranlation', 'translateX', 'translateY', 'scale', 'scaleX', 'scaleY', 'rotation', // tranformations
+            'angleStart', 'angleEnd', 'angleOffset', 'radius', // arc
+            'variation', // function
+            'exponent', // poly
+            'amplitude', 'period', // elastic
+            'overshoot' // back
+        ];
+
+        return paramsList
+
+    }
+
     /**
      * Set the curve's surface.
      * @param {object|string} surface The surface on which to draw the curve

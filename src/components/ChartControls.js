@@ -1,5 +1,6 @@
 // libs
 import React, { useState, useEffect } from 'react';
+import Curve from '../lib/js/Curve';
 
 // components
 import SmartInput from '../components/SmartInput';
@@ -11,14 +12,7 @@ function ChartControls(props) {
 
         const params = {};
 
-        const paramsList = [
-            'translateX', 'translateY', 'scaleX', 'scaleY', 'rotation', 'reverse', // curve
-            'angleStart', 'angleEnd', 'angleOffset', 'radius', // arc
-            'variation', // function
-            'exponent', // poly
-            'amplitude', 'period', // elastic
-            'overshoot' // back
-        ];
+        const paramsList = Curve.getParamSet();
 
         paramsList.forEach((param) => {
             props.curve[param] && (params[param] = props.curve[param]);
