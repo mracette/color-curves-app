@@ -1,3 +1,7 @@
+/**
+ * A circle with a radius of 1 and a center point at (0, 0)
+ */
+
 export default class UnitCircle {
 
     constructor() {

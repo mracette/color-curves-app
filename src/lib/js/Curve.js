@@ -29,6 +29,7 @@ export default class Curve {
      * @param {number} [options.translation.x] Translation along the local X axis
      * @param {number} [options.translation.y] Translation along the local Y axis
      */
+
     constructor(options) {
 
         const {
@@ -74,6 +75,7 @@ export default class Curve {
      * Set the curve's surface.
      * @param {object|string} surface The surface on which to draw the curve
      */
+
     setSurface(surface = 'unitSquare') {
 
         if(surface === 'unitSquare') {
@@ -102,6 +104,7 @@ export default class Curve {
      * outputs at 0 or 1 are inside of the surface then the clampStart and clampEnd are set to 0 and 1, respectively.
      * @param {number} [resolution = 128] Number of samples used to determine the clamp bounds
      */
+
     setClampBounds(resolution = 128) {
 
         let prevCoords;
@@ -151,6 +154,7 @@ export default class Curve {
      * Sets the overflow behavior.
      * @param {string} [overflow = 'clamp'] Method for adjusting output that extends past the surface perimeter
      */
+
     setOverflow(overflow = 'clamp') {
 
         if(overflow === 'clamp' || overflow === 'project') {
@@ -170,6 +174,7 @@ export default class Curve {
      * Sets the reverse flag.
      * @param {boolean} [reverse = false] Whether to reverse the direction of the curve
      */
+
     setReverse(reverse = false) {
 
         this.reverse = reverse;
@@ -180,6 +185,7 @@ export default class Curve {
      * Sets the rotation of the curve
      * @param {boolean} [rotation = 0] Z-Axis rotation of the curve in radians
      */
+
     setRotation(rotation = 0) {
 
         this.rotation = rotation;
@@ -192,6 +198,7 @@ export default class Curve {
      * @param {number} [options.scale.x] Scale along the local X axis
      * @param {number} [options.scale.y] Scale along the local Y axis
      */
+
     setScale(scale) {
 
         if(typeof scale === 'object' && typeof scale.x === 'number') {
@@ -220,6 +227,7 @@ export default class Curve {
      * Sets the X scale of the curve. Default depends on the surface type.
      * @param {number} [x] Scale along the local X axis
      */
+
     setScaleX(x) {
 
         if(typeof x === 'number') {
@@ -238,6 +246,7 @@ export default class Curve {
      * Sets the Y scale of the curve. Default depends on the surface type.
      * @param {number} [y] Scale along the local Y axis
      */
+
     setScaleY(y) {
 
         if(typeof y === 'number') {
@@ -258,6 +267,7 @@ export default class Curve {
      * @param {number} [options.translation.x] Translation along the local X axis
      * @param {number} [options.translation.y] Translation along the local Y axis
      */
+
     setTranslation(translation) {
 
         if(typeof translation === 'object' && typeof translation.x === 'number') {
@@ -286,6 +296,7 @@ export default class Curve {
      * Sets the translation of the curve along the local X axis. The default values depends on the surface type.
      * @param {number} [x] Translation along the local X axis
      */
+
     setTranslateX(x) {
 
         if(typeof x === 'number') {
@@ -308,6 +319,7 @@ export default class Curve {
      * Sets the translation of the curve along the local Y axis. The default values depends on the surface type.
      * @param {number} [y] Translation along the local Y axis
      */
+
     setTranslateY(y) {
 
         if(typeof y === 'number') {
@@ -384,7 +396,7 @@ export default class Curve {
         // clamp methodology depends on the surface type
         if(this.surface.type === 'unitSquare') {
 
-            const clamped = (xRot < 0 || xRot > 1 || yRot < 0 || yRot > 1);
+            const clamped = UnitSquare.outOfBounds(xRot, yRot);
             const xClamp = Math.min(1, Math.max(0, xRot));
             const yClamp = Math.min(1, Math.max(0, yRot));
 
@@ -397,8 +409,8 @@ export default class Curve {
         } else if(this.surface.type === 'unitCircle') {
 
             // convert to polar in order to clamp the radius
+            const clamped = UnitCircle.outOfBounds(xRot, yRot);
             const polarCoords = cartToPolar(xRot, yRot);
-            const clamped = polarCoords.r > 1 || polarCoords.r < -1;
             const cartCoordsClamped = polarToCart(Math.max(-1, Math.min(1, polarCoords.r)), polarCoords.theta);
 
             return {

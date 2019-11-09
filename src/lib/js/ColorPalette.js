@@ -16,7 +16,6 @@ import { hslToRgb, rgbToHex, printRgb, printHsl } from '../utils/color';
  * 
  * A ColorPalette has exactly two curves. The "hs" curve maps to hue and saturation values and lies in a unit circle
  * in the HS space. The "l" curve maps it's y-coordinate to lightness, and lies in a unit square in the L space.
- * 
  */
 
 export default class ColorPalette {
@@ -313,17 +312,23 @@ export default class ColorPalette {
 
     }
 
-    updateCurveClampBound() {
+    /**
+     * Helper function to set the clamp bounds for both curves in the palette. This method should be run before
+     * after changing the parameters - but before getting a color value - for palette that use curves of overflow type 'clamp'
+     */
 
-        /* 
-        If overflow === 'clamp', the palette should only sample the first continuous segment of non-clamped values.
-        Update the clamp values here to ensure that they are adjusted to the curves current transformations.
-        */
+    updateCurveClampBound() {
 
         this.hsCurve.overflow === 'clamp' && this.hsCurve.setClampBounds();
         this.lCurve.overflow === 'clamp' && this.lCurve.setClampBounds();
 
     }
+
+    /**
+     * Samples the HS and L curves, and converts their cartesian coordinates to hue, saturation, and lightness values
+     * @param {number} n A number in the range [0, 1] that represents the proportion of each curve to traverse before sampling
+     * @returns {object} The hue, saturation, and lightness values of the palette at the point n
+     */
 
     getColorValues(n) {
 
@@ -350,12 +355,24 @@ export default class ColorPalette {
 
     }
 
+    /**
+     * Gets the HSL values at the given point in the palette's range.
+     * @param {number} n A number in the range [0, 1] that represents the proportion of each curve to traverse before sampling
+     * @returns {string} The HSL string of the color at the point n
+     */
+
     hslValueAt(n) {
 
         const {h, s, l} = this.getColorValues(n);
         return printHsl(h, s, l);
 
     }
+
+    /**
+     * Gets the RGB values at the given point in the palette's range.
+     * @param {number} n A number in the range [0, 1] that represents the proportion of each curve to traverse before sampling
+     * @returns {string} The RGB string of the color at the point n
+     */
 
     rgbValueAt(n) {
 
@@ -364,6 +381,12 @@ export default class ColorPalette {
         return printRgb(r, g, b);
 
     }
+
+    /**
+     * Gets the hex values at the given point in the palette's range.
+     * @param {number} n A number in the range [0, 1] that represents the proportion of each curve to traverse before sampling
+     * @returns {string} The hex string of the color at the point n
+     */
 
     hexValueAt(n) {
 

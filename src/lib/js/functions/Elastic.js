@@ -2,7 +2,8 @@ import Function from './Function';
 import * as d3 from 'd3-ease';
 
 /**
- * Creates an ease "elastic" curve.
+ * Creates an "elastic" function.
+ * @extends Function
  * @param {object} [options] Optional properties of the function
  * @param {string} [options.amplitude] The amplitude of the function
  * @param {number} [options.period] The period of the function
@@ -58,6 +59,11 @@ export default class Elastic extends Function {
         }
     }
 
+    /**
+     * Sets the easing variation. See https://easings.net/
+     * @param {string} variation The curve variation ('in', 'out', or 'in-out')
+     */
+
     setVariation(variation = 'in') {
 
         if(variation === 'in' || variation === 'out' || variation === 'in-out'){
@@ -72,6 +78,10 @@ export default class Elastic extends Function {
         }
 
     }
+
+    /**
+     * Assigns a function to this class that maps input to output
+     */
 
     setFunction() {
 

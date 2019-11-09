@@ -1,3 +1,7 @@
+/**
+ * A square with sides of length 1 and a center point at (0.5, 0.5)
+ */
+
 export default class UnitSquare {
 
     constructor() {

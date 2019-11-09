@@ -1,5 +1,12 @@
 import Curve from '../Curve';
 
+/**
+ * Represents a generic function that can be further extended by a child class that specified a 1:1 relationship between a 
+ * single input and single output
+ * @extends Curve
+ * @param {object} [options] Optional properties of the function
+ */
+
 export default class Function extends Curve {
     
     constructor(options = {}) {

@@ -3,6 +3,7 @@ import * as d3 from 'd3-ease';
 
 /**
  * Creates an ease "elastic" curve.
+ * @extends Function
  * @param {object} [options] Optional properties of the function
  * @param {string} [options.exponent] The exponent of the function
  */
@@ -42,6 +43,11 @@ export default class Polynomial extends Function {
 
     }
 
+    /**
+     * Sets the easing variation. See https://easings.net/
+     * @param {string} variation The curve variation ('in', 'out', or 'in-out')
+     */
+
     setVariation(variation = 'in') {
 
         if(variation === 'in' || variation === 'out' || variation === 'in-out'){
@@ -56,6 +62,10 @@ export default class Polynomial extends Function {
         }
 
     }
+
+    /**
+     * Assigns a function to this class that maps input to output
+     */
 
     setFunction() {
 

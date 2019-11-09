@@ -3,6 +3,7 @@ import * as d3 from 'd3-ease';
 
 /**
  * Creates an ease "bounce" curve.
+ * @extends Function
  * @param {object} [options] Optional properties of the function
  * @param {string} [options.variation] The contour of the function (see https://easings.net)
  */
@@ -24,6 +25,11 @@ export default class Bounce extends Function {
 
     }
 
+    /**
+     * Sets the easing variation. See https://easings.net/
+     * @param {string} variation The curve variation ('in', 'out', or 'in-out')
+     */
+
     setVariation(variation = 'in') {
 
         if(variation === 'in' || variation === 'out' || variation === 'in-out'){
@@ -38,6 +44,10 @@ export default class Bounce extends Function {
         }
 
     }
+
+    /**
+     * Assigns a function to this class that maps input to output
+     */
 
     setFunction() {
 

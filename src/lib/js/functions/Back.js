@@ -2,7 +2,8 @@ import Function from './Function';
 import * as d3 from 'd3-ease';
 
 /**
- * Creates an ease "back" curve.
+ * Creates an "ease back" function.
+ * @extends Function
  * @param {object} [options] Optional properties of the function
  * @param {string} [options.variation] The contour of the function (see https://easings.net)
  * @param {number} [options.overshoot] The degree to which the function "overshoots"
@@ -34,6 +35,11 @@ export default class Back extends Function {
 
     }
 
+    /**
+     * Creates an "ease back" function.
+     * @extends Function
+     * @param {string} variation
+     */
 
     setVariation(variation = 'in') {
 
