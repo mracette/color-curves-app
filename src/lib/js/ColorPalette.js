@@ -10,6 +10,7 @@ import Bounce from '../js/functions/Bounce';
 
 import { cartToPolar, radToDeg } from '../utils/math';
 import { hslToRgb, rgbToHex, printRgb, printHsl } from '../utils/color';
+import { validJson } from '../utils/common';
 
 /**
  * A continuous color palette created by overlaying curves onto surfaces in the HSL color space.
@@ -31,22 +32,62 @@ export default class ColorPalette {
 
     constructor(hsCurve, lCurve, options = {}) {
 
-        this.setHsCurve(hsCurve);
-        this.setLCurve(lCurve);
+        this.setHsCurve(validJson(hsCurve) || hsCurve);
+        this.setLCurve(validJson(lCurve) || lCurve);
 
         const {
             start,
-            end
-        } = options;
+            end,
+            name,
+            author
+        } = (validJson(options) || options);
 
         this.setStart(start);
         this.setEnd(end);
+        this.setName(name);
+        this.setAuthor(author);
 
     }
 
     static getParamSet() {
 
-        return ['start', 'end'];
+        return ['start', 'end', 'name', 'author'];
+
+    }
+
+    /**
+     * Sets a name for this palette
+     * @param {string} [name] A name for this palette
+     */
+    setName(name) {
+
+        if (typeof name === 'string') {
+
+            this.name = name;
+
+        } else {
+
+            this.name = null;
+
+        }
+
+    }
+
+    /**
+     * Sets a name for this palette
+     * @param {string} [author] A name for this palette
+     */
+    setAuthor(author) {
+
+        if (typeof author === 'string') {
+
+            this.author = author;
+
+        } else {
+
+            this.author = null;
+
+        }
 
     }
 
@@ -57,9 +98,9 @@ export default class ColorPalette {
 
     setHsCurve(hsCurve) {
 
-        if(hsCurve && hsCurve.isCurve) {
+        if (hsCurve && hsCurve.isCurve) {
 
-            if(hsCurve.surface.type === 'unitCircle') {
+            if (hsCurve.surface.type === 'unitCircle') {
 
                 this.hsCurve = hsCurve;
 
@@ -69,18 +110,17 @@ export default class ColorPalette {
 
             }
 
+        } else if (typeof hsCurve === 'object') {
 
-        } else if(typeof hsCurve === 'object') {
+            this.hsCurve = this.initializeCurve(hsCurve.type, { surface: 'unitCircle', ...hsCurve });
 
-            this.hsCurve = this.initializeCurve(hsCurve.type, {surface: 'unitCircle', ...hsCurve});
+        } else if (typeof hsCurve === 'string') {
 
-        } else if(typeof hsCurve === 'string') {
-
-            this.hsCurve = this.initializeCurve(hsCurve, {surface: 'unitCircle'});
+            this.hsCurve = this.initializeCurve(hsCurve, { surface: 'unitCircle' });
 
         } else {
 
-            this.hsCurve = this.initializeCurve('exponential', {surface: 'unitCircle'});
+            this.hsCurve = this.initializeCurve('exponential', { surface: 'unitCircle' });
 
         }
 
@@ -93,21 +133,29 @@ export default class ColorPalette {
 
     setLCurve(lCurve) {
 
-        if(lCurve && lCurve.isCurve) {
+        if (lCurve && lCurve.isCurve) {
 
-            this.lCurve = lCurve;
+            if (lCurve.surface.type === 'unitSquare') {
 
-        } else if(typeof lCurve === 'object') {
+                this.lCurve = lCurve;
 
-            this.lCurve = this.initializeCurve(lCurve.type, {surface: 'unitSquare', ...lCurve});
+            } else {
 
-        } else if(typeof lCurve === 'string') {
+                console.error("Due to the nature of the HSL colorspace, the lCurve is required to have a surface of type 'unitSquare'.")
 
-            this.lCurve = this.initializeCurve(lCurve, {surface: 'unitSquare'});
+            }
+
+        } else if (typeof lCurve === 'object') {
+
+            this.lCurve = this.initializeCurve(lCurve.type, { surface: 'unitSquare', ...lCurve });
+
+        } else if (typeof lCurve === 'string') {
+
+            this.lCurve = this.initializeCurve(lCurve, { surface: 'unitSquare' });
 
         } else {
 
-            this.lCurve = this.initializeCurve('linear', {surface: 'unitSquare'});
+            this.lCurve = this.initializeCurve('linear', { surface: 'unitSquare' });
 
         }
 
@@ -127,9 +175,9 @@ export default class ColorPalette {
         // helper function to convert params to fixed digits
         const pDigits = (x) => {
 
-            switch(typeof x) {
-                case 'number': return x.toFixed(p);
-                case 'object': return Object.assign({}, ...Object.entries(x).map(([k, v]) => ({[k]: pDigits(v)})));
+            switch (typeof x) {
+                case 'number': return parseFloat(x.toFixed(p));
+                case 'object': return Object.assign({}, ...Object.entries(x).map(([k, v]) => ({ [k]: pDigits(v) })));
                 default: return x;
             }
 
@@ -143,13 +191,13 @@ export default class ColorPalette {
 
         curveParamsSet.forEach((param) => {
 
-            if(this.hsCurve[param] !== undefined && this.hsCurve[param] !== null) {
+            if (this.hsCurve[param] !== undefined && this.hsCurve[param] !== null) {
 
                 (hsCurveParams[param] = pDigits(this.hsCurve[param]));
 
             }
 
-            if(this.lCurve[param] !== undefined && this.lCurve[param] !== null) {
+            if (this.lCurve[param] !== undefined && this.lCurve[param] !== null) {
 
                 (lCurveParams[param] = pDigits(this.lCurve[param]));
 
@@ -164,7 +212,7 @@ export default class ColorPalette {
 
         paletteParamsSet.forEach((param) => {
 
-            if(this[param] !== undefined && this[param] !== null) {
+            if (this[param] !== undefined && this[param] !== null) {
 
                 (paletteParams[param] = pDigits(this[param]));
 
@@ -173,9 +221,9 @@ export default class ColorPalette {
         });
 
         return `
-            ${JSON.stringify(hsCurveParams)}, \
-            ${JSON.stringify(lCurveParams)}, \
-            ${JSON.stringify(paletteParams)}`;
+            '${JSON.stringify(hsCurveParams)}', \
+            '${JSON.stringify(lCurveParams)}', \
+            '${JSON.stringify(paletteParams)}'`;
 
     }
 
@@ -186,19 +234,13 @@ export default class ColorPalette {
 
     setStart(start) {
 
-        if(start === undefined) {
+        if (typeof start === 'number') {
 
-            this.start = 0;
-
-        } else if(start > this.end) {
-
-            console.warn('Palette start cannot be greater than palette end. Setting palette start to palette end.');
-
-            this.start = this.end;
+            this.start = start;
 
         } else {
 
-            this.start = start;
+            this.start = 0;
 
         }
 
@@ -211,19 +253,13 @@ export default class ColorPalette {
 
     setEnd(end) {
 
-        if(end === undefined) {
+        if (typeof end === 'number') {
 
-            this.end = 1;
-
-        } else if(end < this.start) {
-
-            console.warn('Palette end cannot be less than than palette start. Setting palette end to palette start.');
-
-            this.end = this.start;
+            this.end = end;
 
         } else {
 
-            this.end = end;
+            this.end = 1;
 
         }
 
@@ -244,14 +280,14 @@ export default class ColorPalette {
         const ctx = canvas.getContext('2d');
         const stops = numStops || 12;
 
-        for(let i = 0; i < stops; i++) {
-    
+        for (let i = 0; i < stops; i++) {
+
             // get hsl values
             const hsl = this.hslValueAt((i + 0.5) / stops);
-    
+
             ctx.fillStyle = hsl;
             ctx.fillRect(i * canvas.width / stops, 0, canvas.width * 1.1 / stops, canvas.height);
-    
+
         }
 
     }
@@ -271,16 +307,16 @@ export default class ColorPalette {
         const stops = resolution || 32;
 
         // draw continuous palette
-        for(let i = 0; i <= stops; i++) {
-    
+        for (let i = 0; i <= stops; i++) {
+
             // get hsl values
             const hsl = this.hslValueAt(i / stops);
-    
+
             // add a gradient stop
             gradient.addColorStop(i / stops, hsl);
-    
+
         }
-    
+
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -294,19 +330,19 @@ export default class ColorPalette {
 
     initializeCurve(curveType, options) {
 
-        switch(curveType) {
+        switch (curveType) {
 
-            case 'arc': return new Arc({...options});
-            case 'linear': return new Linear({...options});
-            case 'polynomial': return new Polynomial({...options});
-            case 'sinusoidal': return new Sinusoidal({...options});
-            case 'exponential': return new Exponential({...options});
-            case 'elastic': return new Elastic({...options});
-            case 'back': return new Back({...options});
-            case 'bounce': return new Bounce({...options});
-            default: 
+            case 'arc': return new Arc({ ...options });
+            case 'linear': return new Linear({ ...options });
+            case 'polynomial': return new Polynomial({ ...options });
+            case 'sinusoidal': return new Sinusoidal({ ...options });
+            case 'exponential': return new Exponential({ ...options });
+            case 'elastic': return new Elastic({ ...options });
+            case 'back': return new Back({ ...options });
+            case 'bounce': return new Bounce({ ...options });
+            default:
                 console.warn('Specified curve type is not supported. Using default (linear) instead.');
-                return new Linear({...options});
+                return new Linear({ ...options });
 
         }
 
@@ -363,7 +399,7 @@ export default class ColorPalette {
 
     hslValueAt(n) {
 
-        const {h, s, l} = this.getColorValues(n);
+        const { h, s, l } = this.getColorValues(n);
         return printHsl(h, s, l);
 
     }
@@ -376,8 +412,8 @@ export default class ColorPalette {
 
     rgbValueAt(n) {
 
-        const {h, s, l} = this.getColorValues(n);
-        const {r, g, b} = hslToRgb(h, s, l);
+        const { h, s, l } = this.getColorValues(n);
+        const { r, g, b } = hslToRgb(h, s, l);
         return printRgb(r, g, b);
 
     }
@@ -390,10 +426,10 @@ export default class ColorPalette {
 
     hexValueAt(n) {
 
-        const {h, s, l} = this.getColorValues(n);
-        const {r, g, b} = hslToRgb(h, s, l);
+        const { h, s, l } = this.getColorValues(n);
+        const { r, g, b } = hslToRgb(h, s, l);
         return rgbToHex(r, g, b);
-        
+
 
     }
 

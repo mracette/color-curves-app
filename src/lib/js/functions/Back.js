@@ -36,9 +36,8 @@ export default class Back extends Function {
     }
 
     /**
-     * Creates an "ease back" function.
-     * @extends Function
-     * @param {string} variation
+     * Sets the easing variation. See https://easings.net/
+     * @param {string} variation The curve variation ('in', 'out', or 'in-out')
      */
 
     setVariation(variation = 'in') {
@@ -55,6 +54,10 @@ export default class Back extends Function {
         }
 
     }
+
+    /**
+     * Assigns a function to this class that maps input to output
+     */
 
     setFunction() {
 

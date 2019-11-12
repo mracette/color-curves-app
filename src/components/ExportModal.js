@@ -64,6 +64,13 @@ function ExportModal(props) {
                 </div>
             </div>
 
+            <div>
+                <div className = 'col-lg-12'>
+                    <button>
+                    </button>
+                </div>
+            </div>
+
             <nav className = 'mt-3'>
                 <div className="nav nav-tabs" id="nav-tab" role="tablist">
                     <a className={`nav-item nav-link ${nav === 'image' && 'active'}`} onClick = {() => setNav('image')} id="export-nav-image" data-toggle="tab" role="tab" aria-controls="nav-home" aria-selected={`${nav === 'image'}`}>Image</a>

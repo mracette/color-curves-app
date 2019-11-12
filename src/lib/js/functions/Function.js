@@ -8,10 +8,10 @@ import Curve from '../Curve';
  */
 
 export default class Function extends Curve {
-    
+
     constructor(options = {}) {
 
-        super({...options});
+        super({ ...options });
 
         const {
             scale,
@@ -30,17 +30,17 @@ export default class Function extends Curve {
 
     setScaleY(y) {
 
-        if(typeof y === 'number') {
+        if (typeof y === 'number') {
 
             this.scale.y = y;
 
-        } else if(this.surface.type === 'unitSquare') {
+        } else if (this.surface.type === 'unitSquare') {
 
             this.scale.y = 0.5;
 
         } else if (this.surface.type === 'unitCircle') {
 
-            this.scale.y = Math.sin(Math.PI * (9/8)) * -2;
+            this.scale.y = Math.sin(Math.PI * (9 / 8)) * -2;
 
         }
 
@@ -48,53 +48,53 @@ export default class Function extends Curve {
 
     setScaleX(x) {
 
-        if(typeof x === 'number') {
+        if (typeof x === 'number') {
 
             this.scale.x = x;
 
-        } else if(this.surface.type === 'unitSquare') {
+        } else if (this.surface.type === 'unitSquare') {
 
             this.scale.x = 1;
 
         } else if (this.surface.type === 'unitCircle') {
 
-            this.scale.x = Math.cos(Math.PI * (9/8)) * -2;
+            this.scale.x = Math.cos(Math.PI * (9 / 8)) * -2;
 
         }
 
     }
 
-    setTranslateX(translateX) {
+    setTranslateX(x) {
 
-        if(translateX !== undefined) {
+        if (typeof x === 'number') {
 
-            this.translation.x = translateX
+            this.translation.x = x;
 
-        } else if(this.surface.type === 'unitSquare') {
+        } else if (this.surface.type === 'unitSquare') {
 
             this.translation.x = 0;
 
         } else if (this.surface.type === 'unitCircle') {
 
-            this.translation.x = Math.cos(Math.PI * (9/8));
+            this.translation.x = Math.cos(Math.PI * (9 / 8));
 
         }
 
     }
 
-    setTranslateY(translateY) {
+    setTranslateY(y) {
 
-        if(translateY !== undefined) {
+        if (typeof y === 'number') {
 
-            this.translation.y = translateY
+            this.translation.y = y;
 
-        } else if(this.surface.type === 'unitSquare') {
+        } else if (this.surface.type === 'unitSquare') {
 
             this.translation.y = 0.25;
 
         } else if (this.surface.type === 'unitCircle') {
 
-            this.translation.y = Math.sin(Math.PI * (9/8));
+            this.translation.y = Math.sin(Math.PI * (9 / 8));
 
         }
 

@@ -52,14 +52,14 @@ export default class Curve {
         this.setScale(scale);
         this.setSurface(surface);
         this.setTranslation(translation);
-    
+
     }
 
     static getParamSet() {
 
         const paramsList = [
             'type', 'overflow', 'reverse', // curve
-            'tranlation', 'translateX', 'translateY', 'scale', 'scaleX', 'scaleY', 'rotation', // tranformations
+            'translation', 'translateX', 'translateY', 'scale', 'scaleX', 'scaleY', 'rotation', // tranformations
             'angleStart', 'angleEnd', 'angleOffset', 'radius', // arc
             'variation', // function
             'exponent', // poly
@@ -78,11 +78,11 @@ export default class Curve {
 
     setSurface(surface = 'unitSquare') {
 
-        if(surface === 'unitSquare') {
+        if (surface === 'unitSquare') {
 
             this.surface = new UnitSquare();
 
-        } else if(surface === 'unitCircle') {
+        } else if (surface === 'unitCircle') {
 
             this.surface = new UnitCircle();
 
@@ -112,31 +112,31 @@ export default class Curve {
         let clampEnd = null;
         let i = 0;
 
-        while(i <= resolution && (clampStart === null || clampEnd === null)) {
+        while (i <= resolution && (clampStart === null || clampEnd === null)) {
 
             const coords = this.getCurveCoordsAt(i / resolution);
 
-            if(i === 0) {
+            if (i === 0) {
 
                 // if the starting point is inside the surface, then the clamp start is the same as the start
-                if(!coords.clamped) clampStart = i / resolution;
+                if (!coords.clamped) clampStart = i / resolution;
 
             } else {
 
                 // set start clamp if the prev point is outside the surface, but the current point is inside
-                if(clampStart === null && prevCoords.clamped && !coords.clamped) {
+                if (clampStart === null && prevCoords.clamped && !coords.clamped) {
                     clampStart = i / resolution;
                 }
 
                 // set end clamp if the prev point is inside the surface, but the current point is outside
-                if(clampEnd === null && !prevCoords.clamped && coords.clamped) {
+                if (clampEnd === null && !prevCoords.clamped && coords.clamped) {
                     clampEnd = i / resolution;
                 }
 
             }
 
             // if the entire curve is outside of the surface, set the clampEnd to 0
-            if(i === resolution && coords.clamped && clampStart === null && clampEnd === null) {
+            if (i === resolution && coords.clamped && clampStart === null && clampEnd === null) {
                 clampEnd = 0;
             }
 
@@ -157,12 +157,12 @@ export default class Curve {
 
     setOverflow(overflow = 'clamp') {
 
-        if(overflow === 'clamp' || overflow === 'project') {
+        if (overflow === 'clamp' || overflow === 'project') {
 
             this.overflow = overflow;
-            
+
         } else {
-            
+
             console.warn("Overflow value must be either 'clamp' or 'project'. Using clamp.");
             this.overflow = 'clamp';
 
@@ -201,17 +201,17 @@ export default class Curve {
 
     setScale(scale) {
 
-        if(typeof scale === 'object' && typeof scale.x === 'number') {
+        if (typeof scale === 'object' && typeof scale.x === 'number') {
 
             this.setScaleX(scale.x);
-            
+
         } else {
 
             this.setScaleX();
 
         }
 
-        if(typeof scale === 'object' && typeof scale.y !== 'number') {
+        if (typeof scale === 'object' && typeof scale.y === 'number') {
 
             this.setScaleY(scale.y);
 
@@ -230,7 +230,7 @@ export default class Curve {
 
     setScaleX(x) {
 
-        if(typeof x === 'number') {
+        if (typeof x === 'number') {
 
             this.scale.x = x;
 
@@ -249,7 +249,7 @@ export default class Curve {
 
     setScaleY(y) {
 
-        if(typeof y === 'number') {
+        if (typeof y === 'number') {
 
             this.scale.y = y;
 
@@ -270,17 +270,17 @@ export default class Curve {
 
     setTranslation(translation) {
 
-        if(typeof translation === 'object' && typeof translation.x === 'number') {
+        if (typeof translation === 'object' && typeof translation.x === 'number') {
 
             this.setTranslateX(translation.x);
-            
+
         } else {
 
             this.setTranslateX();
 
         }
 
-        if(typeof translation === 'object' && typeof translation.y !== 'number') {
+        if (typeof translation === 'object' && typeof translation.y === 'number') {
 
             this.setTranslateY(translation.y);
 
@@ -299,18 +299,18 @@ export default class Curve {
 
     setTranslateX(x) {
 
-        if(typeof x === 'number') {
+        if (typeof x === 'number') {
 
             this.translation.x = x;
 
-        } else if(this.surface.type === 'unitSquare') {
+        } else if (this.surface.type === 'unitSquare') {
 
             this.translation.x = 0.5;
 
         } else if (this.surface.type === 'unitCircle') {
 
             this.translation.x = 0;
-            
+
         }
 
     }
@@ -322,18 +322,18 @@ export default class Curve {
 
     setTranslateY(y) {
 
-        if(typeof y === 'number') {
+        if (typeof y === 'number') {
 
             this.translation.y = y;
 
-        } else if(this.surface.type === 'unitSquare') {
+        } else if (this.surface.type === 'unitSquare') {
 
             this.translation.y = 0.5;
 
         } else if (this.surface.type === 'unitCircle') {
 
             this.translation.y = 0;
-            
+
         }
 
     }
@@ -343,17 +343,17 @@ export default class Curve {
      * @param {object} n A number between 0 and 1 representing the proportion of the curve to traverse
      * @returns {object.<string, number>} The x and y coordinates of the function at a point n
      */
-    
+
     getFnCoordsAt(n) {
 
-        if(this.category === 'geometry') {
+        if (this.category === 'geometry') {
 
             return this.fn(n);
 
         } else if (this.category === 'function') {
 
-            return {x: n, y: this.fn(n)}
-            
+            return { x: n, y: this.fn(n) }
+
         }
 
     }
@@ -368,16 +368,16 @@ export default class Curve {
 
     getCurveCoordsAt(n) {
 
-        if(n < 0 || n > 1) {
+        if (n < 0 || n > 1) {
             console.error('n must be a number in the range [0, 1]');
             return null;
         }
 
         // take mirror of n if reversed
-        if(this.reverse) n = (1 - n);
+        if (this.reverse) n = (1 - n);
 
         // get x and y from the curve's function
-        let {x, y} = this.getFnCoordsAt(n);
+        let { x, y } = this.getFnCoordsAt(n);
 
         // scale each point
         x *= this.scale.x;
@@ -394,7 +394,7 @@ export default class Curve {
         const yRot = ((x - this.surface.cy) * sin + (y - this.surface.cy) * cos + this.surface.cy);
 
         // clamp methodology depends on the surface type
-        if(this.surface.type === 'unitSquare') {
+        if (this.surface.type === 'unitSquare') {
 
             const clamped = UnitSquare.outOfBounds(xRot, yRot);
             const xClamp = Math.min(1, Math.max(0, xRot));
@@ -406,7 +406,7 @@ export default class Curve {
                 clamped
             };
 
-        } else if(this.surface.type === 'unitCircle') {
+        } else if (this.surface.type === 'unitCircle') {
 
             // convert to polar in order to clamp the radius
             const clamped = UnitCircle.outOfBounds(xRot, yRot);

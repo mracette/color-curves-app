@@ -1,5 +1,5 @@
 // libs
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 // components
 import Chart from './Chart';
@@ -60,7 +60,7 @@ function Editor() {
   const [showModal, setShowModal] = useState(false);
 
   // use default color palette and curve
-  const [palette] = useState(new ColorPalette());
+  const [palette, setPalette] = useState(new ColorPalette());
   const [hsCurve, setHsCurve] = useState(palette.hsCurve);
   const [lCurve, setLCurve] = useState(palette.lCurve);
 
@@ -99,6 +99,10 @@ function Editor() {
     }
 
   }
+
+  useEffect(() => {
+    updatePalettes()
+  }, [updatePalettes, paletteType, numStops, paletteRange])
 
   return (
 
