@@ -1,12 +1,21 @@
 // libs
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 function FunctionParams(props) {
 
+    const numberRegex = /^\s*[+-]?(\d+|\.\d+|\d+\.\d+|\d+\.)(e[+-]?\d+)?\s*$/
+    const defaultInput = useRef(props.defaultValue);
+
     const inputRef = useRef(null);
+    const [inputValue, setInputValue] = useState(defaultInput.current)
+    const [prevInputValue, setPrevInputValue] = useState(defaultInput.current)
 
     const applyMaxDecimals = (num, decimals) => {
-        return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+        if (typeof decimals === 'number' && typeof num === 'number') {
+            return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+        } else {
+            return num;
+        }
     }
 
     const handleClick = (e) => {
@@ -15,15 +24,36 @@ function FunctionParams(props) {
         inputRef.current.setSelectionRange(0, value.length);
     }
 
+    const handleUserInput = (newValue) => {
+
+        // clamp if necessary
+        if (props.min !== undefined) newValue = Math.max(props.min, newValue);
+        if (props.max !== undefined) newValue = Math.min(props.max, newValue);
+
+        // truncate if necessary
+        applyMaxDecimals(newValue, props.maxDecimals);
+
+        // send truncated version to state
+        setInputValue(newValue);
+
+        // send the raw value to the handler if it is valid
+        if (newValue.toString().match(numberRegex)) {
+
+            props.handleChange && props.handleChange(parseFloat(newValue));
+
+            // store this value as the last valid value
+            setPrevInputValue(newValue);
+
+        }
+
+    }
+
     const handleMouseDown = (startPosition, startValue) => {
 
         // disable selections while the mouse is down
         document.onselectstart = () => false;
 
         document.onmousemove = (e) => {
-
-            // convert the value to float
-            startValue = parseFloat(startValue);
 
             // capture the movement and compare to startPosition
             const delta = parseFloat(e.clientX - startPosition);
@@ -34,26 +64,10 @@ function FunctionParams(props) {
             // get new value
             let newValue = startValue + stepDelta;
 
-            // clamp if necessary
-            if(props.min !== undefined) newValue = Math.max(props.min, newValue);
-            if(props.max !== undefined) newValue = Math.min(props.max, newValue);
-
-            // send the value to the handler
-            props.handleChange && props.handleChange(newValue);
-
-            // replace the current value with the new raw or converted version
-            if(props.conversion !== undefined) {
-                newValue /= props.conversion;
-            }
-
-            // truncate if necessary. this solution will use 
-            typeof props.maxDecimals === 'number' && (newValue = applyMaxDecimals(newValue, props.maxDecimals));
-
-            // send to input
-            inputRef.current.value = newValue + (props.unitSymbol || "");
+            handleUserInput(newValue);
 
         }
-            
+
         // remove listeners
         document.onmouseup = () => {
             document.onselectstart = null;
@@ -61,10 +75,10 @@ function FunctionParams(props) {
         }
     }
 
-    return (    
-        <div 
-            className = 'smart-input border'
-            style = {
+    return (
+        <div
+            className='smart-input border'
+            style={
                 (props.defaultStyles !== false) && {
                     display: 'flex',
                     flexFlow: 'row nowrap',
@@ -75,20 +89,20 @@ function FunctionParams(props) {
                     border: '1px solid #CCC',
                     border: 'none',
                     borderRadius: '4px'
-            }}
+                }}
         >
             <div
-                className = 'smart-input-label'
-                onMouseDown = {(e) => {
-                    const startPosition = e.clientX;
+                className='smart-input-label'
+                onMouseDown={(e) => {
+                    const startPosition = parseFloat(e.clientX);
                     const startValue = parseFloat(inputRef.current.value);
-                    if(props.conversion !== undefined) {
+                    if (props.conversion !== undefined) {
                         handleMouseDown(startPosition, startValue * props.conversion);
                     } else {
                         handleMouseDown(startPosition, startValue);
                     }
                 }}
-                style = {
+                style={
                     (props.defaultStyles !== false) && {
                         display: 'flex',
                         flexDirection: 'row',
@@ -96,7 +110,7 @@ function FunctionParams(props) {
                         justifyContent: 'center',
                         flexGrow: '0',
                         flexShrink: '0',
-                        flexBasis: typeof props.labelWidth === 'number' ? 
+                        flexBasis: typeof props.labelWidth === 'number' ?
                             props.labelWidth * 100 + '%' :
                             props.labelWidth,
                         height: '100%',
@@ -107,40 +121,38 @@ function FunctionParams(props) {
                         backgroundColor: '#EEE',
                         borderTopLeftRadius: '4px',
                         borderBottomLeftRadius: '4px'
-                }}
+                    }}
             >
                 <span>
                     {props.label}
                 </span>
             </div>
             <input
-                className = 'smart-input-text'
-                ref = {inputRef}
+                className='smart-input-text'
+                ref={inputRef}
                 onClick={handleClick}
-                onChange = {(e) => {
-                    let value = e.target.value;
-
-                    // if the input isn't a number, skip the handler
-                    if(props.conversion !== undefined) {
-                        props.handleChange(value * props.conversion);
+                onBlur={() => {
+                    if (inputValue.toString().match(numberRegex)) {
+                        props.handleChange && props.handleChange(applyMaxDecimals(parseFloat(inputValue)));
                     } else {
-                        props.handleChange(value);
+                        props.handleChange && props.handleChange(applyMaxDecimals(parseFloat(prevInputValue)));
+                        setInputValue(applyMaxDecimals(prevInputValue));
                     }
-
                 }}
-                value = {
-                    props.unitSymbol ? (
-                        props.maxDecimals ? 
-                            applyMaxDecimals(props.defaultValue, props.maxDecimals) + props.unitSymbol :
-                            props.defaultValue + props.unitSymbol
-                            ) : (
-                        props.maxDecimals ? 
-                            applyMaxDecimals(props.defaultValue, props.maxDecimals) :
-                            props.defaultValue
-                            )
+                onChange={(e) => {
+                    const value = e.target.value;
+                    if (props.conversion !== undefined) {
+                        handleUserInput(value * props.conversion);
+                    } else {
+                        handleUserInput(value);
+                    }
+                }}
+                value={props.conversion ?
+                    applyMaxDecimals(inputValue / props.conversion, props.maxDecimals) :
+                    applyMaxDecimals(inputValue, props.maxDecimals)
                 }
-                type = 'text'
-                style = {
+                type='text'
+                style={
                     (props.defaultStyles !== false) && {
                         flex: '0 1 auto',
                         width: '100%',
@@ -151,16 +163,18 @@ function FunctionParams(props) {
                         border: 'none',
                         // backgroundColor: 'hsl(0, 0%, 97%)',
                         borderRadius: '4px'
-                }}
+                    }}
             >
             </input>
-            {props.resetButton && 
+            {props.resetButton &&
                 <button
-                    onClick = {(e) => {
+                    onClick={(e) => {
                         e.preventDefault();
                         props.resetAction && props.resetAction();
+                        setInputValue(defaultInput.current);
+                        setPrevInputValue(defaultInput.current);
                     }}
-                    style = {
+                    style={
                         (props.defaultStyles !== false) && {
                             display: 'flex',
                             flexDirection: 'row',
@@ -178,9 +192,9 @@ function FunctionParams(props) {
                             backgroundColor: '#EEE',
                             borderTopRightRadius: '4px',
                             borderBottomRightRadius: '4px'
-                    }}
+                        }}
                 >
-                {String.fromCharCode(0x21ba)}
+                    {String.fromCharCode(0x21ba)}
                 </button>
             }
         </div>

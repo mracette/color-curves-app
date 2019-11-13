@@ -6,16 +6,14 @@ import 'bootstrap';
 import ExportModal from './ExportModal';
 
 // palettes
-import {
-    warmMagma,
-    allAround,
-    unAmerican,
-    candyPaint,
-    goldfishDeluxe,
-    trixSky,
-    coralScrub,
-    polarBeyond
-} from '../lib/palettes/palettes';
+import WarmMagma from '../lib/palettes/WarmMagma';
+import AllAround from '../lib/palettes/AllAround';
+import UnAmerican from '../lib/palettes/UnAmerican';
+import CandyPaint from '../lib/palettes/CandyPaint';
+import GoldfishDeluxe from '../lib/palettes/GoldfishDeluxe';
+import TrixSky from '../lib/palettes/TrixSky';
+import CoralScrub from '../lib/palettes/CoralScrub';
+import PolarBeyond from '../lib/palettes/PolarBeyond';
 
 function Presets() {
 
@@ -23,14 +21,14 @@ function Presets() {
     const [selectedPalette, setSelectedPalette] = useState(null);
 
     const presets = [
-        warmMagma(),
-        allAround(),
-        unAmerican(),
-        candyPaint(),
-        goldfishDeluxe(),
-        trixSky(),
-        coralScrub(),
-        polarBeyond()
+        new WarmMagma(),
+        new AllAround(),
+        new UnAmerican(),
+        new CandyPaint(),
+        new GoldfishDeluxe(),
+        new TrixSky(),
+        new CoralScrub(),
+        new PolarBeyond()
     ];
 
     useEffect(() => {
