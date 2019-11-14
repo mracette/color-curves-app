@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { downloadCanvas } from '../lib/utils/canvas'
 
 // components
-import SmartInput from '../components/SmartInput';
+import SmartInput from './smart-input/SmartInput';
 
 function ExportImage(props) {
 
@@ -18,8 +18,6 @@ function ExportImage(props) {
     }, []);
 
     const exportImage = (canvas, imgName) => {
-
-        console.log(props.exportCanvas);
 
         // resize for export
         canvas.style.width = imgWidth + 'px';
@@ -40,95 +38,95 @@ function ExportImage(props) {
     }
     return (<>
 
-        <div className = 'row mt-3'>
-            <label className = 'col-lg-1 col-form-label-sm' htmlFor = 'type-select'>Name</label>
-            <div className = 'col-lg-4'>
+        <div className='row mt-3'>
+            <label className='col-lg-1 col-form-label-sm' htmlFor='type-select'>Name</label>
+            <div className='col-lg-4'>
                 <input
-                    id = 'export-image-name'
-                    className = 'form-control form-control-sm'
-                    placeholder = 'colorcurve.png'
-                    onChange = {(e) => {
+                    id='export-image-name'
+                    className='form-control form-control-sm'
+                    placeholder='colorcurve.png'
+                    onChange={(e) => {
                         const value = e.target.value;
                         setImgName(value);
-                }}/>
+                    }} />
             </div>
         </div>
 
-        <div className = 'row'>
-            <label className = 'col-lg-1 col-form-label-sm' htmlFor = 'type-select'>Type</label>
-            <div className = 'col-lg-2'>
+        <div className='row'>
+            <label className='col-lg-1 col-form-label-sm' htmlFor='type-select'>Type</label>
+            <div className='col-lg-2'>
                 <select
-                    id = 'type-select'
-                    className = 'form-control form-control-sm'
-                    defaultValue = {props.paletteType}
-                    onChange = {(e) => {
+                    id='type-select'
+                    className='form-control form-control-sm'
+                    defaultValue={props.paletteType}
+                    onChange={(e) => {
                         const newPaletteType = e.target.value;
                         props.setPaletteType(newPaletteType);
-                }}>
-                <option value = 'continuous'>Continuous</option>
-                <option value = 'discrete'>Discrete</option>
+                    }}>
+                    <option value='continuous'>Continuous</option>
+                    <option value='discrete'>Discrete</option>
                 </select>
             </div>
             {props.paletteType === 'discrete' &&
-            <div className = 'col-lg-2'>
+                <div className='col-lg-2'>
+                    <SmartInput
+                        labelWidth={.33}
+                        label='Num'
+                        step={1}
+                        min={1}
+                        max={32}
+                        maxDecimals={0}
+                        defaultValue={props.numStops}
+                        handleChange={(value) => props.setNumStops(parseInt(value))}
+                    />
+                </div>}
+        </div>
+
+
+        <div className='row'>
+
+            <label className='col-lg-1 col-form-label-sm' htmlFor='type-select'>Size</label>
+            <div className='col-lg-2'>
                 <SmartInput
-                    labelWidth = {.33}
-                    label = 'Num'
-                    step = {1}
-                    min = {1}
-                    max = {32}
-                    maxDecimals = {0}
-                    defaultValue = {props.numStops}
-                    handleChange = {(value) => props.setNumStops(parseInt(value))}
+                    labelWidth={.33}
+                    label='W'
+                    step={1}
+                    min={1}
+                    max={1080}
+                    maxDecimals={0}
+                    unitSymbol={'px'}
+                    defaultValue={imgWidth}
+                    handleChange={(value) => setImgWidth(parseInt(value))}
                 />
-            </div>}
+            </div>
+
+            <div className='col-lg-2'>
+                <SmartInput
+                    labelWidth={.33}
+                    label='H'
+                    step={1}
+                    min={1}
+                    max={1080}
+                    maxDecimals={0}
+                    unitSymbol={'px'}
+                    defaultValue={imgHeight}
+                    handleChange={(value) => setImgHeight(parseInt(value))}
+                />
+            </div>
+
         </div>
 
-
-    <div className = 'row'>
-
-        <label className = 'col-lg-1 col-form-label-sm' htmlFor = 'type-select'>Size</label>
-        <div className = 'col-lg-2'>
-            <SmartInput
-                labelWidth = {.33}
-                label = 'W'
-                step = {1}
-                min = {1}
-                max = {1080}
-                maxDecimals = {0}
-                unitSymbol = {'px'}
-                defaultValue = {imgWidth}
-                handleChange = {(value) => setImgWidth(parseInt(value))}
-            />
-        </div>
-
-        <div className = 'col-lg-2'>
-            <SmartInput
-                labelWidth = {.33}
-                label = 'H'
-                step = {1}
-                min = {1}
-                max = {1080}
-                maxDecimals = {0}
-                unitSymbol = {'px'}
-                defaultValue = {imgHeight}
-                handleChange = {(value) => setImgHeight(parseInt(value))}
-            />
-        </div>
-
-    </div>
-
-    <div className = 'row mt-3'>
-        <div className = 'col-lg-5 d-flex'>
-            <button 
-                onClick = {() => exportImage(props.exportCanvas.current, imgName)}
-                type="button" 
-                className="btn btn-primary flex-grow-1"
-            >
-                Download Image
+        <div className='row mt-3'>
+            <div className='col-lg-5 d-flex'>
+                <button
+                    onClick={() => exportImage(props.exportCanvas.current, imgName)}
+                    type="button"
+                    className="btn btn-primary flex-grow-1"
+                >
+                    Download Image
             </button>
+            </div>
         </div>
-    </div>
 
     </>)
 

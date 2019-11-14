@@ -10,11 +10,33 @@ function FunctionParams(props) {
     const [inputValue, setInputValue] = useState(defaultInput.current)
     const [prevInputValue, setPrevInputValue] = useState(defaultInput.current)
 
-    const applyMaxDecimals = (num, decimals) => {
-        if (typeof decimals === 'number' && typeof num === 'number') {
-            return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    const isValidInput = (value) => value.toString().match(numberRegex);
+
+    const applyMaxDecimals = (num) => {
+        if (typeof num === 'number' && typeof props.maxDecimals === 'number') {
+            return Math.round(num * Math.pow(10, props.maxDecimals)) / Math.pow(10, props.maxDecimals);
         } else {
             return num;
+        }
+    }
+
+    const sendValueToHandler = (value) => {
+        // ensure handler exists
+        if (props.handleChange) {
+            // convert if necessary
+            if (props.conversion) {
+                props.handleChange(parseFloat(value * props.conversion));
+            } else {
+                props.handleChange(parseFloat(value));
+            }
+        }
+    }
+
+    const cleanInput = (value) => {
+        if (isValidInput(value)) {
+            return applyMaxDecimals(value);
+        } else {
+            return value;
         }
     }
 
@@ -24,27 +46,35 @@ function FunctionParams(props) {
         inputRef.current.setSelectionRange(0, value.length);
     }
 
+    const handleOnBlur = (currentValue) => {
+        if (isValidInput(currentValue)) {
+            sendValueToHandler(currentValue);
+        } else {
+            sendValueToHandler(prevInputValue);
+            setInputValue(prevInputValue);
+        }
+    }
+
     const handleUserInput = (newValue) => {
 
-        // clamp if necessary
-        if (props.min !== undefined) newValue = Math.max(props.min, newValue);
-        if (props.max !== undefined) newValue = Math.min(props.max, newValue);
+        if (isValidInput(newValue)) {
 
-        // truncate if necessary
-        applyMaxDecimals(newValue, props.maxDecimals);
-
-        // send truncated version to state
-        setInputValue(newValue);
-
-        // send the raw value to the handler if it is valid
-        if (newValue.toString().match(numberRegex)) {
-
-            props.handleChange && props.handleChange(parseFloat(newValue));
+            // send to change handler
+            sendValueToHandler(newValue);
 
             // store this value as the last valid value
             setPrevInputValue(newValue);
 
+            // always send to local state
+            setInputValue(newValue);
+
+        } else {
+
+            // always send to local state
+            setInputValue(newValue);
+
         }
+
 
     }
 
@@ -94,13 +124,10 @@ function FunctionParams(props) {
             <div
                 className='smart-input-label'
                 onMouseDown={(e) => {
+                    e.preventDefault();
                     const startPosition = parseFloat(e.clientX);
                     const startValue = parseFloat(inputRef.current.value);
-                    if (props.conversion !== undefined) {
-                        handleMouseDown(startPosition, startValue * props.conversion);
-                    } else {
-                        handleMouseDown(startPosition, startValue);
-                    }
+                    handleMouseDown(startPosition, startValue);
                 }}
                 style={
                     (props.defaultStyles !== false) && {
@@ -131,26 +158,15 @@ function FunctionParams(props) {
                 className='smart-input-text'
                 ref={inputRef}
                 onClick={handleClick}
-                onBlur={() => {
-                    if (inputValue.toString().match(numberRegex)) {
-                        props.handleChange && props.handleChange(applyMaxDecimals(parseFloat(inputValue)));
-                    } else {
-                        props.handleChange && props.handleChange(applyMaxDecimals(parseFloat(prevInputValue)));
-                        setInputValue(applyMaxDecimals(prevInputValue));
-                    }
+                onBlur={(e) => {
+                    const value = inputRef.current.value;
+                    handleOnBlur(value);
                 }}
                 onChange={(e) => {
                     const value = e.target.value;
-                    if (props.conversion !== undefined) {
-                        handleUserInput(value * props.conversion);
-                    } else {
-                        handleUserInput(value);
-                    }
+                    handleUserInput(value);
                 }}
-                value={props.conversion ?
-                    applyMaxDecimals(inputValue / props.conversion, props.maxDecimals) :
-                    applyMaxDecimals(inputValue, props.maxDecimals)
-                }
+                value={cleanInput(inputValue)}
                 type='text'
                 style={
                     (props.defaultStyles !== false) && {
@@ -168,6 +184,7 @@ function FunctionParams(props) {
             </input>
             {props.resetButton &&
                 <button
+                    type="button"
                     onClick={(e) => {
                         e.preventDefault();
                         props.resetAction && props.resetAction();
