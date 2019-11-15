@@ -46,7 +46,7 @@ function Presets() {
                         setSelectedPalette(preset);
                         setShowModal(true);
                     }}
-                    className='preset material palette-wrapper border'>
+                    className='preset material palette-wrapper'>
                     <h4>{preset.name}</h4>
                     <h6>by {preset.author}</h6>
                     <canvas className='preset-canvas' id={`${preset.name}-continuous`} />

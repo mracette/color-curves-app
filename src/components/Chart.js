@@ -14,7 +14,7 @@ function Chart(props) {
 
     const canvasRef = useRef(null);
 
-    const padding = .10;
+    const padding = .07;
 
     const updateCurve = () => {
 
@@ -62,7 +62,7 @@ function Chart(props) {
 
         <div className='chart col-md-6'>
 
-            <div className='material-static chart-wrapper border'>
+            <div className='material-static chart-wrapper'>
 
                 <div className='row border-bottom'>
 
@@ -86,12 +86,10 @@ function Chart(props) {
 
                     <div className='col-md-12'>
 
-                        <div className='square-container'>
-                            <canvas
-                                className='chart'
-                                ref={canvasRef}
-                            />
-                        </div>
+                        <canvas
+                            className='chart'
+                            ref={canvasRef}
+                        />
 
                     </div>
 

@@ -108,7 +108,7 @@ function Editor() {
 
     <>
 
-      <div ref={paletteWrapper} className='material-static palette-wrapper sticky-top border'>
+      <div ref={paletteWrapper} className='material-static palette-wrapper sticky-top'>
 
         <div className='row border-bottom'>
           <div className='col-auto align-items-center'>
@@ -143,8 +143,8 @@ function Editor() {
           <div className='row'>
 
             {/* PALETTE TYPE */}
-            <label className='col-lg-1 col-form-label-sm' htmlFor='type-select'>Type</label>
-            <div className='col-lg-2'>
+            <label className='col-lg-1 col-2 col-form-label-sm' htmlFor='type-select'>Type</label>
+            <div className='col-lg-2 col-5'>
               <select
                 id='type-select'
                 className='form-control form-control-sm'
@@ -160,7 +160,7 @@ function Editor() {
 
             {/* NUM STOPS */}
             {paletteType === 'discrete' &&
-              <div className='col-lg-2'>
+              <div className='col-lg-2 col-5'>
                 <SmartInput
                   labelWidth={.33}
                   label='Num'
@@ -180,9 +180,9 @@ function Editor() {
           <div className='row'>
 
             {/* PALETTE TYPE */}
-            <label className='col-lg-1 col-form-label-sm' htmlFor='type-select'>Range</label>
+            <label className='col-lg-1 col-2 col-form-label-sm' htmlFor='type-select'>Range</label>
 
-            <div className='col-lg-2'>
+            <div className='col-lg-2 col-5'>
               <SmartInput
                 labelWidth={.33}
                 label='Start'
@@ -198,7 +198,7 @@ function Editor() {
               />
             </div>
 
-            <div className='col-lg-2'>
+            <div className='col-lg-2 col-5'>
               <SmartInput
                 labelWidth={.33}
                 label='End'

@@ -113,7 +113,7 @@ function FunctionParams(props) {
                     display: 'flex',
                     flexFlow: 'row nowrap',
                     alignItems: 'center',
-                    height: '2rem',
+                    height: '1.9rem',
                     width: '100%',
                     color: '#555',
                     border: '1px solid #CCC',

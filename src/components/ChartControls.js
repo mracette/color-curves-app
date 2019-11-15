@@ -74,7 +74,7 @@ function ChartControls(props) {
 
     return (
 
-        <div id='chart-controls' className='col-lg-12'>
+        <div id='chart-controls' className='col-12'>
 
             {/* FORM */}
             <form>
@@ -85,8 +85,8 @@ function ChartControls(props) {
                     <div className='row'>
 
                         {/* CURVE TYPE */}
-                        <label className='col-lg-2 col-form-label-sm' htmlFor='type-select'>Curve</label>
-                        <div className='col-lg-5'>
+                        <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='type-select'>Curve</label>
+                        <div className='col-lg-5 col-9'>
                             <select
                                 id='type-select'
                                 className='form-control form-control-sm'
@@ -103,8 +103,8 @@ function ChartControls(props) {
 
                         {/* CURVE VARIATION */}
                         {props.curve.category === 'function' && props.curve.type !== 'linear' && (<>
-                            <label className='col-lg-2 col-form-label-sm' htmlFor='variation-select'>Variation</label>
-                            <div className='col-lg-3'>
+                            <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='variation-select'>Variation</label>
+                            <div className='col-lg-3 col-9'>
                                 <select
                                     id='variation-select'
                                     className='form-control form-control-sm'
@@ -126,8 +126,8 @@ function ChartControls(props) {
                     {props.curve.type === 'polynomial' &&
                         <div className='row justify-content-end'>
 
-                            <label className='col-lg-2 col-form-label-sm' htmlFor='variation-select'>Exponent</label>
-                            <div className='col-lg-3'>
+                            <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='variation-select'>Exponent</label>
+                            <div className='col-lg-3 col-9'>
                                 <SmartInput
                                     labelWidth={.2}
                                     label={"e"}
@@ -148,8 +148,8 @@ function ChartControls(props) {
                     {/* CONDITIONAL CURVE PARAMS */}
                     {props.curve.type === 'back' &&
                         <div className='row justify-content-end'>
-                            <label className='col-lg-2 col-form-label-sm' htmlFor='variation-select'>Overshoot</label>
-                            <div className='col-lg-3'>
+                            <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='variation-select'>Overshoot</label>
+                            <div className='col-lg-3 col-9'>
                                 <SmartInput
                                     labelWidth={.2}
                                     label={"s"}
@@ -169,8 +169,8 @@ function ChartControls(props) {
                     {/* CONDITIONAL CURVE PARAMS */}
                     {props.curve.type === 'elastic' && <>
                         <div className='row justify-content-end'>
-                            <label className='col-lg-2 col-form-label-sm' htmlFor='variation-select'>Amplitude</label>
-                            <div className='col-lg-3'>
+                            <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='variation-select'>Amplitude</label>
+                            <div className='col-lg-3 col-9'>
                                 <SmartInput
                                     labelWidth={.2}
                                     label={"a"}
@@ -188,8 +188,8 @@ function ChartControls(props) {
                             </div>
                         </div>
                         <div className='row justify-content-end'>
-                            <label className='col-lg-2 col-form-label-sm' htmlFor='variation-select'>Period</label>
-                            <div className='col-lg-3'>
+                            <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='variation-select'>Period</label>
+                            <div className='col-lg-3 col-9'>
                                 <SmartInput
                                     labelWidth={.2}
                                     label={"p"}
@@ -213,8 +213,8 @@ function ChartControls(props) {
                     <div className='row'>
 
                         {/* CURVE DIRECTION */}
-                        <label className='col-lg-2 col-form-label-sm' htmlFor='direction-select'>Direction</label>
-                        <div className='col-lg-5'>
+                        <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='direction-select'>Direction</label>
+                        <div className='col-lg-5 col-9'>
                             <select
                                 id='direction-select'
                                 className='form-control form-control-sm'
@@ -229,8 +229,8 @@ function ChartControls(props) {
                         </div>
 
                         {/* CURVE OVERFLOW */}
-                        <label className='col-lg-2 col-form-label-sm' htmlFor='off-grid-select'>Overflow</label>
-                        <div className='col-lg-3'>
+                        <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='off-grid-select'>Overflow</label>
+                        <div className='col-lg-3 col-9'>
                             <select
                                 id='overflow-select'
                                 className='form-control form-control-sm'
@@ -255,8 +255,8 @@ function ChartControls(props) {
                     <div className='row'>
 
                         {/* RADIUS */}
-                        <label className='col-lg-2 col-form-label-sm' htmlFor='type-select'>Radius</label>
-                        <div className='col-sm-5'>
+                        <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='type-select'>Radius</label>
+                        <div className='col-lg-5 col-9'>
                             <SmartInput
                                 labelWidth={.2}
                                 label='r'
@@ -278,8 +278,8 @@ function ChartControls(props) {
                     <div className='row'>
 
                         {/* ANGLE START */}
-                        <label className='col-lg-2 col-form-label-sm' htmlFor='type-select'>Range</label>
-                        <div className='col-sm-5'>
+                        <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='type-select'>Range</label>
+                        <div className='col-lg-5 col-9'>
                             <SmartInput
                                 labelWidth={.2}
                                 label={<>{String.fromCharCode(0xfeff0398)}<sub>0</sub></>}
@@ -298,7 +298,7 @@ function ChartControls(props) {
                         </div>
 
                         {/* ANGLE END */}
-                        <div className='col-sm-5'>
+                        <div className='col-lg-5 col-9 ml-auto'>
                             <SmartInput
                                 labelWidth={.2}
                                 label={<>{String.fromCharCode(0xfeff0398)}<sub>1</sub></>}
@@ -322,8 +322,8 @@ function ChartControls(props) {
                     <div className='row'>
 
                         {/* ANGLE START */}
-                        <label className='col-lg-2 col-form-label-sm' htmlFor='type-select'>Offset</label>
-                        <div className='col-sm-5'>
+                        <label className='col-lg-2 col-3 col-form-label-sm' htmlFor='type-select'>Offset</label>
+                        <div className='col-lg-5 col-9'>
                             <SmartInput
                                 labelWidth={.2}
                                 label={String.fromCharCode(0xfeff0398)}
@@ -351,8 +351,8 @@ function ChartControls(props) {
                     <div className='row'>
 
                         {/* CURVE TYPE */}
-                        <label className='col-lg-2 col-form-label-sm' htmlFor='type-select'>Translation</label>
-                        <div className='col-sm-5'>
+                        <label className='col-lg-2 col-form-label-sm' htmlFor='type-select'>Translate</label>
+                        <div className='col-lg-5 col-6'>
                             <SmartInput
                                 labelWidth={.2}
                                 label='X'
@@ -368,7 +368,7 @@ function ChartControls(props) {
                             />
                         </div>
 
-                        <div className='col-sm-5'>
+                        <div className='col-lg-5 col-6'>
                             <SmartInput
                                 labelWidth={.2}
                                 label='Y'
@@ -391,7 +391,7 @@ function ChartControls(props) {
 
                         {/* CURVE TYPE */}
                         <label className='col-lg-2 col-form-label-sm' htmlFor='type-select'>Scale</label>
-                        <div className='col-sm-5'>
+                        <div className='col-lg-5 col-6'>
                             <SmartInput
                                 labelWidth={.2}
                                 label='X'
@@ -407,7 +407,7 @@ function ChartControls(props) {
                             />
                         </div>
 
-                        <div className='col-sm-5'>
+                        <div className='col-lg-5 col-6'>
                             <SmartInput
                                 labelWidth={.2}
                                 label='Y'
@@ -427,8 +427,8 @@ function ChartControls(props) {
 
                     {/* ROTATION */}
                     <div className='row'>
-                        <label className='col-lg-2 col-form-label-sm' htmlFor='type-select'>Rotation</label>
-                        <div className='col-sm-5'>
+                        <label className='col-lg-2 col-form-label-sm' htmlFor='type-select'>Rotate</label>
+                        <div className='col-lg-5 col-6'>
                             <SmartInput
                                 labelWidth={.2}
                                 label={String.fromCharCode(0xfeff0398)}
