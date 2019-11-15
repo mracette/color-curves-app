@@ -62,12 +62,12 @@ function ExportHex(props) {
                         return (
                             <div className='row p-1'>
                                 <div
-                                    className='hex-square col-lg-1'
+                                    className='hex-square col-lg-1 col-6'
                                     style={{
                                         backgroundColor: d
                                     }}
                                 />
-                                <div className='col-lg-2'>
+                                <div className='col-lg-2 col-6'>
                                     {d}
                                 </div>
                             </div>

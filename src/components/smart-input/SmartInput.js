@@ -78,15 +78,17 @@ function FunctionParams(props) {
 
     }
 
-    const handleMouseDown = (startPosition, startValue) => {
+    const handleMouseOrTouchDown = (startPosition, startValue) => {
 
         // disable selections while the mouse is down
         document.onselectstart = () => false;
 
-        document.onmousemove = (e) => {
+        const onMouseOrTouchMove = (e) => {
+
+            const x = e.clientX || e.touches[0].clientX;
 
             // capture the movement and compare to startPosition
-            const delta = parseFloat(e.clientX - startPosition);
+            const delta = parseFloat(x - startPosition);
 
             // multiply the delta by the step
             const stepDelta = delta * (props.step || 1);
@@ -98,11 +100,25 @@ function FunctionParams(props) {
 
         }
 
+        document.onmousemove = (e) => onMouseOrTouchMove(e);
+        document.ontouchmove = (e) => {
+            console.log(e);
+            console.log(startPosition);
+            onMouseOrTouchMove(e)
+        };
+
         // remove listeners
         document.onmouseup = () => {
             document.onselectstart = null;
             document.onmousemove = null;
         }
+
+        document.ontouchend = () => {
+            console.log('touchend');
+            document.onselectstart = null;
+            document.ontouchmove = null;
+        }
+
     }
 
     return (
@@ -127,7 +143,13 @@ function FunctionParams(props) {
                     e.preventDefault();
                     const startPosition = parseFloat(e.clientX);
                     const startValue = parseFloat(inputRef.current.value);
-                    handleMouseDown(startPosition, startValue);
+                    handleMouseOrTouchDown(startPosition, startValue);
+                }}
+                onTouchStart={(e) => {
+                    e.preventDefault();
+                    const startPosition = parseFloat(e.touches[0].clientX);
+                    const startValue = parseFloat(inputRef.current.value);
+                    handleMouseOrTouchDown(startPosition, startValue);
                 }}
                 style={
                     (props.defaultStyles !== false) && {
