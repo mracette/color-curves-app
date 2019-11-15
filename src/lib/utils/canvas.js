@@ -1,3 +1,4 @@
+import AllAround from '../palettes/AllAround';
 
 export const downloadCanvas = (canvas, filename) => {
 
@@ -26,6 +27,8 @@ export const downloadCanvas = (canvas, filename) => {
 
 export const logoGen = (size) => {
 
+    const pal = new AllAround();
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = size;
@@ -33,7 +36,7 @@ export const logoGen = (size) => {
 
     const lineWidth = size / 20;
     const radius = (size / 2) - lineWidth;
-    const innerRadius = radius / 2.5;
+    const innerRadius = radius / 3.5;
 
     ctx.lineWidth = lineWidth;
     ctx.strokeStyle = '#000000';
@@ -41,25 +44,33 @@ export const logoGen = (size) => {
     const slices = 16;
     const arcLength = - Math.PI * 2 / slices;
 
-    for(let i = 0; i < 16; i++) {
+    // fill inner circle with black
+    ctx.fillStyle = 'black';
+    ctx.arc(size / 2, size / 2, innerRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    for (let i = 0; i < 16; i++) {
+
+        pal.hsCurve.setClampBounds();
+        pal.lCurve.setClampBounds();
 
         ctx.fillStyle = `hsl(${(i / slices) * 360}, 100%, 50%)`;
+        // ctx.fillStyle = pal.hslValueAt(i / slices);
 
         const start = i * arcLength;
         const end = i * arcLength + arcLength;
 
         ctx.beginPath();
         ctx.arc(size / 2, size / 2, radius, start, end, true);
-        ctx.stroke();
-        if(i === slices - 1) {
+        if (i === slices - 1) {
             ctx.lineWidth *= 0.5;
         }
         ctx.arc(size / 2, size / 2, innerRadius, end, start, false);
         ctx.fill();
         ctx.stroke();
-        
+
     }
-    
+
     // smooth out inner and outer borders
     ctx.lineWidth = lineWidth;
     ctx.beginPath();
@@ -68,7 +79,7 @@ export const logoGen = (size) => {
     ctx.beginPath();
     ctx.arc(size / 2, size / 2, innerRadius, 0, Math.PI * 2);
     ctx.stroke();
-    
+
     return canvas;
 
 }

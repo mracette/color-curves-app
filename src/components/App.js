@@ -8,7 +8,12 @@ import Editor from './Editor'
 import Presets from './Presets';
 
 // styles
+import 'typeface-poppins';
 import '../styles/app.scss';
+
+// other
+import logo from '../img/logo192.png';
+// import { logoGen, downloadCanvas } from '../lib/utils/canvas'
 
 function App() {
 
@@ -18,70 +23,52 @@ function App() {
 
   return (<>
 
-    <div className = 'container' id = 'app'>
+    <nav
+      className={`navbar navbar-expand-lg navbar-dark ${nav !== "editor" ? "sticky-top" : ""}`}
+      style={{ backgroundColor: '#232F34' }}
+    >
+      <img src={logo} className="logo"></img>
 
-      <div className = 'row' id = 'header'>
-
-        <div className = 'col-md-12'>
-          <h1>Color Curves</h1>
-        </div>
-
+      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul className="navbar-nav mr-auto">
+          <li className={`nav-item ${nav === 'editor' ? "active" : ""}`}>
+            <a className="nav-link" onClick={() => setNav('editor')} href="JavaScript:Void(0);">Editor <span className="sr-only">(current)</span></a>
+          </li>
+          <li className={`nav-item ${nav === 'presets' ? "active" : ""}`}>
+            <a className="nav-link" onClick={() => setNav('presets')} href="JavaScript:Void(0);">Presets</a>
+          </li>
+          <li className={`nav-item ${nav === 'about' ? "active" : ""}`}>
+            <a className="nav-link" onClick={() => setNav('about')} href="JavaScript:Void(0);">About</a>
+          </li>
+          <li className="nav-item dropdown">
+            <a className="nav-link dropdown-toggle" href="JavaScript:Void(0);" id="theme-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Theme
+            </a>
+            <div className="dropdown-menu" aria-labelledby="theme-dropdown">
+              <a className="dropdown-item active" href="JavaScript:Void(0);">Light</a>
+              <a className="dropdown-item" href="JavaScript:Void(0);">Dark</a>
+            </div>
+          </li>
+        </ul>
       </div>
-      
-      <ul className="nav nav-pills">
+    </nav>
 
-        <li className="nav-item">
-          <button id = "editor-button" className={`nav-link ${nav === 'editor' ? 'active' : ''}`} onClick = {() => setNav('editor')}>Editor</button>
-        </li>
-
-        <li className="nav-item">
-          <button id="presets-button" className={`nav-link ${nav === 'presets' ? 'active' : ''}`} onClick = {() => setNav('presets')}>Presets</button>
-        </li>
-
-        <li className="nav-item">
-          <button id="about-button" className={`nav-link ${nav === 'about' ? 'active' : ''}`} onClick = {() => setNav('about')}>About</button>
-        </li>
-
-        <li className="d-flex align-items-middle  ">
-          <form className = 'm-auto'>
-          <div className="custom-control custom-switch">
-            <input 
-              type="checkbox" 
-              id='dark-mode-switch'
-              className="custom-control-input" 
-              defaultChecked = {darkMode} 
-              onChange = {(e) => {
-                const value = e.target.checked;
-                setDarkMode(value)
-              }}
-            />
-            <label className="custom-control-label" htmlFor="dark-mode-switch">Dark Mode</label>
-          </div>
-          </form>
-        </li>
-
-      </ul>
-
+    <div className='container' id='app'>
       <div className="tab-content">
-
         <div className={`tab-pane fade ${nav === 'editor' ? 'show active' : ''}`} id="home" role="tabpanel" aria-labelledby="editor-button">
           <Editor
-            setAppPalette = {setAppPalette}
+            setAppPalette={setAppPalette}
           />
         </div>
-
         <div className={`tab-pane fade ${nav === 'presets' ? 'show active' : ''}`} id="presets" role="tabpanel" aria-labelledby="presets-button">
           <Presets
-            setAppPalette = {setAppPalette}
+            setAppPalette={setAppPalette}
           />
         </div>
-
         <div className={`tab-pane fade ${nav === 'about' ? 'show active' : ''}`} id="about" role="tabpanel" aria-labelledby="about-button">
           about
         </div>
-
       </div>
-
     </div>
 
   </>);

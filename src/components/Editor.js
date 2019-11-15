@@ -108,7 +108,7 @@ function Editor() {
 
     <>
 
-      <div ref={paletteWrapper} className='palette-wrapper sticky-top border'>
+      <div ref={paletteWrapper} className='material-static palette-wrapper sticky-top border'>
 
         <div className='row border-bottom'>
           <div className='col-auto align-items-center'>

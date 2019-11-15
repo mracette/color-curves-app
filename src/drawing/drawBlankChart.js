@@ -5,15 +5,11 @@ export const drawHsChart = (curve, canvas, padding) => {
     const nx = nxCircle(canvas, padding);
     const ny = nyCircle(canvas, padding);
 
-    const ctx = canvas.getContext('2d', {alpha: false});
-
-    // larger coordinate systems seem to result in sharper renders
-    canvas.height = canvas.clientHeight * 4;
-    canvas.width = canvas.clientWidth * 4;
+    const ctx = canvas.getContext('2d', { alpha: false });
 
     // fill background
     ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);        
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // color wheel parameters
     const arcCount = 256;
@@ -26,7 +22,7 @@ export const drawHsChart = (curve, canvas, padding) => {
     const r = nx(0) - padding * nx(0) * 2;
 
     // fill chart gradient
-    for(let i = 0; i < arcCount; i++) {
+    for (let i = 0; i < arcCount; i++) {
 
         const radiusStart = 0;
         const radiusEnd = r;
@@ -53,11 +49,7 @@ export const drawLChart = (curve, canvas, padding) => {
     const nx = nxSquare(canvas, padding);
     const ny = nySquare(canvas, padding);
 
-    const ctx = canvas.getContext('2d', {alpha: false});
-
-    // larger coordinate systems seem to result in sharper renders
-    canvas.height = canvas.clientHeight * 4;
-    canvas.width = canvas.clientWidth * 4;
+    const ctx = canvas.getContext('2d', { alpha: false });
 
     // fill background
     ctx.fillStyle = 'white';
@@ -65,18 +57,18 @@ export const drawLChart = (curve, canvas, padding) => {
 
     // fill chart gradient
     const fillRectGradient = ctx.createLinearGradient(
-        nx(0), 
-        ny(1), 
-        nx(0), 
+        nx(0),
+        ny(1),
+        nx(0),
         ny(0)
     );
     fillRectGradient.addColorStop(0, 'hsl(0, 0%, 100%');
     fillRectGradient.addColorStop(1, 'hsl(0, 0%, 0%');
     ctx.fillStyle = fillRectGradient;
     ctx.fillRect(
-        nx(0), 
-        ny(1), 
-        nx(1) - padding * nx(1), 
+        nx(0),
+        ny(1),
+        nx(1) - padding * nx(1),
         ny(0) - padding * ny(0));
 
 }

@@ -18,7 +18,7 @@ function Chart(props) {
 
     const updateCurve = () => {
 
-        switch(props.curve.surface.type) {
+        switch (props.curve.surface.type) {
 
             case 'unitCircle':
                 drawHsChart(props.curve, canvasRef.current, padding);
@@ -40,44 +40,58 @@ function Chart(props) {
 
     }
 
+    window.addEventListener('resize', () => {
+        canvasRef.current.width = canvasRef.current.clientWidth;
+        canvasRef.current.height = canvasRef.current.width;
+        updateCurve();
+    })
+
+    useEffect(() => {
+        canvasRef.current.width = canvasRef.current.clientWidth;
+        canvasRef.current.height = canvasRef.current.width;
+        updateCurve();
+    }, [])
+
     useEffect(() => {
 
         updateCurve();
-        
+
     }, [props.curve]);
 
     return (
-    
-        <div className = 'chart col-md-6'>
 
-            <div className = 'chart-wrapper border'>
+        <div className='chart col-md-6'>
 
-                <div className = 'row border-bottom'>
+            <div className='material-static chart-wrapper border'>
 
-                    <div className = 'col-md-12'>
+                <div className='row border-bottom'>
+
+                    <div className='col-md-12'>
 
                         <h2>{props.title}</h2>
 
                     </div>
 
-                </div>  
+                </div>
 
-                <ChartControls 
-                    chartType = { props.chartType }
-                    config = { props.config }
-                    curve = { props.curve }
-                    setCurve = { props.setCurve }
-                    updateCurve = { updateCurve }
+                <ChartControls
+                    chartType={props.chartType}
+                    config={props.config}
+                    curve={props.curve}
+                    setCurve={props.setCurve}
+                    updateCurve={updateCurve}
                 />
-        
-                <div className = 'row'>
 
-                    <div className = 'col-md-12'>
+                <div className='row'>
 
-                        <canvas
-                            className = 'chart square-canvas'
-                            ref = {canvasRef}
-                        />
+                    <div className='col-md-12'>
+
+                        <div className='square-container'>
+                            <canvas
+                                className='chart'
+                                ref={canvasRef}
+                            />
+                        </div>
 
                     </div>
 
@@ -86,7 +100,7 @@ function Chart(props) {
             </div>
 
         </div>
-    
+
     );
 
 }

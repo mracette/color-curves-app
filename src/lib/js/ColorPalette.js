@@ -275,8 +275,6 @@ export default class ColorPalette {
 
         this.updateCurveClampBound();
 
-        canvas.width = canvas.clientWidth * 4;
-        canvas.height = canvas.clientHeight * 4;
         const ctx = canvas.getContext('2d');
         const stops = numStops || 12;
 

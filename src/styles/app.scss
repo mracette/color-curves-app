@@ -1,9 +1,22 @@
 @import './custom';
 @import '~bootstrap/scss/bootstrap';
 
+$bgLight: #f8f9fa;
+$lightGrey: #eeeeee;
+$darkGrey: #232F34;
+
 body, #root {
+  background-color: $lightGrey;
   margin: 0;
   padding: 0;
+  font-family: 'Poppins';
+}
+
+.logo {
+  display: inline-block;
+  margin-right: 0.5rem;
+  width: 32px;
+  height: 32px;
 }
 
 .code-block {
@@ -20,6 +33,15 @@ canvas {
   margin: 0;
 }
 
+.material, .material-static {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+}
+
+.material:hover {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
 #export-canvas, #hex-canvas {
   display: block;
   margin: 0 auto;
@@ -27,11 +49,17 @@ canvas {
   height: 3rem;
 }
 
+.square-container {
+  padding: 0 10% 0 10%;
+  width: 100%;
+  height: 0;
+  margin-bottom: 100%;
+} 
+
 canvas.chart {
   display: block;
   margin: 0 auto;
-  width: 20rem;
-  height: 20rem;
+  width: 100%;
 }
 
 #canvas-banner {
@@ -45,7 +73,7 @@ canvas.chart {
 .palette-wrapper {
   z-index: 1;
   margin: 10px 0px 10px 0px;
-  border-radius: 4px;
+  border-radius: 3px;
   padding: 15px;
   background-color: white;
 }
@@ -76,11 +104,6 @@ div.chart {
 
 form {
   margin-top: 1rem;
-}
-
-.nav-link {
-  border: none;
-  background: #f8f9fa;
 }
 
 button:focus {

@@ -34,7 +34,7 @@ function Presets() {
     useEffect(() => {
         presets.forEach((preset) => {
             preset.drawContinuousPalette(document.getElementById(preset.name + '-continuous'), 128);
-            preset.drawDiscretePalette(document.getElementById(preset.name + '-discrete'), 12);
+            preset.drawDiscretePalette(document.getElementById(preset.name + '-discrete'), 6);
         });
     }, [presets]);
 
@@ -46,7 +46,7 @@ function Presets() {
                         setSelectedPalette(preset);
                         setShowModal(true);
                     }}
-                    className='preset palette-wrapper border'>
+                    className='preset material palette-wrapper border'>
                     <h4>{preset.name}</h4>
                     <h6>by {preset.author}</h6>
                     <canvas className='preset-canvas' id={`${preset.name}-continuous`} />
