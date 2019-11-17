@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/color-curves-app/static/css/main.e54779a8.chunk.css",
+    "main.js": "/color-curves-app/static/js/main.6f228198.chunk.js",
+    "main.js.map": "/color-curves-app/static/js/main.6f228198.chunk.js.map",
+    "runtime-main.js": "/color-curves-app/static/js/runtime-main.581fa913.js",
+    "runtime-main.js.map": "/color-curves-app/static/js/runtime-main.581fa913.js.map",
+    "static/css/2.4b6d3a67.chunk.css": "/color-curves-app/static/css/2.4b6d3a67.chunk.css",
+    "static/js/2.fd40faea.chunk.js": "/color-curves-app/static/js/2.fd40faea.chunk.js",
+    "static/js/2.fd40faea.chunk.js.map": "/color-curves-app/static/js/2.fd40faea.chunk.js.map",
+    "index.html": "/color-curves-app/index.html",
+    "precache-manifest.444c077941e7d478db2828ec80ad2d3d.js": "/color-curves-app/precache-manifest.444c077941e7d478db2828ec80ad2d3d.js",
+    "service-worker.js": "/color-curves-app/service-worker.js",
+    "static/css/2.4b6d3a67.chunk.css.map": "/color-curves-app/static/css/2.4b6d3a67.chunk.css.map",
+    "static/css/main.e54779a8.chunk.css.map": "/color-curves-app/static/css/main.e54779a8.chunk.css.map",
+    "static/media/logo192.png": "/color-curves-app/static/media/logo192.1cbe3163.png",
+    "static/media/index.css": "/color-curves-app/static/media/poppins-latin-900italic.f3c803b2.woff2"
+  }
+}
