@@ -4,6 +4,7 @@ import ColorPalette from '../lib/js/ColorPalette';
 import 'bootstrap';
 
 // components
+import About from './About';
 import Editor from './Editor'
 import Presets from './Presets';
 
@@ -33,7 +34,7 @@ function App() {
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <img src={logo} className="logo"></img>
+      <img src={logo} className="logo" onClick={() => setNav('editor')}></img>
 
       <div className="collapse navbar-collapse" id="navbarSupportedContent">
         <ul className="navbar-nav mr-auto">
@@ -45,9 +46,6 @@ function App() {
           </li>
           <li className={`nav-item ${nav === 'about' ? "active" : ""}`}>
             <a className="nav-link" onClick={() => setNav('about')} href="JavaScript:Void(0);">About</a>
-          </li>
-          <li className={`nav-item ${nav === 'help' ? "active" : ""}`}>
-            <a className="nav-link" onClick={() => setNav('help')} href="JavaScript:Void(0);">Help</a>
           </li>
           <li className="nav-item dropdown">
             <a className="nav-link dropdown-toggle" href="JavaScript:Void(0);" id="theme-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -75,7 +73,7 @@ function App() {
           />
         </div>
         <div className={`tab-pane fade ${nav === 'about' ? 'show active' : ''}`} id="about" role="tabpanel" aria-labelledby="about-button">
-          about
+          <About />
         </div>
       </div>
     </div>

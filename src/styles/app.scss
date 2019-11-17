@@ -19,6 +19,10 @@ body, #root {
   height: 32px;
 }
 
+.logo:hover {
+  cursor: pointer;
+}
+
 .code-block {
   background-color: hsl(0, 0%, 97%)
 }
@@ -86,11 +90,14 @@ h2 {
 
 .palette {
   width: 100%;
-  height: 3.5rem;
+  height: 2.5rem;
 }
 
-.preset-canvas {
-  width: 100%;
+.preset {
+  height: 2.5rem;
+}
+
+.editor-palette {
   height: 3.5rem;
 }
 

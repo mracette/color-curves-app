@@ -223,7 +223,7 @@ function Editor() {
           <div className='col-12'>
             <Canvas
               callback={(canvasRef) => setPaletteCanvas(canvasRef)}
-              className='palette'
+              className='palette editor-palette'
               onResize={() => updatePalettes()}
             />
           </div>

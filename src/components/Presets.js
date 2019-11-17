@@ -18,6 +18,7 @@ import TrixSky from '../lib/palettes/TrixSky';
 import PowerWashed from '../lib/palettes/PowerWashed';
 import CoralScrub from '../lib/palettes/CoralScrub';
 import PolarBeyond from '../lib/palettes/PolarBeyond';
+import StockImage from '../lib/palettes/StockImage';
 
 function Presets() {
 
@@ -31,6 +32,7 @@ function Presets() {
         new BeyondBelief(),
         new PowerWashed(),
         new CandyPaint(),
+        new StockImage(),
         new GoldfishDeluxe(),
         new PhytoPlankton(),
         new TrixSky(),
@@ -46,18 +48,16 @@ function Presets() {
                         setSelectedPalette(preset);
                         setShowModal(true);
                     }}
-                    className='preset material palette-wrapper'>
+                    className='material palette-wrapper'>
                     <h4>{preset.name}</h4>
                     <h6>by {preset.author}</h6>
                     <Canvas
-                        className='preset-canvas'
-                        id={`${preset.name}-continuous`}
+                        className='palette preset'
                         callback={(canvas) => preset.drawContinuousPalette(canvas, 128)}
                         onResize={(canvas) => preset.drawContinuousPalette(canvas, 128)}
                     />
                     <Canvas
-                        className='preset-canvas'
-                        id={`${preset.name}-discrete`}
+                        className='palette preset'
                         callback={(canvas) => preset.drawDiscretePalette(canvas, 6)}
                         onResize={(canvas) => preset.drawDiscretePalette(canvas, 6)}
                     />
