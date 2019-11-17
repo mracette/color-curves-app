@@ -20,7 +20,7 @@ function App() {
 
   const [darkMode, setDarkMode] = useState(false);
   const [nav, setNav] = useState('editor');
-  const [appPalette, setAppPalette] = useState(null);
+  const [palette, setPalette] = useState(new ColorPalette());
 
   return (<>
 
@@ -64,12 +64,14 @@ function App() {
       <div className="tab-content">
         <div className={`tab-pane fade ${nav === 'editor' ? 'show active' : ''}`} id="home" role="tabpanel" aria-labelledby="editor-button">
           <Editor
-            setAppPalette={setAppPalette}
+            palette={palette}
+            setPalette={setPalette}
           />
         </div>
         <div className={`tab-pane fade ${nav === 'presets' ? 'show active' : ''}`} id="presets" role="tabpanel" aria-labelledby="presets-button">
           <Presets
-            setAppPalette={setAppPalette}
+            setNav={setNav}
+            setPalette={setPalette}
           />
         </div>
         <div className={`tab-pane fade ${nav === 'about' ? 'show active' : ''}`} id="about" role="tabpanel" aria-labelledby="about-button">

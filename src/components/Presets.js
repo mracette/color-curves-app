@@ -20,7 +20,7 @@ import CoralScrub from '../lib/palettes/CoralScrub';
 import PolarBeyond from '../lib/palettes/PolarBeyond';
 import StockImage from '../lib/palettes/StockImage';
 
-function Presets() {
+function Presets(props) {
 
     const [showModal, setShowModal] = useState(false);
     const [selectedPalette, setSelectedPalette] = useState(null);
@@ -65,9 +65,11 @@ function Presets() {
             )
         })}
         <ExportModal
+            setNav={props.setNav}
             show={showModal}
             setShow={setShowModal}
             palette={selectedPalette}
+            setPalette={props.setPalette}
         /></>
     );
 

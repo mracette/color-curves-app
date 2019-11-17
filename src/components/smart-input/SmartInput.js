@@ -1,14 +1,15 @@
 // libs
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 function SmartInput(props) {
 
     const numberRegex = /^\s*[+-]?(\d+|\.\d+|\d+\.\d+|\d+\.)(e[+-]?\d+)?\s*$/
-    const defaultInput = useRef(props.defaultValue);
-
     const inputRef = useRef(null);
-    const [inputValue, setInputValue] = useState(defaultInput.current);
-    const [prevInputValue, setPrevInputValue] = useState(defaultInput.current);
+    const [prevInputValue, setPrevInputValue] = useState(props.value);
+
+    useEffect(() => {
+        props.value !== undefined && sendValueToInput(applyConstraints(props.value));
+    }, [props.value])
 
     const isValidInput = (value) => value.toString().match(numberRegex);
 
@@ -31,6 +32,10 @@ function SmartInput(props) {
 
         }
 
+    }
+
+    const sendValueToInput = (value) => {
+        inputRef.current.value = value;
     }
 
     const sendValueToHandler = (value) => {
@@ -56,7 +61,7 @@ function SmartInput(props) {
             sendValueToHandler(currentValue);
         } else {
             sendValueToHandler(prevInputValue);
-            setInputValue(prevInputValue);
+            sendValueToInput(prevInputValue);
         }
     }
 
@@ -72,13 +77,13 @@ function SmartInput(props) {
             // store this value as the last valid value
             setPrevInputValue(newValue);
 
-            // always send to local state
-            setInputValue(newValue);
+            // always send to input
+            sendValueToInput(newValue);
 
         } else {
 
-            // always send to local state
-            setInputValue(newValue);
+            // always send to input
+            sendValueToInput(newValue);
 
         }
 
@@ -192,7 +197,6 @@ function SmartInput(props) {
                     const value = e.target.value;
                     handleUserInput(value);
                 }}
-                value={applyConstraints(inputValue)}
                 type='text'
                 style={
                     (props.defaultStyles !== false) && {
@@ -203,7 +207,6 @@ function SmartInput(props) {
                         padding: '0px 12px',
                         margin: '0',
                         border: 'none',
-                        // backgroundColor: 'hsl(0, 0%, 97%)',
                         borderRadius: '4px'
                     }}
             >
@@ -214,8 +217,6 @@ function SmartInput(props) {
                     onClick={(e) => {
                         e.preventDefault();
                         props.resetAction && props.resetAction();
-                        setInputValue(defaultInput.current);
-                        setPrevInputValue(defaultInput.current);
                     }}
                     style={
                         (props.defaultStyles !== false) && {

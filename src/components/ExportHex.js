@@ -30,7 +30,7 @@ function ExportHex(props) {
                     min={1}
                     max={32}
                     maxDecimals={0}
-                    defaultValue={props.numStops}
+                    value={props.numStops}
                     handleChange={(value) => {
                         value = parseInt(value);
                         props.setNumStops(parseInt(value))

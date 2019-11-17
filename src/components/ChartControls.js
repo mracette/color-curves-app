@@ -8,20 +8,6 @@ import SmartInput from './smart-input/SmartInput';
 
 function ChartControls(props) {
 
-    const getParams = () => {
-
-        const params = {};
-
-        const paramsList = Curve.getParamSet();
-
-        paramsList.forEach((param) => {
-            props.curve[param] && (params[param] = props.curve[param]);
-        })
-
-        return params;
-
-    }
-
     const onCurveChange = (newCurveType) => {
 
         props.setCurve(newCurveType);
@@ -55,22 +41,7 @@ function ChartControls(props) {
 
         props.updateCurve();
 
-        const newParams = { ...params };
-        newParams[param] = value;
-        setParams(newParams);
-
     };
-
-    const [params, setParams] = useState(
-        getParams()
-    );
-
-    useEffect(() => {
-
-        props.curve && setParams(getParams());
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.curve])
 
     return (
 
@@ -90,7 +61,7 @@ function ChartControls(props) {
                             <select
                                 id='type-select'
                                 className='form-control form-control-sm'
-                                defaultValue={props.curve.type}
+                                value={props.curve.type}
                                 onChange={(e) => {
                                     const newCurveType = e.target.value;
                                     onCurveChange(newCurveType);
@@ -108,7 +79,7 @@ function ChartControls(props) {
                                 <select
                                     id='variation-select'
                                     className='form-control form-control-sm'
-                                    defaultValue='in'
+                                    value={props.curve.variation}
                                     onChange={(e) => {
                                         const value = e.target.value;
                                         onParamChange('variation', value);
@@ -134,7 +105,7 @@ function ChartControls(props) {
                                     step={0.01}
                                     maxDecimals={2}
                                     min={0.01}
-                                    defaultValue={props.curve.exponent}
+                                    value={props.curve.exponent}
                                     resetButton={true}
                                     resetAction={() => {
                                         props.curve.setExponent();
@@ -155,7 +126,7 @@ function ChartControls(props) {
                                     label={"s"}
                                     step={0.01}
                                     maxDecimals={2}
-                                    defaultValue={props.curve.overshoot}
+                                    value={props.curve.overshoot}
                                     resetButton={true}
                                     resetAction={() => {
                                         props.curve.setOvershoot();
@@ -177,7 +148,7 @@ function ChartControls(props) {
                                     step={0.01}
                                     maxDecimals={2}
                                     min={1}
-                                    defaultValue={props.curve.amplitude}
+                                    value={props.curve.amplitude}
                                     resetButton={true}
                                     resetAction={() => {
                                         props.curve.setAmplitude();
@@ -196,7 +167,7 @@ function ChartControls(props) {
                                     step={0.01}
                                     maxDecimals={2}
                                     min={0.01}
-                                    defaultValue={props.curve.period}
+                                    value={props.curve.period}
                                     resetButton={true}
                                     resetAction={() => {
                                         props.curve.setPeriod();
@@ -218,7 +189,7 @@ function ChartControls(props) {
                             <select
                                 id='direction-select'
                                 className='form-control form-control-sm'
-                                defaultValue='normal'
+                                value={props.curve.reverse ? 'reverse' : 'normal'}
                                 onChange={(e) => {
                                     const value = e.target.value !== 'normal';
                                     onParamChange('reverse', value);
@@ -234,7 +205,7 @@ function ChartControls(props) {
                             <select
                                 id='overflow-select'
                                 className='form-control form-control-sm'
-                                defaultValue='clamp'
+                                value={props.curve.overflow}
                                 onChange={(e) => {
                                     const value = e.target.value;
                                     onParamChange('overflow', value);
@@ -262,7 +233,7 @@ function ChartControls(props) {
                                 label='r'
                                 step={0.01}
                                 maxDecimals={2}
-                                defaultValue={props.curve.radius}
+                                value={props.curve.radius}
                                 resetButton={true}
                                 resetAction={() => {
                                     props.curve.setRadius();
@@ -287,7 +258,7 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 unitSymbol={String.fromCharCode(0x3c0)}
                                 conversion={Math.PI}
-                                defaultValue={props.curve.angleStart / Math.PI}
+                                value={props.curve.angleStart / Math.PI}
                                 resetButton={true}
                                 resetAction={() => {
                                     props.curve.setAngleStart();
@@ -306,7 +277,7 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 unitSymbol={String.fromCharCode(0x3c0)}
                                 conversion={Math.PI}
-                                defaultValue={props.curve.angleEnd / Math.PI}
+                                value={props.curve.angleEnd / Math.PI}
                                 resetButton={true}
                                 resetAction={() => {
                                     props.curve.setAngleEnd();
@@ -331,7 +302,7 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 unitSymbol={String.fromCharCode(0x3c0)}
                                 conversion={Math.PI}
-                                defaultValue={props.curve.angleOffset / Math.PI}
+                                value={props.curve.angleOffset / Math.PI}
                                 resetButton={true}
                                 resetAction={() => {
                                     props.curve.setAngleOffset();
@@ -358,7 +329,7 @@ function ChartControls(props) {
                                 label='X'
                                 step={0.01}
                                 maxDecimals={2}
-                                defaultValue={props.curve.translation.x}
+                                value={props.curve.translation.x}
                                 resetButton={true}
                                 resetAction={() => {
                                     props.curve.setTranslateX();
@@ -374,7 +345,7 @@ function ChartControls(props) {
                                 label='Y'
                                 step={0.01}
                                 maxDecimals={2}
-                                defaultValue={props.curve.translation.y}
+                                value={props.curve.translation.y}
                                 resetButton={true}
                                 resetAction={() => {
                                     props.curve.setTranslateY();
@@ -397,7 +368,7 @@ function ChartControls(props) {
                                 label='X'
                                 step={0.01}
                                 maxDecimals={2}
-                                defaultValue={props.curve.scale.x}
+                                value={props.curve.scale.x}
                                 resetButton={true}
                                 resetAction={() => {
                                     props.curve.setScaleX();
@@ -413,7 +384,7 @@ function ChartControls(props) {
                                 label='Y'
                                 step={0.01}
                                 maxDecimals={2}
-                                defaultValue={props.curve.scale.y}
+                                value={props.curve.scale.y}
                                 resetButton={true}
                                 resetAction={() => {
                                     props.curve.setScaleY();
@@ -436,7 +407,7 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 unitSymbol={String.fromCharCode(0x3c0)}
                                 conversion={Math.PI}
-                                defaultValue={props.curve.rotation / Math.PI}
+                                value={props.curve.rotation / Math.PI}
                                 resetButton={true}
                                 resetAction={() => {
                                     props.curve.setRotation();

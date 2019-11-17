@@ -11,8 +11,6 @@ function ExportImage(props) {
     const [imgWidth, setImgWidth] = useState(500);
     const [imgHeight, setImgHeight] = useState(500);
 
-    console.log(props.exportCanvas);
-
     useEffect(() => {
         setImgName('colorcurve');
     }, []);
@@ -58,7 +56,7 @@ function ExportImage(props) {
                 <select
                     id='type-select'
                     className='form-control form-control-sm'
-                    defaultValue={props.paletteType}
+                    value={props.paletteType}
                     onChange={(e) => {
                         const newPaletteType = e.target.value;
                         props.setPaletteType(newPaletteType);
@@ -76,7 +74,7 @@ function ExportImage(props) {
                         min={1}
                         max={32}
                         maxDecimals={0}
-                        defaultValue={props.numStops}
+                        value={props.numStops}
                         handleChange={(value) => props.setNumStops(parseInt(value))}
                     />
                 </div>}
@@ -95,7 +93,7 @@ function ExportImage(props) {
                     max={1080}
                     maxDecimals={0}
                     unitSymbol={'px'}
-                    defaultValue={imgWidth}
+                    value={imgWidth}
                     handleChange={(value) => setImgWidth(parseInt(value))}
                 />
             </div>
@@ -109,7 +107,7 @@ function ExportImage(props) {
                     max={1080}
                     maxDecimals={0}
                     unitSymbol={'px'}
-                    defaultValue={imgHeight}
+                    value={imgHeight}
                     handleChange={(value) => setImgHeight(parseInt(value))}
                 />
             </div>

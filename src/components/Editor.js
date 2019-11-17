@@ -10,7 +10,7 @@ import ExportModal from './ExportModal';
 // curves 
 import ColorPalette from '../lib/js/ColorPalette';
 
-function Editor() {
+function Editor(props) {
 
   const config = [
     {
@@ -56,14 +56,13 @@ function Editor() {
   ];
 
   const [paletteType, setPaletteType] = useState('continuous');
-  const [numStops, setNumStops] = useState(12);
+  const [numStops, setNumStops] = useState(6);
   const [paletteRange, setPaletteRange] = useState([0, 1]);
   const [showModal, setShowModal] = useState(false);
 
   // use default color palette and curve
-  const [palette, setPalette] = useState(new ColorPalette());
-  const [hsCurve, setHsCurve] = useState(palette.hsCurve);
-  const [lCurve, setLCurve] = useState(palette.lCurve);
+  const [hsCurve, setHsCurve] = useState(props.palette.hsCurve);
+  const [lCurve, setLCurve] = useState(props.palette.lCurve);
   const [paletteCanvas, setPaletteCanvas] = useState(null);
 
   // initialize refs
@@ -73,15 +72,15 @@ function Editor() {
 
     if (curve === 'hsCurve') {
 
-      palette.setHsCurve(newType);
+      props.palette.setHsCurve(newType);
 
-      setHsCurve(palette.hsCurve);
+      setHsCurve(props.palette.hsCurve);
 
     } else if (curve === 'lCurve') {
 
-      palette.setLCurve(newType);
+      props.palette.setLCurve(newType);
 
-      setLCurve(palette.lCurve);
+      setLCurve(props.palette.lCurve);
 
     }
 
@@ -91,11 +90,11 @@ function Editor() {
 
     if (paletteType === 'continuous' && paletteCanvas !== null) {
 
-      palette.drawContinuousPalette(paletteCanvas);
+      props.palette.drawContinuousPalette(paletteCanvas);
 
     } else if (paletteType === 'discrete' && paletteCanvas !== null) {
 
-      palette.drawDiscretePalette(paletteCanvas, numStops);
+      props.palette.drawDiscretePalette(paletteCanvas, numStops);
 
     }
 
@@ -104,6 +103,12 @@ function Editor() {
   useEffect(() => {
     updatePalettes()
   }, [updatePalettes, paletteType, numStops, paletteRange, paletteCanvas])
+
+  useEffect(() => {
+    setPaletteRange([props.palette.start, props.palette.end])
+    setHsCurve(props.palette.hsCurve);
+    setLCurve(props.palette.lCurve);
+  }, [props.palette])
 
   return (
 
@@ -169,7 +174,7 @@ function Editor() {
                   min={1}
                   max={32}
                   maxDecimals={0}
-                  defaultValue={numStops}
+                  value={numStops}
                   handleChange={(value) => setNumStops(parseInt(value))}
                 />
               </div>
@@ -191,9 +196,9 @@ function Editor() {
                 min={0}
                 max={paletteRange[1]}
                 maxDecimals={2}
-                defaultValue={paletteRange[0]}
+                value={paletteRange[0]}
                 handleChange={(value) => {
-                  palette.setStart(parseFloat(value));
+                  props.palette.setStart(parseFloat(value));
                   setPaletteRange([parseFloat(value), paletteRange[1]]);
                 }}
               />
@@ -207,9 +212,9 @@ function Editor() {
                 min={paletteRange[0]}
                 max={1}
                 maxDecimals={2}
-                defaultValue={paletteRange[1]}
+                value={paletteRange[1]}
                 handleChange={(value) => {
-                  palette.setEnd(parseFloat(value));
+                  props.palette.setEnd(parseFloat(value));
                   setPaletteRange([paletteRange[0], parseFloat(value)]);
                 }}
               />
@@ -242,7 +247,7 @@ function Editor() {
         <ExportModal
           show={showModal}
           setShow={setShowModal}
-          palette={palette}
+          palette={props.palette}
           numStops={numStops}
           setNumStops={setNumStops}
           paletteType={paletteType}
