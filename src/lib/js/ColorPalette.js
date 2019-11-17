@@ -34,6 +34,7 @@ export default class ColorPalette {
 
         this.setHsCurve(validJson(hsCurve) || hsCurve);
         this.setLCurve(validJson(lCurve) || lCurve);
+        this.updateCurveClampBound();
 
         const {
             start,

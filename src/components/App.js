@@ -13,7 +13,7 @@ import '../styles/app.scss';
 
 // other
 import logo from '../img/logo192.png';
-// import { logoGen, downloadCanvas } from '../lib/utils/canvas'
+import { logoGen, downloadCanvas } from '../lib/utils/canvas'
 
 function App() {
 
@@ -23,10 +23,16 @@ function App() {
 
   return (<>
 
+
     <nav
       className={`navbar navbar-expand-lg navbar-dark ${nav !== "editor" ? "sticky-top" : ""}`}
       style={{ backgroundColor: '#232F34' }}
     >
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
       <img src={logo} className="logo"></img>
 
       <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -40,13 +46,16 @@ function App() {
           <li className={`nav-item ${nav === 'about' ? "active" : ""}`}>
             <a className="nav-link" onClick={() => setNav('about')} href="JavaScript:Void(0);">About</a>
           </li>
+          <li className={`nav-item ${nav === 'help' ? "active" : ""}`}>
+            <a className="nav-link" onClick={() => setNav('help')} href="JavaScript:Void(0);">Help</a>
+          </li>
           <li className="nav-item dropdown">
             <a className="nav-link dropdown-toggle" href="JavaScript:Void(0);" id="theme-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Theme
             </a>
             <div className="dropdown-menu" aria-labelledby="theme-dropdown">
               <a className="dropdown-item active" href="JavaScript:Void(0);">Light</a>
-              <a className="dropdown-item" href="JavaScript:Void(0);">Dark</a>
+              <a className="dropdown-item disabled" href="JavaScript:Void(0);">Dark (coming soon)</a>
             </div>
           </li>
         </ul>

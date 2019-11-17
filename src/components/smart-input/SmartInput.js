@@ -1,23 +1,36 @@
 // libs
 import React, { useRef, useState } from 'react';
 
-function FunctionParams(props) {
+function SmartInput(props) {
 
     const numberRegex = /^\s*[+-]?(\d+|\.\d+|\d+\.\d+|\d+\.)(e[+-]?\d+)?\s*$/
     const defaultInput = useRef(props.defaultValue);
 
     const inputRef = useRef(null);
-    const [inputValue, setInputValue] = useState(defaultInput.current)
-    const [prevInputValue, setPrevInputValue] = useState(defaultInput.current)
+    const [inputValue, setInputValue] = useState(defaultInput.current);
+    const [prevInputValue, setPrevInputValue] = useState(defaultInput.current);
 
     const isValidInput = (value) => value.toString().match(numberRegex);
 
-    const applyMaxDecimals = (num) => {
-        if (typeof num === 'number' && typeof props.maxDecimals === 'number') {
-            return Math.round(num * Math.pow(10, props.maxDecimals)) / Math.pow(10, props.maxDecimals);
+    const applyConstraints = (num) => {
+
+        if (isValidInput(num)) {
+
+            props.max !== undefined && (num = Math.min(props.max, num));
+            props.min !== undefined && (num = Math.max(props.min, num));
+
+            if (typeof num === 'number' && typeof props.maxDecimals === 'number') {
+                return Math.round(num * Math.pow(10, props.maxDecimals)) / Math.pow(10, props.maxDecimals);
+            } else {
+                return num;
+            }
+
         } else {
+
             return num;
+
         }
+
     }
 
     const sendValueToHandler = (value) => {
@@ -29,14 +42,6 @@ function FunctionParams(props) {
             } else {
                 props.handleChange(parseFloat(value));
             }
-        }
-    }
-
-    const cleanInput = (value) => {
-        if (isValidInput(value)) {
-            return applyMaxDecimals(value);
-        } else {
-            return value;
         }
     }
 
@@ -58,6 +63,8 @@ function FunctionParams(props) {
     const handleUserInput = (newValue) => {
 
         if (isValidInput(newValue)) {
+
+            newValue = applyConstraints(newValue);
 
             // send to change handler
             sendValueToHandler(newValue);
@@ -85,7 +92,7 @@ function FunctionParams(props) {
 
         const onMouseOrTouchMove = (e) => {
 
-            const x = e.clientX || e.touches[0].clientX;
+            const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
 
             // capture the movement and compare to startPosition
             const delta = parseFloat(x - startPosition);
@@ -102,8 +109,6 @@ function FunctionParams(props) {
 
         document.onmousemove = (e) => onMouseOrTouchMove(e);
         document.ontouchmove = (e) => {
-            console.log(e);
-            console.log(startPosition);
             onMouseOrTouchMove(e)
         };
 
@@ -114,7 +119,6 @@ function FunctionParams(props) {
         }
 
         document.ontouchend = () => {
-            console.log('touchend');
             document.onselectstart = null;
             document.ontouchmove = null;
         }
@@ -188,7 +192,7 @@ function FunctionParams(props) {
                     const value = e.target.value;
                     handleUserInput(value);
                 }}
-                value={cleanInput(inputValue)}
+                value={applyConstraints(inputValue)}
                 type='text'
                 style={
                     (props.defaultStyles !== false) && {
@@ -241,4 +245,4 @@ function FunctionParams(props) {
 
 }
 
-export default FunctionParams;
+export default SmartInput;

@@ -15,7 +15,7 @@ export default class UnitSquare {
     }
 
     static outOfBounds(x, y) {
-        return x < this.x0 || x > this.x1 || y < this.y0 || y > this.y1;
+        return x < 0 || x > 1 || y < 0 || y > 1;
     }
 
 }

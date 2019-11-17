@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 // components
+import Canvas from './Canvas';
 import Chart from './Chart';
 import SmartInput from './smart-input/SmartInput';
 import ExportModal from './ExportModal';
@@ -63,9 +64,9 @@ function Editor() {
   const [palette, setPalette] = useState(new ColorPalette());
   const [hsCurve, setHsCurve] = useState(palette.hsCurve);
   const [lCurve, setLCurve] = useState(palette.lCurve);
+  const [paletteCanvas, setPaletteCanvas] = useState(null);
 
   // initialize refs
-  const paletteCanvas = useRef(null);
   const paletteWrapper = useRef(null);
 
   const updateCurveType = useCallback((curve, newType) => {
@@ -88,13 +89,13 @@ function Editor() {
 
   const updatePalettes = () => {
 
-    if (paletteType === 'continuous') {
+    if (paletteType === 'continuous' && paletteCanvas !== null) {
 
-      palette.drawContinuousPalette(paletteCanvas.current);
+      palette.drawContinuousPalette(paletteCanvas);
 
-    } else if (paletteType === 'discrete') {
+    } else if (paletteType === 'discrete' && paletteCanvas !== null) {
 
-      palette.drawDiscretePalette(paletteCanvas.current, numStops);
+      palette.drawDiscretePalette(paletteCanvas, numStops);
 
     }
 
@@ -102,7 +103,7 @@ function Editor() {
 
   useEffect(() => {
     updatePalettes()
-  }, [updatePalettes, paletteType, numStops, paletteRange])
+  }, [updatePalettes, paletteType, numStops, paletteRange, paletteCanvas])
 
   return (
 
@@ -219,10 +220,11 @@ function Editor() {
         </form>
 
         <div className='row'>
-          <div className='col-md-12'>
-            <canvas
+          <div className='col-12'>
+            <Canvas
+              callback={(canvasRef) => setPaletteCanvas(canvasRef)}
               className='palette'
-              ref={paletteCanvas}
+              onResize={() => updatePalettes()}
             />
           </div>
         </div>

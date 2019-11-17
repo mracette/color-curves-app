@@ -12,7 +12,7 @@ export default class UnitCircle {
     }
 
     static outOfBounds(x, y) {
-        return x * x + y * x > this.r * this.r;
+        return x * x + y * y > 1;
     }
 
 }

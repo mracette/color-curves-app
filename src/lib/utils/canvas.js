@@ -51,11 +51,8 @@ export const logoGen = (size) => {
 
     for (let i = 0; i < 16; i++) {
 
-        pal.hsCurve.setClampBounds();
-        pal.lCurve.setClampBounds();
-
-        ctx.fillStyle = `hsl(${(i / slices) * 360}, 100%, 50%)`;
-        // ctx.fillStyle = pal.hslValueAt(i / slices);
+        //ctx.fillStyle = `hsl(${(i / slices) * 360}, 100%, 50%)`;
+        ctx.fillStyle = pal.hslValueAt(i / slices);
 
         const start = i * arcLength;
         const end = i * arcLength + arcLength;

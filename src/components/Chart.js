@@ -40,16 +40,21 @@ function Chart(props) {
 
     }
 
-    window.addEventListener('resize', () => {
-        canvasRef.current.width = canvasRef.current.clientWidth;
-        canvasRef.current.height = canvasRef.current.width;
-        updateCurve();
-    })
-
     useEffect(() => {
         canvasRef.current.width = canvasRef.current.clientWidth;
         canvasRef.current.height = canvasRef.current.width;
         updateCurve();
+
+        const listen = window.addEventListener('resize', () => {
+            canvasRef.current.width = canvasRef.current.clientWidth;
+            canvasRef.current.height = canvasRef.current.width;
+            updateCurve();
+        })
+
+        return () => {
+            window.removeEventListener('resize', listen);
+        }
+
     }, [])
 
     useEffect(() => {
