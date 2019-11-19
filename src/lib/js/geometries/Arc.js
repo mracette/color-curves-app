@@ -1,4 +1,4 @@
-import Curve from '../Curve';
+import Curve from '../core/Curve';
 
 /**
  * Represents a segment of a circle
@@ -26,7 +26,7 @@ export default class Arc extends Curve {
             angleOffset = 0
         } = options
 
-        super({...options});;
+        super({ ...options });;
 
         this.type = 'arc';
         this.category = 'geometry';
@@ -64,18 +64,18 @@ export default class Arc extends Curve {
 
     setRadius(radius) {
 
-        if(typeof radius === 'number') {
+        if (typeof radius === 'number') {
 
             this.radius = radius;
 
-        } else if(this.surface.type === 'unitSquare') {
+        } else if (this.surface.type === 'unitSquare') {
 
             this.setRadius(0.25);
 
         } else if (this.surface.type === 'unitCircle') {
 
             this.setRadius(0.5);
-            
+
         }
 
     }

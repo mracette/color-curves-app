@@ -1,4 +1,4 @@
-import ColorPalette from '../js/ColorPalette'
+import ColorPalette from '../js/core/ColorPalette'
 
 export default class PhytoPlankton extends ColorPalette {
 

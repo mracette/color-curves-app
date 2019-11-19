@@ -1,4 +1,4 @@
-import Curve from '../Curve';
+import Curve from '../core/Curve';
 
 /**
  * Represents a generic function that can be further extended by a child class that specified a 1:1 relationship between a 

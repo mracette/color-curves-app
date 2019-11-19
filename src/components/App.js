@@ -1,6 +1,6 @@
 // libs
 import React, { useState, useRef, useEffect } from 'react';
-import ColorPalette from '../lib/js/ColorPalette';
+import ColorPalette from '../lib/core/ColorPalette';
 import 'bootstrap';
 
 // components

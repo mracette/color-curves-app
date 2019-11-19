@@ -1,4 +1,4 @@
-import Curve from '../js/Curve';
+import Curve from '../js/core/Curve';
 import Arc from '../js/geometries/Arc';
 import Linear from '../js/functions/Linear';
 import Polynomial from '../js/functions/Polynomial';

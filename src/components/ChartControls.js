@@ -1,6 +1,6 @@
 // libs
 import React, { useState, useEffect } from 'react';
-import Curve from '../lib/js/Curve';
+import Curve from '../lib/js/core/Curve';
 
 // components
 import SmartInput from './smart-input/SmartInput';

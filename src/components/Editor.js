@@ -8,7 +8,7 @@ import SmartInput from './smart-input/SmartInput';
 import ExportModal from './ExportModal';
 
 // curves 
-import ColorPalette from '../lib/js/ColorPalette';
+import ColorPalette from '../lib/js/core/ColorPalette';
 
 function Editor(props) {
 
