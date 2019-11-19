@@ -1,6 +1,6 @@
 // libs
 import React, { useState, useRef, useEffect } from 'react';
-import ColorPalette from '../lib/core/ColorPalette';
+import { ColorPalette } from 'color-curves';
 import 'bootstrap';
 
 // components
@@ -14,7 +14,6 @@ import '../styles/app.scss';
 
 // other
 import logo from '../img/logo192.png';
-import { logoGen, downloadCanvas } from '../lib/utils/canvas'
 
 function App() {
 

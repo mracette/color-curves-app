@@ -1,14 +1,12 @@
 // libs
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { ColorPalette } from 'color-curves';
 
 // components
 import Canvas from './Canvas';
 import Chart from './Chart';
 import SmartInput from './smart-input/SmartInput';
 import ExportModal from './ExportModal';
-
-// curves 
-import ColorPalette from '../lib/js/core/ColorPalette';
 
 function Editor(props) {
 

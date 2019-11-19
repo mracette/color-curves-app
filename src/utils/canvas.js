@@ -1,5 +1,3 @@
-import AllAround from '../palettes/AllAround';
-
 export const downloadCanvas = (canvas, filename) => {
 
     return new Promise((resolve, reject) => {
@@ -27,8 +25,6 @@ export const downloadCanvas = (canvas, filename) => {
 
 export const logoGen = (size) => {
 
-    const pal = new AllAround();
-
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = size;
@@ -51,8 +47,7 @@ export const logoGen = (size) => {
 
     for (let i = 0; i < 16; i++) {
 
-        //ctx.fillStyle = `hsl(${(i / slices) * 360}, 100%, 50%)`;
-        ctx.fillStyle = pal.hslValueAt(i / slices);
+        ctx.fillStyle = `hsl(${(i / slices) * 360}, 100%, 50%)`;
 
         const start = i * arcLength;
         const end = i * arcLength + arcLength;

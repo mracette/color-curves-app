@@ -7,18 +7,20 @@ import Canvas from './Canvas';
 import ExportModal from './ExportModal';
 
 // palettes
-import WarmMagma from '../lib/palettes/WarmMagma';
-import AllAround from '../lib/palettes/AllAround';
-import BeyondBelief from '../lib/palettes/BeyondBelief';
-import UnAmerican from '../lib/palettes/UnAmerican';
-import CandyPaint from '../lib/palettes/CandyPaint';
-import GoldfishDeluxe from '../lib/palettes/GoldfishDeluxe';
-import PhytoPlankton from '../lib/palettes/PhytoPlankton';
-import TrixSky from '../lib/palettes/TrixSky';
-import PowerWashed from '../lib/palettes/PowerWashed';
-import CoralScrub from '../lib/palettes/CoralScrub';
-import PolarBeyond from '../lib/palettes/PolarBeyond';
-import StockImage from '../lib/palettes/StockImage';
+import {
+    WarmMagma,
+    AllAround,
+    BeyondBelief,
+    UnAmerican,
+    CandyPaint,
+    GoldfishDeluxe,
+    PhytoPlankton,
+    TrixSky,
+    PowerWashed,
+    CoralScrub,
+    PolarBeyond,
+    StockImage
+} from 'color-curves';
 
 function Presets(props) {
 

@@ -1,6 +1,6 @@
 // libs
-import React, { useState, useEffect, useRef } from 'react';
-import { downloadCanvas } from '../lib/utils/canvas'
+import React, { useState, useEffect } from 'react';
+import { downloadCanvas } from '../utils/canvas'
 
 // components
 import SmartInput from './smart-input/SmartInput';
