@@ -14,7 +14,7 @@ function Canvas(props) {
             canvasRef.current.clientWidth !== 0 && (canvasRef.current.width = canvasRef.current.clientWidth);
             canvasRef.current.clientHeight !== 0 && (canvasRef.current.height = canvasRef.current.width);
             props.onResize !== undefined && props.onResize(canvasRef.current);
-        })
+        });
 
         props.callback !== undefined && props.callback(canvasRef.current);
 

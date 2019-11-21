@@ -46,6 +46,26 @@ function ExportModal(props) {
         }
     }, [exportCanvas.current, props.palette, props.numStops, numStops, props.paletteType, paletteType, nav, updatePalettes])
 
+    useEffect(() => {
+
+        if (exportCanvas.current) {
+
+            exportCanvas.current.clientWidth !== 0 && (exportCanvas.current.width = exportCanvas.current.clientWidth);
+            exportCanvas.current.clientHeight !== 0 && (exportCanvas.current.height = exportCanvas.current.clientHeight);
+
+            const listen = window.addEventListener('resize', () => {
+                exportCanvas.current.clientWidth !== 0 && (exportCanvas.current.width = exportCanvas.current.clientWidth);
+                exportCanvas.current.clientHeight !== 0 && (exportCanvas.current.height = exportCanvas.current.width);
+            });
+
+            return () => {
+                window.removeEventListener('resize', listen);
+            }
+
+        }
+
+    }, [exportCanvas])
+
     return (
         <Modal
             size='lg'
@@ -94,7 +114,7 @@ function ExportModal(props) {
 
                         {nav === 'image' &&
                             <ExportImage
-                                updatePalettes={updatePalettes}
+                                updatePalettes={() => updatePalettes(exportCanvas.current, props.paletteType, props.numStops)}
                                 exportCanvas={exportCanvas}
                                 palette={props.palette}
                                 paletteType={props.paletteType || paletteType}

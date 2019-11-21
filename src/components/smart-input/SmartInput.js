@@ -50,8 +50,7 @@ function SmartInput(props) {
         }
     }
 
-    const handleClick = (e) => {
-        e.preventDefault();
+    const handleClick = () => {
         const value = inputRef.current.value;
         inputRef.current.setSelectionRange(0, value.length);
     }
@@ -176,9 +175,8 @@ function SmartInput(props) {
                         fontSize: '0.875rem',
                         padding: '0px 12px',
                         margin: '0',
-                        backgroundColor: '#EEE',
-                        borderTopLeftRadius: '4px',
-                        borderBottomLeftRadius: '4px'
+                        borderTopLeftRadius: '3px',
+                        borderBottomLeftRadius: '3px'
                     }}
             >
                 <span>
@@ -206,17 +204,18 @@ function SmartInput(props) {
                         fontSize: '0.875rem',
                         padding: '0px 12px',
                         margin: '0',
-                        border: 'none',
-                        borderRadius: '4px'
+                        border: 'none'
                     }}
             >
             </input>
             {props.resetButton &&
                 <button
                     type="button"
+                    className="reset-input-button"
                     onClick={(e) => {
                         e.preventDefault();
                         props.resetAction && props.resetAction();
+                        handleUserInput(props.value);
                     }}
                     style={
                         (props.defaultStyles !== false) && {
@@ -233,9 +232,8 @@ function SmartInput(props) {
                             padding: '0px 12px',
                             margin: '0',
                             border: 'none',
-                            backgroundColor: '#EEE',
-                            borderTopRightRadius: '4px',
-                            borderBottomRightRadius: '4px'
+                            borderTopRightRadius: '3px',
+                            borderBottomRightRadius: '3px'
                         }}
                 >
                     {String.fromCharCode(0x21ba)}

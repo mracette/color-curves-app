@@ -19,6 +19,7 @@ import {
     PowerWashed,
     CoralScrub,
     PolarBeyond,
+    // OnVacation,
     StockImage
 } from 'color-curves';
 
@@ -30,6 +31,7 @@ function Presets(props) {
     const presets = [
         new WarmMagma(),
         new AllAround(),
+        // new OnVacation(),
         new UnAmerican(),
         new BeyondBelief(),
         new PowerWashed(),

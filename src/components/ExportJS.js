@@ -5,43 +5,65 @@ function ExportJS(props) {
 
     return (<>
 
-            <div className = 'row mt-3'>
+        <div className='row mt-3'>
 
-                <div className = 'col-12 code-block p-2'>
-
-                    <code>
-
-                        {"import ColorPalette from 'colorcurves'"}
-                        
-                    </code>
-
+            <div className='col-12'>
+                Import module
                 </div>
+            <div className='col-12 code-block p-2'>
+
+                <code>
+
+                    {"import { ColorPalette } from 'color-curves'"}<br /><br />
+                    {"const palette = new ColorPalette(" + props.palette.exportPaletteParams() + ");"}
+
+                </code>
 
             </div>
 
-            <div className = 'row mt-1'>
+        </div>
 
-                <div className = 'col-12 code-block p-2'>
+        <div className='row mt-1'>
 
-                    <code>
+            <div className='col-12'>
+                CommonJS
+            </div>
+            <div className='col-12 code-block p-2'>
 
-                        {"const palette = new ColorPalette(" + props.palette.exportPaletteParams() + ");"}
-
-                    </code>
-
-                </div>
+                <code>
+                    {`const ColorCurves = require('color-curves')`}<br /><br />
+                    {"const palette = new ColorCurves.ColorPalette(" + props.palette.exportPaletteParams() + ");"}
+                </code>
 
             </div>
 
-            <div className = 'row mt-3 p-2'>
+        </div>
 
-                <div className = 'col-12'>
+        <div className='row mt-1'>
 
-                    For additional information on importing Color Curves, see documentation.
+            <div className='col-12'>
+                HTML
+                </div>
+            <div className='col-12 code-block p-2'>
+
+                <code>
+                    {`<script src="http://unpkg.com/color-curves"></script>`}<br /><br />
+                    {"const palette = new ColorCurves.ColorPalette(" + props.palette.exportPaletteParams() + ");"}
+                </code>
+
+            </div>
+
+        </div>
+
+        <div className='row mt-3 p-2'>
+
+            <div className='col-12'>
+
+                For additional information on importing Color Curves, see the <a href="https://github.com/mracette/color-curves-app">documentation</a>.
 
                 </div>
 
-            </div>
+        </div>
 
     </>)
 

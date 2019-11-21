@@ -109,3 +109,11 @@ form {
 button:focus {
   outline: none;
 }
+
+.smart-input-label, .reset-input-button {
+  background-color: #eee;
+}
+
+.smart-input-label:hover, .reset-input-button:hover {
+  background-color: darken(#eee, 15%);
+}

@@ -115,8 +115,21 @@ function Editor(props) {
       <div ref={paletteWrapper} className='material-static palette-wrapper sticky-top'>
 
         <div className='row border-bottom'>
-          <div className='col-auto align-items-center'>
+          <div className='col-auto align-items-center d-flex align-items-center'>
             <h2>Palette</h2>
+            <button type="button"
+              class="btn mb-8 btn-light btn-sm"
+              style={{
+                "margin-bottom": "8px",
+                "margin-left": "8px"
+              }}
+              onClick={() => {
+                setShowModal(!showModal);
+              }}
+              type="button"
+            >
+              Export
+          </button>
           </div>
           <div className='col-auto ml-auto d-flex'>
             <form className='m-auto'>
@@ -231,16 +244,6 @@ function Editor(props) {
             />
           </div>
         </div>
-
-        <button
-          onClick={() => {
-            setShowModal(!showModal);
-          }}
-          type="button"
-          className="btn btn-primary"
-        >
-          Export Palette
-          </button>
 
         <ExportModal
           show={showModal}

@@ -17,20 +17,24 @@ function ExportImage(props) {
 
     const exportImage = (canvas, imgName) => {
 
+        const oWidth = canvas.width;
+        const oHeight = canvas.height;
+
         // resize for export
-        canvas.style.width = imgWidth + 'px';
-        canvas.style.height = imgHeight + 'px';
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
+        canvas.style.width = imgWidth;
+        canvas.style.height = imgHeight;
+        canvas.width = imgWidth;
+        canvas.height = imgHeight;
 
         props.updatePalettes();
 
-        downloadCanvas(canvas, imgName, {
-            width: imgWidth + 'px',
-            height: imgHeight + 'px'
-        }).then(() => {
+        downloadCanvas(canvas, imgName).then(() => {
+            console.log('downloading', canvas);
+            canvas.width = oWidth;
+            canvas.height = oHeight;
             canvas.style.removeProperty('width');
             canvas.style.removeProperty('height');
+            props.updatePalettes();
         });
 
     }
