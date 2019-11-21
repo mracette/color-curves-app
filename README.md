@@ -25,7 +25,7 @@ The 3 values that make up an HSL color can be visualized by a color wheel:
 2. **Saturation** - Distance from the center of the color wheel, usually normalized to [0, 1] or [0%, 100%]
 3. **Lightness** - Distance along a secondary axis, usually normalized to [0, 1] or [0%, 100%]
 
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/hsl-diagram.png">
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/hsl-diagram.png" width="320px" height="240px">
 
 ### Plotting Curves
 
@@ -35,23 +35,17 @@ Color Curves separtes the HSL schema into two distinct parts: Hue-Saturation (HS
 
 All possible hue and saturation values are projected onto a **unit circle**, upon which a curve is drawn that traces out the specific HS values for the palette. The length of the curve will always be normalized to 1, such that the starting point of the curve (represented by a green dot) will map to the starting point of the palette. The end of the curve (red dot) will map to the end of the palette. Values in between are given based on the location of the curve at that point.
 
-<p align="center">
 <img src="https://github.com/mracette/color-curves-app/blob/master/assets/hs-chart.png">  
-</p>
-<p align="center">
+
 An exponential curve mapped onto the HS space
-</p>
 
 #### Lightness (L)
 
 All possible lightness values are projected onto a **unit square**, upon which a curve is drawn that traces out the specific lightness values for the palette. This works in much the same way as the HS chart, with the exception that it only maps one value to the palette, which is represented by Y value (height) of the curve. For this reason, the only consideration for the lightness chart is how quickly the curve moves up. Translating the curve along the X-Axis only affects the palette if doing so clips a portion of the curve.
 
-<p align="center">
 <img src="https://github.com/mracette/color-curves-app/blob/master/assets/l-chart.png">
-</p>
-<p align="center">
+
 A linear curve mapped onto the L space
-</p>
 
 #### The Resulting Palette
 
