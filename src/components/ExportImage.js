@@ -15,26 +15,25 @@ function ExportImage(props) {
         setImgName('colorcurve');
     }, []);
 
-    const exportImage = (canvas, imgName) => {
+    const exportImage = (name, w, h) => {
 
-        const oWidth = canvas.width;
-        const oHeight = canvas.height;
+        const canvas = document.createElement('canvas');
+        canvas.id = 'export-canvas';
+        document.body.appendChild(canvas);
+        canvas.width = w;
+        canvas.height = h;
+        canvas.style.width = w;
+        canvas.style.height = h;
 
-        // resize for export
-        canvas.style.width = imgWidth;
-        canvas.style.height = imgHeight;
-        canvas.width = imgWidth;
-        canvas.height = imgHeight;
+        if (props.paletteType === 'continuous') {
+            props.palette.drawContinuousPalette(canvas, 128);
+        } else if (props.paletteType === 'discrete') {
+            props.palette.drawDiscretePalette(canvas, props.numStops);
+        }
 
-        props.updatePalettes();
-
-        downloadCanvas(canvas, imgName).then(() => {
+        downloadCanvas(canvas, name).then(() => {
             console.log('downloading', canvas);
-            canvas.width = oWidth;
-            canvas.height = oHeight;
-            canvas.style.removeProperty('width');
-            canvas.style.removeProperty('height');
-            props.updatePalettes();
+            document.body.removeChild(document.getElementById('export-canvas'));
         });
 
     }
@@ -121,7 +120,7 @@ function ExportImage(props) {
         <div className='row mt-3'>
             <div className='col-lg-5 d-flex'>
                 <button
-                    onClick={() => exportImage(props.exportCanvas.current, imgName)}
+                    onClick={() => exportImage(imgName, imgWidth, imgHeight)}
                     type="button"
                     className="btn btn-primary flex-grow-1"
                 >

@@ -5,7 +5,7 @@ export const downloadCanvas = (canvas, filename) => {
         // create an "off-screen" anchor tag
         const link = document.createElement('a');
 
-        link.download = filename;
+        link.download = filename + '.png';
         link.href = canvas.toDataURL("image/png;base64");
 
         // fire moust event to trigger download

@@ -115,7 +115,6 @@ function ExportModal(props) {
                         {nav === 'image' &&
                             <ExportImage
                                 updatePalettes={() => updatePalettes(exportCanvas.current, props.paletteType, props.numStops)}
-                                exportCanvas={exportCanvas}
                                 palette={props.palette}
                                 paletteType={props.paletteType || paletteType}
                                 setPaletteType={props.setPaletteType || setPaletteType}
