@@ -1,68 +1,52 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+<img src="https://github.com/mracette/color-curves-app/blob/master/src/img/logo192.png" align="center" width="64px" height="64px">
+<p>
 
-## Available Scripts
+# Color Curves
 
-In the project directory, you can run:
+Color Curves is an app for making unique color palettes that can enhance data visualization and generative art projects. It provides a UI wrapper around the [color-curves](https://github.com/facebook/create-react-app) library, which can be imported into your JS project and used programmatically.
 
-### `npm start`
+Because of the highly visual nature of the Color Curves methodology, it may be easier to design palettes using the app and then import your finished palettes into your projects. 
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The Color Curves editor is hosted at [colorcurves.app](https://colorcurves.app)
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+### Examples of palettes created with Color Curves
 
-### `npm test`
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/beyond-belief-continuous.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/beyond-belief-discrete.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/goldfish-deluxe-continuous.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/goldfish-deluxe-discrete.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/trix-sky-continuous.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/trix-sky-discrete.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/warm-magma-continuous.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/warm-magma-discrete.png">
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Methodology
 
-### `npm run build`
+### The HSL Color Space
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+HSL (hue, saturation, lightness) is an alternative representation of the RGB color model. It was designed to more closely align with the way human vision perceives color-making attributes.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+The 3 values that make up an HSL color can be visualized by a color wheel:
+1. **Hue** - Rotation around the color wheel, in radians
+2. **Saturation** - Distance from the center of the color wheel, usually normalized to [0, 1] or [0%, 100%]
+3. **Lightness** - Distance along a secondary axis, usually normalized to [0, 1] or [0%, 100%]
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/hsl-diagram.png">
 
-### `npm run eject`
+### Plotting Curves
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Color Curves separtes the HSL schema into two distinct parts: Hue-Saturation (HS) and Lightness (L).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### Hue-Saturation (HS)
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+All possible hue and saturation values are projected onto a **unit circle**, upon which a curve is drawn that traces out the specific HS values for the palette. The length of the curve will always be normalized to 1, such that the starting point of the curve (represented by a green dot) will map to the starting point of the palette. The end of the curve (red dot) will map to the end of the palette. Values in between are given based on the location of the curve at that point.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/hs-chart.png">
+*In this example, an exponential curve is mapped on to the HS space*
 
-## Learn More
+#### Lightness (HS)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+All possible lightness values are projected onto a **unit square**, upon which a curve is drawn that traces out the specific lightness values for the palette. This works in much the same way as the HS chart, with the exception that it only maps one value to the palette, which is represented by Y value (height) of the curve. For this reason, the only consideration for the lightness chart is how quickly the curve moves up. Translating the curve along the X-Axis only affects the palette if doing so clips a portion of the curve.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/l-chart.png">
+*In this example, a linear curve is mapped on to the L space*
 
-### Code Splitting
+#### The Resulting Palette
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+The palette produced by the editor combines the input from the HS and L editors. The curves in the examples above would produce the following palette:
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/l-chart.png">
+Notice how both the HS curve and the resulting palette start with a saturated blue, and move across the purple continuum, finally reaching a saturated orange color. Furthermore, notices how the lightness maps to the L chart. The darkest shade is on the left, and the palette gradually increases in lightness as it moves to the right. 
