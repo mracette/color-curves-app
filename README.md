@@ -35,18 +35,28 @@ Color Curves separtes the HSL schema into two distinct parts: Hue-Saturation (HS
 
 All possible hue and saturation values are projected onto a **unit circle**, upon which a curve is drawn that traces out the specific HS values for the palette. The length of the curve will always be normalized to 1, such that the starting point of the curve (represented by a green dot) will map to the starting point of the palette. The end of the curve (red dot) will map to the end of the palette. Values in between are given based on the location of the curve at that point.
 
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/hs-chart.png">
-*In this example, an exponential curve is mapped on to the HS space*
+<p align="center">
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/hs-chart.png">  
+</p>
+<p align="center">
+An exponential curve mapped onto the HS space
+</p>
 
-#### Lightness (HS)
+#### Lightness (L)
 
 All possible lightness values are projected onto a **unit square**, upon which a curve is drawn that traces out the specific lightness values for the palette. This works in much the same way as the HS chart, with the exception that it only maps one value to the palette, which is represented by Y value (height) of the curve. For this reason, the only consideration for the lightness chart is how quickly the curve moves up. Translating the curve along the X-Axis only affects the palette if doing so clips a portion of the curve.
 
+<p align="center">
 <img src="https://github.com/mracette/color-curves-app/blob/master/assets/l-chart.png">
-*In this example, a linear curve is mapped on to the L space*
+</p>
+<p align="center">
+A linear curve mapped onto the L space
+</p>
 
 #### The Resulting Palette
 
 The palette produced by the editor combines the input from the HS and L editors. The curves in the examples above would produce the following palette:
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/l-chart.png">
+
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/example-palette.png">
+
 Notice how both the HS curve and the resulting palette start with a saturated blue, and move across the purple continuum, finally reaching a saturated orange color. Furthermore, notices how the lightness maps to the L chart. The darkest shade is on the left, and the palette gradually increases in lightness as it moves to the right. 
