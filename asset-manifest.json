@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/color-curves-app/static/css/main.e54779a8.chunk.css",
-    "main.js": "/color-curves-app/static/js/main.6f228198.chunk.js",
-    "main.js.map": "/color-curves-app/static/js/main.6f228198.chunk.js.map",
-    "runtime-main.js": "/color-curves-app/static/js/runtime-main.581fa913.js",
-    "runtime-main.js.map": "/color-curves-app/static/js/runtime-main.581fa913.js.map",
-    "static/css/2.4b6d3a67.chunk.css": "/color-curves-app/static/css/2.4b6d3a67.chunk.css",
-    "static/js/2.fd40faea.chunk.js": "/color-curves-app/static/js/2.fd40faea.chunk.js",
-    "static/js/2.fd40faea.chunk.js.map": "/color-curves-app/static/js/2.fd40faea.chunk.js.map",
-    "index.html": "/color-curves-app/index.html",
-    "precache-manifest.444c077941e7d478db2828ec80ad2d3d.js": "/color-curves-app/precache-manifest.444c077941e7d478db2828ec80ad2d3d.js",
-    "service-worker.js": "/color-curves-app/service-worker.js",
-    "static/css/2.4b6d3a67.chunk.css.map": "/color-curves-app/static/css/2.4b6d3a67.chunk.css.map",
-    "static/css/main.e54779a8.chunk.css.map": "/color-curves-app/static/css/main.e54779a8.chunk.css.map",
-    "static/media/logo192.png": "/color-curves-app/static/media/logo192.1cbe3163.png",
-    "static/media/index.css": "/color-curves-app/static/media/poppins-latin-900italic.f3c803b2.woff2"
+    "main.css": "/static/css/main.421a7dfb.chunk.css",
+    "main.js": "/static/js/main.7245a89c.chunk.js",
+    "main.js.map": "/static/js/main.7245a89c.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.e5c30c43.js",
+    "runtime-main.js.map": "/static/js/runtime-main.e5c30c43.js.map",
+    "static/css/2.2a9a71b6.chunk.css": "/static/css/2.2a9a71b6.chunk.css",
+    "static/js/2.f1fb6ed4.chunk.js": "/static/js/2.f1fb6ed4.chunk.js",
+    "static/js/2.f1fb6ed4.chunk.js.map": "/static/js/2.f1fb6ed4.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.07f69c3a02f68803392ecad5304094a9.js": "/precache-manifest.07f69c3a02f68803392ecad5304094a9.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.2a9a71b6.chunk.css.map": "/static/css/2.2a9a71b6.chunk.css.map",
+    "static/css/main.421a7dfb.chunk.css.map": "/static/css/main.421a7dfb.chunk.css.map",
+    "static/media/logo192.png": "/static/media/logo192.1cbe3163.png",
+    "static/media/index.css": "/static/media/poppins-latin-900italic.f3c803b2.woff2"
   }
 }
