@@ -4,7 +4,7 @@
 
 # Color Curves
 
-Color Curves is an app for making unique color palettes that can enhance data visualization and generative art projects. It provides a UI wrapper around the [color-curves](https://github.com/facebook/create-react-app) library, which can be imported into your JS project and used programmatically.
+Color Curves is an app for making unique color palettes that can enhance data visualization and generative art projects. It provides a UI wrapper around the [color-curves](https://github.com/mracette/color-curves) library, which can be imported into your JS project and used programmatically.
 
 Because of the highly visual nature of the Color Curves methodology, it may be easier to design palettes using the app and then import your finished palettes into your projects. 
 
