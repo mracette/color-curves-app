@@ -12,7 +12,7 @@ The Color Curves editor is hosted at [colorcurves.app](https://colorcurves.app)
 
 ### Examples of palettes created with Color Curves
 
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/beyond-belief-continuous.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/beyond-belief-discrete.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/goldfish-deluxe-continuous.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/goldfish-deluxe-discrete.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/trix-sky-continuous.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/trix-sky-discrete.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/warm-magma-continuous.png"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/warm-magma-discrete.png">
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/beyond-belief-continuous.png" width="100%" height="40px"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/goldfish-deluxe-continuous.png" width="100%" height="40px"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/trix-sky-continuous.png" width="100%" height="40px"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/warm-magma-continuous.png" width="100%" height="40px">
 
 ## Methodology
 
@@ -51,6 +51,6 @@ A linear curve mapped onto the L space
 
 The palette produced by the editor combines the input from the HS and L editors. The curves in the examples above would produce the following palette:
 
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/example-palette.png">
+<img src="https://github.com/mracette/color-curves-app/blob/master/assets/example-palette.png width="100%" height="40px"">
 
 Notice how both the HS curve and the resulting palette start with a saturated blue, and move across the purple continuum, finally reaching a saturated orange color. Furthermore, notices how the lightness maps to the L chart. The darkest shade is on the left, and the palette gradually increases in lightness as it moves to the right. 
