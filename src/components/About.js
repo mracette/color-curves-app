@@ -22,11 +22,11 @@ function About() {
             <h2>Resources</h2>
             <p>
 
-                <li><a href="[https://github.com/mracette/color-curves-app](https://github.com/mracette/color-curves-app)">Documentation</a></li>
+                <li><a href="https://github.com/mracette/color-curves-app">Documentation</a></li>
 
-                <li><a href="[https://github.com/mracette/color-curves-app/issues](https://github.com/mracette/color-curves-app/issues)">File a bug or feature request</a></li>
+                <li><a href="https://github.com/mracette/color-curves-app/issues">File a bug or feature request</a></li>
 
-                <li><a href="[https://www.npmjs.com/package/color-curves](https://www.npmjs.com/package/color-curves)">NPM package</a></li>
+                <li><a href="https://www.npmjs.com/package/color-curves">NPM package</a></li>
 
             </p>
             <h2>Contact</h2>
@@ -36,11 +36,11 @@ function About() {
 
                 <li><a href="mailto:markracette@gmail.com">markracette@gmail.com</a></li>
 
-                <li><a href="twitter.com/markracette">twitter.com/markracette</a></li>
+                <li><a href="https://twitter.com/markracette">twitter.com/markracette</a></li>
 
-                <li><a href="instagram.com/rgb.ig">instagram.com/rgb.ig</a></li>
+                <li><a href="https://instagram.com/rgb.ig">instagram.com/rgb.ig</a></li>
 
-                <li><a href="github.com/mracette">github.com/mracette</a></li>
+                <li><a href="https://github.com/mracette">github.com/mracette</a></li>
             </p>
         </div>
     );
