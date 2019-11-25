@@ -135,6 +135,7 @@ function SmartInput(props) {
             style={
                 (props.defaultStyles !== false) && {
                     display: 'flex',
+                    minWidth: '0%',
                     flexFlow: 'row nowrap',
                     alignItems: 'center',
                     height: '1.9rem',
@@ -162,6 +163,7 @@ function SmartInput(props) {
                 style={
                     (props.defaultStyles !== false) && {
                         display: 'flex',
+                        minWidth: '0%',
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -199,6 +201,7 @@ function SmartInput(props) {
                 style={
                     (props.defaultStyles !== false) && {
                         flex: '0 1 auto',
+                        minWidth: '0%',
                         width: '100%',
                         height: '100%',
                         fontSize: '0.875rem',
@@ -220,6 +223,7 @@ function SmartInput(props) {
                     style={
                         (props.defaultStyles !== false) && {
                             display: 'flex',
+                            minWidth: '0%',
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'center',

@@ -28,7 +28,7 @@ function ExportHex(props) {
                     label='Num'
                     step={1}
                     min={1}
-                    max={32}
+                    max={256}
                     maxDecimals={0}
                     value={props.numStops}
                     handleChange={(value) => {

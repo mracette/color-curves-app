@@ -183,7 +183,7 @@ function Editor(props) {
                   label='Num'
                   step={1}
                   min={1}
-                  max={32}
+                  max={256}
                   maxDecimals={0}
                   value={numStops}
                   handleChange={(value) => setNumStops(parseInt(value))}
