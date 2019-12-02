@@ -1,5 +1,5 @@
 // libs
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 // components
 import ChartControls from './ChartControls';
@@ -13,6 +13,8 @@ import { drawHsChart, drawLChart } from '../drawing/drawBlankChart';
 function Chart(props) {
 
     const canvasRef = useRef(null);
+
+    const [canvasCoords, setCanvasCoords] = useState({ x: null, y: null });
 
     const padding = .07;
 
@@ -40,6 +42,27 @@ function Chart(props) {
 
     }
 
+    const getChartCoords = (e) => {
+
+        const clientX = e.clientX;
+        const clientY = e.clientY;
+
+        const chartWidth = canvasRef.current.clientWidth * (1 - padding * 2);
+        const chartHeight = canvasRef.current.clientHeight * (1 - padding * 2);
+
+        const chartPaddingX = canvasRef.current.clientWidth * padding;
+        const chartPaddingY = canvasRef.current.clientHeight * padding;
+
+        console.log(clientX, clientY, canvasRef.current.width, chartPaddingY);
+
+        // const rect = canvasRef.current.getBoundingClientRect();
+        // const canvasX = clientX - rect.left - chartPaddingX;
+        // const canvasY = clientY - rect.top - chartPaddingY;
+
+        // setCanvasCoords({ x: canvasX / chartWidth, y: canvasY / chartHeight });
+
+    }
+
     useEffect(() => {
         canvasRef.current.width = canvasRef.current.clientWidth;
         canvasRef.current.height = canvasRef.current.width;
@@ -51,9 +74,14 @@ function Chart(props) {
             updateCurve();
         })
 
-        return () => {
-            window.removeEventListener('resize', listen);
-        }
+
+        const mouseEnter = canvasRef.current.addEventListener('mouseenter', () => {
+            window.addEventListener('mousemove', getChartCoords);
+        })
+
+        const mouseLeave = canvasRef.current.addEventListener('mouseleave', () => {
+            window.removeEventListener('mousemove', getChartCoords);
+        })
 
     }, [])
 
@@ -85,6 +113,7 @@ function Chart(props) {
                     curve={props.curve}
                     setCurve={props.setCurve}
                     updateCurve={updateCurve}
+                    canvasCoords={canvasCoords}
                 />
 
                 <div className='row'>

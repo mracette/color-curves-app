@@ -43,6 +43,10 @@ function ChartControls(props) {
 
     };
 
+    useEffect(() => {
+        console.log(props.canvasCoords);
+    }, [props.canvasCoords])
+
     return (
 
         <div id='chart-controls' className='col-12'>
