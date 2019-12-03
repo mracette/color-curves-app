@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ChartControls from './ChartControls';
 
 // other
+import { HSLChart } from '../drawing/HSLChart';
 import drawEndPoints from '../drawing/drawEndPoints';
 import { drawHsOrientation, drawLOrientation } from '../drawing/drawOrientation';
 import { drawHsCurve, drawLCurve } from '../drawing/drawCurve';
@@ -12,28 +13,32 @@ import { drawHsChart, drawLChart } from '../drawing/drawBlankChart';
 
 function Chart(props) {
 
+    const padding = .07;
     const canvasRef = useRef(null);
 
+    const [chartClass, setChartClass] = useState(
+        new HSLChart(canvasRef.current, props.curve, props.curve.surface.type, padding)
+    );
     const [canvasCoords, setCanvasCoords] = useState({ x: null, y: null });
 
-    const padding = .07;
 
     const updateCurve = () => {
 
         switch (props.curve.surface.type) {
 
             case 'unitCircle':
-                drawHsChart(props.curve, canvasRef.current, padding);
+                chartClass.drawBlankChart();
+                // drawHsChart(props.curve, canvasRef.current, padding);
                 drawHsCurve(props.curve, canvasRef.current, padding);
-                drawHsOrientation(props.curve, canvasRef.current, padding);
-                drawEndPoints(props.curve, canvasRef.current, padding);
+                // drawHsOrientation(props.curve, canvasRef.current, padding);
+                // drawEndPoints(props.curve, canvasRef.current, padding);
                 break;
 
             case 'unitSquare':
                 drawLChart(props.curve, canvasRef.current, padding);
                 drawLCurve(props.curve, canvasRef.current, padding);
-                drawLOrientation(props.curve, canvasRef.current, padding);
-                drawEndPoints(props.curve, canvasRef.current, padding);
+                // drawLOrientation(props.curve, canvasRef.current, padding);
+                // drawEndPoints(props.curve, canvasRef.current, padding);
                 break;
 
         }
@@ -64,9 +69,9 @@ function Chart(props) {
     }
 
     useEffect(() => {
+
         canvasRef.current.width = canvasRef.current.clientWidth;
         canvasRef.current.height = canvasRef.current.width;
-        updateCurve();
 
         const listen = window.addEventListener('resize', () => {
             canvasRef.current.width = canvasRef.current.clientWidth;
@@ -87,6 +92,7 @@ function Chart(props) {
 
     useEffect(() => {
 
+        setChartClass(new HSLChart(canvasRef.current, props.curve, props.curve.surface.type, padding));
         updateCurve();
 
     }, [props.curve]);

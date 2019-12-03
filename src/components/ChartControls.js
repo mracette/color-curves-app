@@ -5,7 +5,6 @@ import { Curve } from 'color-curves';
 // components
 import SmartInput from './smart-input/SmartInput';
 
-
 function ChartControls(props) {
 
     const onCurveChange = (newCurveType) => {
