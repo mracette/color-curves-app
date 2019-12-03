@@ -238,9 +238,8 @@ function Editor(props) {
         <div className='row'>
           <div className='col-12'>
             <Canvas
-              callback={(canvasRef) => setPaletteCanvas(canvasRef)}
+              onLoad={(canvasRef) => setPaletteCanvas(canvasRef)}
               className='palette editor-palette'
-              onResize={() => updatePalettes()}
             />
           </div>
         </div>

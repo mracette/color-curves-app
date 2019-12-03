@@ -86,14 +86,14 @@ export class CoordinateSystem {
     }
 
     getWidth() {
-        return this.nx(1) - this.nx(0);
+        return this.nx(this.nxRange[1]) - this.nx(this.nxRange[0]);
     }
 
     getHeight() {
         if (this.orientationY === 'down') {
-            return this.ny(1) - this.ny(0);
+            return this.ny(this.nyRange[1]) - this.ny(this.nyRange[0]);
         } else if (this.orientationY === 'up') {
-            return this.ny(0) - this.ny(1);
+            return this.ny(this.nyRange[0]) - this.ny(this.nyRange[1]);
         } else {
             return undefined;
         }

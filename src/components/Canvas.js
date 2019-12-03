@@ -3,26 +3,39 @@ import React, { useRef, useEffect } from 'react';
 
 function Canvas(props) {
 
+    const pixelRatio = typeof document !== 'undefined' ? window.devicePixelRatio : 1;
+
     const canvasRef = useRef(null);
+
+    const setCanvasSize = () => {
+
+        // resize to device pixel ratio
+        canvasRef.current.clientWidth !== 0 && (canvasRef.current.width = pixelRatio * canvasRef.current.clientWidth);
+
+        // height depends on props.makeSquare
+        if (props.makeSquare) {
+            canvasRef.current.clientHeight !== 0 && (canvasRef.current.height = pixelRatio * canvasRef.current.clientWidth);
+        } else {
+            canvasRef.current.clientHeight !== 0 && (canvasRef.current.height = pixelRatio * canvasRef.current.clientHeight);
+        }
+
+        // trigger the resize callback
+        props.onResize !== undefined && props.onResize(canvasRef.current);
+
+    }
 
     useEffect(() => {
 
-        canvasRef.current.clientWidth !== 0 && (canvasRef.current.width = canvasRef.current.clientWidth);
-        canvasRef.current.clientHeight !== 0 && (canvasRef.current.height = canvasRef.current.clientHeight);
+        setCanvasSize();
 
-        const listen = window.addEventListener('resize', () => {
-            canvasRef.current.clientWidth !== 0 && (canvasRef.current.width = canvasRef.current.clientWidth);
-            canvasRef.current.clientHeight !== 0 && (canvasRef.current.height = canvasRef.current.width);
-            props.onResize !== undefined && props.onResize(canvasRef.current);
-        });
+        window.addEventListener('resize', setCanvasSize);
 
-        props.callback !== undefined && props.callback(canvasRef.current);
+        // trigger the onload callback
+        props.onLoad !== undefined && props.onLoad(canvasRef.current);
 
-        return () => {
-            window.removeEventListener('resize', listen);
-        }
+        return () => window.removeEventListener('resize', setCanvasSize);
 
-    }, [props.onResize, props.callback, canvasRef])
+    }, [setCanvasSize])
 
     return (
         <canvas

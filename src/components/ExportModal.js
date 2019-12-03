@@ -3,20 +3,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
 
 // components
+import Canvas from '../components/Canvas';
 import ExportImage from '../components/ExportImage';
 import ExportHex from '../components/ExportHex';
 import ExportJS from '../components/ExportJS';
 
 function ExportModal(props) {
 
-    // component versions of numstops and palettetype
-    // do not affect the editor/global values
+    // component versions of numstops and palettetype do not affect the editor/global values
     const [numStops, setNumStops] = useState(12);
     const [paletteType, setPaletteType] = useState('continuous');
-
     const [nav, setNav] = useState('image');
-
-    const exportCanvas = useRef(null);
+    const [exportCanvas, setExportCanvas] = useState(null);
 
     const updatePalettes = (canvas, paletteType, stops) => {
 
@@ -37,34 +35,12 @@ function ExportModal(props) {
     }
 
     useEffect(() => {
-        if (exportCanvas.current) {
-
+        if (exportCanvas) {
             const numStopsVar = props.numStops || numStops;
             const paletteTypeVar = props.paletteType || paletteType;
-            updatePalettes(exportCanvas.current, paletteTypeVar, numStopsVar);
-
+            updatePalettes(exportCanvas, paletteTypeVar, numStopsVar);
         }
-    }, [exportCanvas.current, props.palette, props.numStops, numStops, props.paletteType, paletteType, nav, updatePalettes])
-
-    useEffect(() => {
-
-        if (exportCanvas.current) {
-
-            exportCanvas.current.clientWidth !== 0 && (exportCanvas.current.width = exportCanvas.current.clientWidth);
-            exportCanvas.current.clientHeight !== 0 && (exportCanvas.current.height = exportCanvas.current.clientHeight);
-
-            const listen = window.addEventListener('resize', () => {
-                exportCanvas.current.clientWidth !== 0 && (exportCanvas.current.width = exportCanvas.current.clientWidth);
-                exportCanvas.current.clientHeight !== 0 && (exportCanvas.current.height = exportCanvas.current.width);
-            });
-
-            return () => {
-                window.removeEventListener('resize', listen);
-            }
-
-        }
-
-    }, [exportCanvas])
+    }, [exportCanvas, props.palette, props.numStops, numStops, props.paletteType, paletteType, nav, updatePalettes])
 
     return (
         <Modal
@@ -80,7 +56,10 @@ function ExportModal(props) {
 
                 <div className='row'>
                     <div className='col-12'>
-                        <canvas className='palette preset' ref={exportCanvas} />
+                        <Canvas
+                            className='palette preset'
+                            onLoad={canvas => setExportCanvas(canvas)}
+                        />
                     </div>
                 </div>
 
@@ -114,7 +93,7 @@ function ExportModal(props) {
 
                         {nav === 'image' &&
                             <ExportImage
-                                updatePalettes={() => updatePalettes(exportCanvas.current, props.paletteType, props.numStops)}
+                                updatePalettes={() => updatePalettes(exportCanvas, props.paletteType, props.numStops)}
                                 palette={props.palette}
                                 paletteType={props.paletteType || paletteType}
                                 setPaletteType={props.setPaletteType || setPaletteType}
