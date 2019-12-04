@@ -12,11 +12,20 @@ function Chart(props) {
 
     const [chartCanvas, setChartCanvas] = useState(null);
     const [hslChart, setHslChart] = useState(null);
+    const [mousePos, setMousePos] = useState([null, null]);
 
     // always update palette with chart
     const updateCurve = () => {
         hslChart && hslChart.update()
         props.updatePalettes && props.updatePalettes();
+    }
+
+    const updateMousePos = (e) => {
+        const event = e;
+        const rect = chartCanvas.getBoundingClientRect();
+        const canvasX = event.clientX - rect.left;
+        const canvasY = event.clientY - rect.top;
+        hslChart.updateMousePos(canvasX, canvasY);
     }
 
     // create a new chart class for each canvas/curve combination
@@ -28,6 +37,29 @@ function Chart(props) {
     useEffect(() => {
         updateCurve();
     }, [updateCurve])
+
+
+    useEffect(() => {
+
+        const addMouseMove = () => {
+            window.addEventListener('mousemove', updateMousePos);
+        }
+
+        const removeMouseMove = () => {
+            window.removeEventListener('mousemove', updateMousePos);
+        }
+
+        // require named functions to be removed later
+        chartCanvas && chartCanvas.addEventListener('mouseenter', addMouseMove)
+        chartCanvas && chartCanvas.addEventListener('mouseleave', removeMouseMove);
+
+        // cleanup
+        return (() => {
+            chartCanvas && chartCanvas.removeEventListener('mouseenter', addMouseMove);
+            chartCanvas && chartCanvas.removeEventListener('mouseleave', removeMouseMove);
+        })
+
+    }, [chartCanvas, updateMousePos])
 
     return (
 

@@ -34,7 +34,7 @@ export class CoordinateSystem {
 
     /**
      * Maps a normalized x-value to a canvas x-value
-     * @param {object} n A normalized x-value i]n the range [0, 1]
+     * @param {object} n A normalized x-value in the range [0, 1]
      * @param {number} [options.padding] Defines padding as a proportion of the canvas width (if defined, overrides padding settings for the system)
      */
 
@@ -51,6 +51,26 @@ export class CoordinateSystem {
         }
 
         return padding + ((n - this.nxRange[0]) / (this.nxRange[1] - this.nxRange[0])) * (this.canvas.width - 2 * padding);
+
+    }
+
+    /**
+     * Maps a canvas x-value to a normalized x-value
+     * @param {object} n A canvas x-value in the range [0, canvas.width]
+     * @param {number} [options.padding] Defines padding as a proportion of the canvas width (if defined, overrides padding settings for the system)
+     */
+
+    xn(x, options = {}) {
+
+        let padding;
+
+        if (typeof options.padding === 'number') {
+            padding = options.padding * this.canvas.width;
+        } else {
+            padding = (this.paddingX || this.padding) * this.canvas.width;
+        }
+
+        return (x - padding) / (this.canvas.width - padding * 2)
 
     }
 
@@ -81,6 +101,34 @@ export class CoordinateSystem {
             return padding + ((n - this.nyRange[0]) / (this.nyRange[1] - this.nyRange[0])) * (this.canvas.height - 2 * padding);
         } else if (this.orientationY === 'up') {
             return this.canvas.height - padding - ((n - this.nyRange[0]) / (this.nyRange[1] - this.nyRange[0])) * (this.canvas.height - 2 * padding);
+        }
+
+    }
+
+    /**
+     * Maps a canvas y-value to a normalized y-value
+     * @param {object} n A canvas y-value in the range [0, canvas.height]
+     * @param {number} [options.padding] Defines padding as a proportion of the canvas height (if defined, overrides padding settings for the system)
+     */
+
+    yn(y, options = {}) {
+
+        let padding;
+
+        if (typeof options.paddingY === 'number') {
+            padding = options.paddingY * this.canvas.height;
+        } else if (typeof options.padding === 'number') {
+            padding = options.padding * this.canvas.width;
+        } else {
+            padding = (typeof this.paddingY === 'number') ?
+                (this.paddingY * this.canvas.height) :
+                (this.padding * this.canvas.width);
+        }
+
+        if (this.orientationY === 'down') {
+            return (y - padding) / (this.canvas.height - padding * 2)
+        } else if (this.orientationY === 'up') {
+            return (this.canvas.height - y - padding) / (this.canvas.height - padding * 2)
         }
 
     }
