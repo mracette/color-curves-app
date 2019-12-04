@@ -12,7 +12,6 @@ function Chart(props) {
 
     const [chartCanvas, setChartCanvas] = useState(null);
     const [hslChart, setHslChart] = useState(null);
-    const [mousePos, setMousePos] = useState([null, null]);
 
     // always update palette with chart
     const updateCurve = () => {
@@ -20,17 +19,79 @@ function Chart(props) {
         props.updatePalettes && props.updatePalettes();
     }
 
-    const updateMousePos = (e) => {
-        const event = e;
-        const rect = chartCanvas.getBoundingClientRect();
-        const canvasX = event.clientX - rect.left;
-        const canvasY = event.clientY - rect.top;
-        hslChart.updateMousePos(canvasX, canvasY);
+    const updateMousePos = (e, startX, startY) => {
+
+        if (hslChart) {
+            const event = e;
+            const rect = chartCanvas.getBoundingClientRect();
+            const canvasX = (event.clientX - rect.left) * window.devicePixelRatio || 1;
+            const canvasY = (event.clientY - rect.top) * window.devicePixelRatio || 1;
+
+            if (startX && startY) {
+                startX = (startX - rect.left) * window.devicePixelRatio || 1;
+                startY = (startY - rect.top) * window.devicePixelRatio || 1;
+            }
+
+            hslChart.updateMousePos(canvasX, canvasY, startX, startY);
+        }
     }
+
+    const onMouseOrTouchDown = (startX, startY) => {
+
+        // disable selections while the mouse is down
+        document.onselectstart = () => false;
+
+        const listener = (e) => {
+            updateMousePos(e, startX, startY);
+        }
+
+        document.addEventListener('mousemove', listener);
+        document.addEventListener('touchmove', listener);
+
+        document.addEventListener('mouseup', () => {
+            document.onselectstart = null;
+            document.removeEventListener('mousemove', listener);
+        })
+
+        document.addEventListener('touchend', () => {
+            document.onselectstart = null;
+            document.removeEventListener('touchmove', listener);
+        })
+
+    }
+
+    const onParamChange = (param, value) => {
+
+        switch (param) {
+            case 'angleStart': props.curve.setAngleStart(value); break;
+            case 'angleEnd': props.curve.setAngleEnd(value); break;
+            case 'angleOffset': props.curve.setAngleOffset(value); break;
+            case 'variation': props.curve.setVariation(value); break;
+            case 'translateX': props.curve.setTranslateX(value); break;
+            case 'translateY': props.curve.setTranslateY(value); break;
+            case 'scaleX': props.curve.setScaleX(value); break;
+            case 'scaleY': props.curve.setScaleY(value); break;
+            case 'rotate': props.curve.setRotation(value); break;
+            case 'reverse': props.curve.setReverse(value); break;
+            case 'radius': props.curve.setRadius(value); break;
+            case 'overflow': props.curve.setOverflow(value); break;
+            case 'exponent': props.curve.setExponent(value); break;
+            case 'overshoot': props.curve.setOvershoot(value); break;
+            case 'amplitude': props.curve.setAmplitude(value); break;
+            case 'period': props.curve.setPeriod(value); break;
+            default: break;
+        }
+
+        // update clamping bounds
+        if (props.curve.overflow === 'clamp') props.curve.setClampBounds();
+
+        updateCurve();
+
+    };
 
     // create a new chart class for each canvas/curve combination
     useEffect(() => {
-        chartCanvas && setHslChart(new HSLChart(chartCanvas, props.curve, props.curve.surface.type));
+        chartCanvas && setHslChart(new HSLChart(chartCanvas, props.curve, props.curve.surface.type, onParamChange));
     }, [chartCanvas, props.curve]);
 
     // update the chart class and palettes when dependencies change
@@ -41,22 +102,17 @@ function Chart(props) {
 
     useEffect(() => {
 
-        const addMouseMove = () => {
-            window.addEventListener('mousemove', updateMousePos);
-        }
+        document.addEventListener('mousemove', updateMousePos);
 
-        const removeMouseMove = () => {
-            window.removeEventListener('mousemove', updateMousePos);
-        }
+        document.addEventListener('mousedown', (e) => {
+            document.removeEventListener('mousemove', updateMousePos);
+            const startX = parseFloat(e.clientX);
+            const startY = parseFloat(e.clientY);
+            onMouseOrTouchDown(startX, startY);
+        })
 
-        // require named functions to be removed later
-        chartCanvas && chartCanvas.addEventListener('mouseenter', addMouseMove)
-        chartCanvas && chartCanvas.addEventListener('mouseleave', removeMouseMove);
-
-        // cleanup
-        return (() => {
-            chartCanvas && chartCanvas.removeEventListener('mouseenter', addMouseMove);
-            chartCanvas && chartCanvas.removeEventListener('mouseleave', removeMouseMove);
+        document.addEventListener('mouseup', (e) => {
+            document.addEventListener('mousemove', updateMousePos);
         })
 
     }, [chartCanvas, updateMousePos])
@@ -98,6 +154,7 @@ function Chart(props) {
                     curve={props.curve}
                     setCurve={props.setCurve}
                     updateCurve={updateCurve}
+                    onParamChange={onParamChange}
                 />
 
             </div>

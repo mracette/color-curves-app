@@ -13,39 +13,6 @@ function ChartControls(props) {
 
     }
 
-    const onParamChange = (param, value) => {
-
-        switch (param) {
-            case 'angleStart': props.curve.setAngleStart(value); break;
-            case 'angleEnd': props.curve.setAngleEnd(value); break;
-            case 'angleOffset': props.curve.setAngleOffset(value); break;
-            case 'variation': props.curve.setVariation(value); break;
-            case 'translateX': props.curve.setTranslateX(value); break;
-            case 'translateY': props.curve.setTranslateY(value); break;
-            case 'scaleX': props.curve.setScaleX(value); break;
-            case 'scaleY': props.curve.setScaleY(value); break;
-            case 'rotate': props.curve.setRotation(value); break;
-            case 'reverse': props.curve.setReverse(value); break;
-            case 'radius': props.curve.setRadius(value); break;
-            case 'overflow': props.curve.setOverflow(value); break;
-            case 'exponent': props.curve.setExponent(value); break;
-            case 'overshoot': props.curve.setOvershoot(value); break;
-            case 'amplitude': props.curve.setAmplitude(value); break;
-            case 'period': props.curve.setPeriod(value); break;
-            default: break;
-        }
-
-        // update clamping bounds
-        if (props.curve.overflow === 'clamp') props.curve.setClampBounds();
-
-        props.updateCurve();
-
-    };
-
-    useEffect(() => {
-        console.log(props.canvasCoords);
-    }, [props.canvasCoords])
-
     return (
 
         <div id='chart-controls' className='col-12'>
@@ -85,7 +52,7 @@ function ChartControls(props) {
                                     value={props.curve.variation}
                                     onChange={(e) => {
                                         const value = e.target.value;
-                                        onParamChange('variation', value);
+                                        props.onParamChange('variation', value);
                                     }}>
                                     <option value='in'>In</option>
                                     <option value='out'>Out</option>
@@ -110,8 +77,8 @@ function ChartControls(props) {
                                     min={0.01}
                                     value={props.curve.exponent}
                                     resetButton={true}
-                                    resetAction={() => onParamChange('exponent')}
-                                    handleChange={(value) => onParamChange('exponent', value)}
+                                    resetAction={() => props.onParamChange('exponent')}
+                                    handleChange={(value) => props.onParamChange('exponent', value)}
                                 />
                             </div>
                         </div>}
@@ -128,8 +95,8 @@ function ChartControls(props) {
                                     maxDecimals={2}
                                     value={props.curve.overshoot}
                                     resetButton={true}
-                                    resetAction={() => { onParamChange('overshoot') }}
-                                    handleChange={(value) => onParamChange('overshoot', value)}
+                                    resetAction={() => { props.onParamChange('overshoot') }}
+                                    handleChange={(value) => props.onParamChange('overshoot', value)}
                                 />
                             </div>
                         </div>}
@@ -147,8 +114,8 @@ function ChartControls(props) {
                                     min={1}
                                     value={props.curve.amplitude}
                                     resetButton={true}
-                                    resetAction={() => { onParamChange('amplitude') }}
-                                    handleChange={(value) => onParamChange('amplitude', value)}
+                                    resetAction={() => { props.onParamChange('amplitude') }}
+                                    handleChange={(value) => props.onParamChange('amplitude', value)}
                                 />
                             </div>
                         </div>
@@ -163,8 +130,8 @@ function ChartControls(props) {
                                     min={0.01}
                                     value={props.curve.period}
                                     resetButton={true}
-                                    resetAction={() => { onParamChange('period') }}
-                                    handleChange={(value) => onParamChange('period', value)}
+                                    resetAction={() => { props.onParamChange('period') }}
+                                    handleChange={(value) => props.onParamChange('period', value)}
                                 />
                             </div>
                         </div>
@@ -182,7 +149,7 @@ function ChartControls(props) {
                                 className='form-control form-control-sm'
                                 onChange={(e) => {
                                     const value = e.target.value === 'reverse';
-                                    onParamChange('reverse', value);
+                                    props.onParamChange('reverse', value);
                                 }}>
                                 <option value='normal'>Normal</option>
                                 <option value='reverse'>Reverse</option>
@@ -198,7 +165,7 @@ function ChartControls(props) {
                                 value={props.curve.overflow}
                                 onChange={(e) => {
                                     const value = e.target.value;
-                                    onParamChange('overflow', value);
+                                    props.onParamChange('overflow', value);
                                 }}>
                                 <option value='clamp'>Clamp</option>
                                 <option value='project'>Project</option>
@@ -225,8 +192,8 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 value={props.curve.radius}
                                 resetButton={true}
-                                resetAction={() => { onParamChange('radius', props.curve.radius) }}
-                                handleChange={(value) => onParamChange('radius', value)}
+                                resetAction={() => { props.onParamChange('radius', props.curve.radius) }}
+                                handleChange={(value) => props.onParamChange('radius', value)}
                             />
                         </div>
 
@@ -247,8 +214,8 @@ function ChartControls(props) {
                                 conversion={Math.PI}
                                 value={props.curve.angleStart / Math.PI}
                                 resetButton={true}
-                                resetAction={() => { onParamChange('angleStart') }}
-                                handleChange={(value) => onParamChange('angleStart', value)}
+                                resetAction={() => { props.onParamChange('angleStart') }}
+                                handleChange={(value) => props.onParamChange('angleStart', value)}
                             />
                         </div>
 
@@ -263,8 +230,8 @@ function ChartControls(props) {
                                 conversion={Math.PI}
                                 value={props.curve.angleEnd / Math.PI}
                                 resetButton={true}
-                                resetAction={() => { onParamChange('angleEnd') }}
-                                handleChange={(value) => onParamChange('angleEnd', value)}
+                                resetAction={() => { props.onParamChange('angleEnd') }}
+                                handleChange={(value) => props.onParamChange('angleEnd', value)}
                             />
                         </div>
 
@@ -285,8 +252,8 @@ function ChartControls(props) {
                                 conversion={Math.PI}
                                 value={props.curve.angleOffset / Math.PI}
                                 resetButton={true}
-                                resetAction={() => { onParamChange('angleOffset') }}
-                                handleChange={(value) => onParamChange('angleOffset', value)}
+                                resetAction={() => { props.onParamChange('angleOffset') }}
+                                handleChange={(value) => props.onParamChange('angleOffset', value)}
                             />
                         </div>
 
@@ -309,8 +276,8 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 value={props.curve.translation.x}
                                 resetButton={true}
-                                resetAction={() => { onParamChange('translateX') }}
-                                handleChange={(value) => onParamChange('translateX', value)}
+                                resetAction={() => { props.onParamChange('translateX') }}
+                                handleChange={(value) => props.onParamChange('translateX', value)}
                             />
                         </div>
 
@@ -322,8 +289,8 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 value={props.curve.translation.y}
                                 resetButton={true}
-                                resetAction={() => { onParamChange('translateY') }}
-                                handleChange={(value) => onParamChange('translateY', value)}
+                                resetAction={() => { props.onParamChange('translateY') }}
+                                handleChange={(value) => props.onParamChange('translateY', value)}
                             />
                         </div>
 
@@ -342,8 +309,8 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 value={props.curve.scale.x}
                                 resetButton={true}
-                                resetAction={() => { onParamChange('scaleX') }}
-                                handleChange={(value) => onParamChange('scaleX', value)}
+                                resetAction={() => { props.onParamChange('scaleX') }}
+                                handleChange={(value) => props.onParamChange('scaleX', value)}
                             />
                         </div>
 
@@ -355,8 +322,8 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 value={props.curve.scale.y}
                                 resetButton={true}
-                                resetAction={() => { onParamChange('scaleY') }}
-                                handleChange={(value) => onParamChange('scaleY', value)}
+                                resetAction={() => { props.onParamChange('scaleY') }}
+                                handleChange={(value) => props.onParamChange('scaleY', value)}
                             />
                         </div>
 
@@ -375,8 +342,8 @@ function ChartControls(props) {
                                 conversion={Math.PI}
                                 value={props.curve.rotation / Math.PI}
                                 resetButton={true}
-                                resetAction={() => { onParamChange('rotate') }}
-                                handleChange={(value) => onParamChange('rotate', value)}
+                                resetAction={() => { props.onParamChange('rotate') }}
+                                handleChange={(value) => props.onParamChange('rotate', value)}
                             />
                         </div>
                     </div>

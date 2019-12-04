@@ -2,7 +2,9 @@ import { CoordinateSystem } from './CoordinateSystem';
 
 export class HSLChart {
 
-    constructor(canvas, curve, type) {
+    constructor(canvas, curve, type, onParamChange) {
+
+        this.onParamChange = onParamChange;
 
         const range = type === 'unitCircle' ? [-1, 1] : [0, 1];
 
@@ -30,31 +32,44 @@ export class HSLChart {
         this.arcCount = 256;
         this.arcWidth = - Math.PI * 2 / this.arcCount;
 
+        this.mouseDown = false;
+        this.takeSnapshot = false;
+
         // mouseover state held here
         this.mouseOver = {
             startPoint: {
                 cx: null,
                 cy: null,
                 mouseOver: false,
+                dragging: false,
                 error: this.endPointRadius
             },
             endPoint: {
                 cx: null,
                 cy: null,
                 mouseOver: false,
+                dragging: false,
                 error: this.endPointRadius
             },
             curve: {
                 points: [],
                 mouseOver: false,
+                dragging: false,
                 error: 5
             }
+        }
+
+        this.curveParamSnapshots = {
+            translateX: null,
+            translateY: null,
+            scaleX: null,
+            scaleY: null,
+            rotation: null
         }
 
         this.update();
 
     }
-
 
     update() {
         this.drawBlankChart();
@@ -72,48 +87,6 @@ export class HSLChart {
         } else if (this.type === 'unitSquare') {
             this.drawLChart();
         }
-    }
-
-    drawCurve(resolution) {
-
-        const lineSegments = resolution || 128;
-        const points = [];
-
-        this.ctx.lineWidth = this.lineWidth;
-
-        let prevCoords;
-
-        const start = this.curve.overflow === 'clamp' ?
-            this.curve.clampStart : 0;
-
-        const end = this.curve.overflow === 'clamp' ?
-            this.curve.clampEnd : 1
-
-        for (let i = 0; i <= lineSegments; i++) {
-
-            this.ctx.beginPath();
-
-            const coords = this.curve.getCurveCoordsAt(start + (i / lineSegments) * (end - start));
-
-            this.ctx.strokeStyle = this.mouseOver.curve.mouseOver ? this.highlightColor : 'black';
-
-            if (i === 0) {
-                this.ctx.moveTo(this.coords.nx(coords.x), this.coords.ny(coords.y));
-            } else {
-                this.ctx.moveTo(this.coords.nx(prevCoords.x), this.coords.ny(prevCoords.y));
-                this.ctx.lineTo(this.coords.nx(coords.x), this.coords.ny(coords.y));
-            }
-
-            points.push([this.coords.nx(coords.x), this.coords.ny(coords.y)]);
-
-            this.ctx.stroke();
-
-            prevCoords = coords;
-
-        }
-
-        this.mouseOver.curve.points = points;
-
     }
 
     drawHsChart() {
@@ -185,6 +158,49 @@ export class HSLChart {
 
     }
 
+    drawCurve(resolution) {
+
+        const lineSegments = resolution || 128;
+        const points = [];
+
+        this.ctx.lineWidth = this.lineWidth;
+
+        let prevCoords;
+
+        const start = this.curve.overflow === 'clamp' ?
+            this.curve.clampStart : 0;
+
+        const end = this.curve.overflow === 'clamp' ?
+            this.curve.clampEnd : 1
+
+        for (let i = 0; i <= lineSegments; i++) {
+
+            this.ctx.beginPath();
+
+            const coords = this.curve.getCurveCoordsAt(start + (i / lineSegments) * (end - start));
+
+            this.ctx.strokeStyle = (this.mouseOver.curve.mouseOver || this.mouseOver.curve.grabbing)
+                ? this.highlightColor : 'black';
+
+            if (i === 0) {
+                this.ctx.moveTo(this.coords.nx(coords.x), this.coords.ny(coords.y));
+            } else {
+                this.ctx.moveTo(this.coords.nx(prevCoords.x), this.coords.ny(prevCoords.y));
+                this.ctx.lineTo(this.coords.nx(coords.x), this.coords.ny(coords.y));
+            }
+
+            points.push([this.coords.nx(coords.x), this.coords.ny(coords.y)]);
+
+            this.ctx.stroke();
+
+            prevCoords = coords;
+
+        }
+
+        this.mouseOver.curve.points = points;
+
+    }
+
     drawEndpoints() {
 
         let s, e;
@@ -205,7 +221,8 @@ export class HSLChart {
 
         this.ctx.lineWidth = this.endPointLineWidth
 
-        this.ctx.strokeStyle = this.mouseOver.startPoint.mouseOver ? this.highlightColor : 'black';
+        this.ctx.strokeStyle = (this.mouseOver.startPoint.mouseOver || this.mouseOver.startPoint.grabbing)
+            ? this.highlightColor : 'black';
 
         this.ctx.beginPath();
         this.ctx.fillStyle = "lightgreen";
@@ -216,7 +233,8 @@ export class HSLChart {
         this.mouseOver.startPoint.cx = this.coords.nx(s.x);
         this.mouseOver.startPoint.cy = this.coords.ny(s.y);
 
-        this.ctx.strokeStyle = this.mouseOver.endPoint.mouseOver ? this.highlightColor : 'black';
+        this.ctx.strokeStyle = (this.mouseOver.endPoint.mouseOver || this.mouseOver.endPoint.grabbing)
+            ? this.highlightColor : 'black';
 
         this.ctx.beginPath();
         this.ctx.fillStyle = "palevioletred";
@@ -230,15 +248,44 @@ export class HSLChart {
 
     }
 
-    updateMousePos(x, y) {
+    updateMousePos(x, y, sx, sy) {
 
-        this.updateMouseover('curve', this.isCurveOver(x, y));
-        this.updateMouseover('startPoint', this.isStartPointOver(x, y));
-        this.updateMouseover('endPoint', this.isEndPointOver(x, y));
+        const mouseDown = (typeof sx !== 'undefined' && typeof sy !== 'undefined');
+
+        this.updateMouseover('curve', this.isCurveOver(x, y), mouseDown);
+        this.updateMouseover('startPoint', this.isStartPointOver(x, y), mouseDown);
+        this.updateMouseover('endPoint', this.isEndPointOver(x, y), mouseDown);
+
+        // this is the initial mousedown event, take a snapshot of curve params
+        if (mouseDown && !this.mouseDown) {
+            this.curveParamSnapshots.translateX = this.curve.translation.x;
+            this.curveParamSnapshots.translateY = this.curve.translation.y;
+            this.curveParamSnapshots.scaleX = this.curve.scale.x;
+            this.curveParamSnapshots.scaleY = this.curve.scale.y;
+            this.curveParamSnapshots.rotation = this.curve.rotation;
+        }
+
+        this.mouseDown = mouseDown;
+
+        if (this.mouseDown) {
+
+            const xDelta = (this.coords.nxRange[1] - this.coords.nxRange[0]) * (x - sx) / this.coords.getWidth();
+            const yDelta = (this.coords.nyRange[1] - this.coords.nyRange[0]) * (y - sy) / (-1 * this.coords.getHeight());
+
+            if (this.mouseOver.startPoint.grabbing) {
+
+            } else if (this.mouseOver.endPoint.grabbing) {
+
+            } else if (this.mouseOver.curve.grabbing) {
+                console.log(xDelta, x, y, sx, sy);
+                this.onParamChange('translateX', this.curveParamSnapshots.translateX + xDelta);
+                this.onParamChange('translateY', this.curveParamSnapshots.translateY + yDelta);
+            }
+        }
 
     }
 
-    updateMouseover(element, status) {
+    updateMouseover(element, status, mouseDown) {
 
         // endpoints override curve
         if ((element === 'startPoint' || element === 'endPoint') && status) {
@@ -247,14 +294,19 @@ export class HSLChart {
 
         // if true update accordingly
         if (status) {
-            this.mouseOver[element].mouseOver = status
-            document.body.style.cursor = 'grab';
-            this.update();
+            this.mouseOver[element].mouseOver = status;
+            this.mouseOver[element].grabbing = mouseDown;
 
             // if element goes from true -> false, chart needs an update
         } else if (this.mouseOver[element].mouseOver) {
             this.mouseOver[element].mouseOver = false;
+            this.mouseOver[element].grabbing = mouseDown;
             document.body.style.cursor = 'default';
+            this.update();
+        }
+
+        if (status || mouseDown) {
+            document.body.style.cursor = 'grab';
             this.update();
         }
 
@@ -270,7 +322,6 @@ export class HSLChart {
     }
 
     isStartPointOver(x, y) {
-        console.log(x, this.mouseOver.startPoint.cx);
         return (
             Math.abs(this.mouseOver.startPoint.cx - x) <= this.mouseOver.startPoint.error &&
             Math.abs(this.mouseOver.startPoint.cy - y) <= this.mouseOver.startPoint.error
@@ -278,7 +329,6 @@ export class HSLChart {
     }
 
     isEndPointOver(x, y) {
-        console.log(x, this.mouseOver.endPoint.cx);
         return (
             Math.abs(this.mouseOver.endPoint.cx - x) <= this.mouseOver.endPoint.error &&
             Math.abs(this.mouseOver.endPoint.cy - y) <= this.mouseOver.endPoint.error
