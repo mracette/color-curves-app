@@ -19,48 +19,9 @@ function Chart(props) {
         props.updatePalettes && props.updatePalettes();
     }
 
-    const updateMousePos = (e, startX, startY) => {
-
-        if (hslChart) {
-            const event = e;
-            const rect = chartCanvas.getBoundingClientRect();
-            const canvasX = (event.clientX - rect.left) * window.devicePixelRatio || 1;
-            const canvasY = (event.clientY - rect.top) * window.devicePixelRatio || 1;
-
-            if (startX && startY) {
-                startX = (startX - rect.left) * window.devicePixelRatio || 1;
-                startY = (startY - rect.top) * window.devicePixelRatio || 1;
-            }
-
-            hslChart.updateMousePos(canvasX, canvasY, startX, startY);
-        }
-    }
-
-    const onMouseOrTouchDown = (startX, startY) => {
-
-        // disable selections while the mouse is down
-        document.onselectstart = () => false;
-
-        const listener = (e) => {
-            updateMousePos(e, startX, startY);
-        }
-
-        document.addEventListener('mousemove', listener);
-        document.addEventListener('touchmove', listener);
-
-        document.addEventListener('mouseup', () => {
-            document.onselectstart = null;
-            document.removeEventListener('mousemove', listener);
-        })
-
-        document.addEventListener('touchend', () => {
-            document.onselectstart = null;
-            document.removeEventListener('touchmove', listener);
-        })
-
-    }
-
     const onParamChange = (param, value) => {
+
+        console.log('param change', props.curve.type)
 
         switch (param) {
             case 'angleStart': props.curve.setAngleStart(value); break;
@@ -89,10 +50,80 @@ function Chart(props) {
 
     };
 
+    const setupListeners = (chart) => {
+
+        const mouseMoveUp = (e) => {
+            const rect = chartCanvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * window.devicePixelRatio || 1;
+            const y = (e.clientY - rect.top) * window.devicePixelRatio || 1;
+            chart.updateMousePos(x, y);
+        }
+
+        const mouseDown = (e) => {
+            const mouseMoveDownClosure = () => {
+
+                const rect = chartCanvas.getBoundingClientRect();
+                const sx = (e.clientX - rect.left) * window.devicePixelRatio || 1;
+                const sy = (e.clientY - rect.top) * window.devicePixelRatio || 1;
+
+                const mouseMoveDown = (e) => {
+                    const x = (e.clientX - rect.left) * window.devicePixelRatio || 1;
+                    const y = (e.clientY - rect.top) * window.devicePixelRatio || 1;
+                    chart.updateMousePos(x, y, sx, sy);
+                }
+
+                const mouseUp = (e) => {
+                    document.removeEventListener('mousemove', mouseMoveDown);
+
+                    // cleanup previous
+                    // chartCanvas.removeEventListener('mousemove', mouseMoveUp);
+
+                    // add new
+                    chartCanvas.addEventListener('mousemove', mouseMoveUp);
+                }
+
+                // cleanup previous
+                // document.removeEventListener('mousemove', mouseMoveDown);
+                // document.removeEventListener('mousemove', mouseUp);
+
+                // add new 
+                document.addEventListener('mousemove', mouseMoveDown);
+                document.addEventListener('mouseup', mouseUp);
+            }
+
+            chartCanvas.removeEventListener('mousemove', mouseMoveUp);
+            mouseMoveDownClosure();
+
+        }
+
+        // cleanup previous
+        // chartCanvas.removeEventListener('mousemove', mouseMoveUp);
+        // chartCanvas.removeEventListener('mousedown', mouseDown);
+
+        // add new
+        chartCanvas.addEventListener('mousemove', mouseMoveUp);
+        chartCanvas.addEventListener('mousedown', mouseDown);
+
+    }
+
     // create a new chart class for each canvas/curve combination
     useEffect(() => {
-        chartCanvas && setHslChart(new HSLChart(chartCanvas, props.curve, props.curve.surface.type, onParamChange));
-    }, [chartCanvas, props.curve]);
+
+        if (chartCanvas) {
+            if (!hslChart) {
+                const chart = new HSLChart(chartCanvas, props.curve, props.curve.surface.type, onParamChange)
+                setHslChart(chart);
+                setupListeners(chart);
+                chart.update();
+            } else {
+                hslChart.setCurve(props.curve);
+                hslChart.onParamChange = onParamChange;
+                hslChart.update();
+            }
+
+        }
+
+    }, [chartCanvas, props.curve, onParamChange]);
 
     // update the chart class and palettes when dependencies change
     useEffect(() => {
@@ -100,22 +131,22 @@ function Chart(props) {
     }, [updateCurve])
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        document.addEventListener('mousemove', updateMousePos);
+    //     document.addEventListener('mousemove', updateMousePos);
 
-        document.addEventListener('mousedown', (e) => {
-            document.removeEventListener('mousemove', updateMousePos);
-            const startX = parseFloat(e.clientX);
-            const startY = parseFloat(e.clientY);
-            onMouseOrTouchDown(startX, startY);
-        })
+    //     document.addEventListener('mousedown', (e) => {
+    //         document.removeEventListener('mousemove', updateMousePos);
+    //         const startX = parseFloat(e.clientX);
+    //         const startY = parseFloat(e.clientY);
+    //         onMouseOrTouchDown(startX, startY);
+    //     })
 
-        document.addEventListener('mouseup', (e) => {
-            document.addEventListener('mousemove', updateMousePos);
-        })
+    //     document.addEventListener('mouseup', (e) => {
+    //         document.addEventListener('mousemove', updateMousePos);
+    //     })
 
-    }, [chartCanvas, updateMousePos])
+    // }, [chartCanvas, updateMousePos])
 
     return (
 

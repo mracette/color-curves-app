@@ -79,6 +79,15 @@ export class HSLChart {
 
     setCurve(curve) {
         this.curve = curve;
+        this.getParamSnapshots();
+    }
+
+    getParamSnapshots() {
+        this.curveParamSnapshots.translateX = this.curve.translation.x;
+        this.curveParamSnapshots.translateY = this.curve.translation.y;
+        this.curveParamSnapshots.scaleX = this.curve.scale.x;
+        this.curveParamSnapshots.scaleY = this.curve.scale.y;
+        this.curveParamSnapshots.rotation = this.curve.rotation;
     }
 
     drawBlankChart() {
@@ -250,7 +259,9 @@ export class HSLChart {
 
     updateMousePos(x, y, sx, sy) {
 
+
         const mouseDown = (typeof sx !== 'undefined' && typeof sy !== 'undefined');
+        console.log(x, y, sx, sy, this.curve)
 
         this.updateMouseover('curve', this.isCurveOver(x, y), mouseDown);
         this.updateMouseover('startPoint', this.isStartPointOver(x, y), mouseDown);
@@ -258,11 +269,19 @@ export class HSLChart {
 
         // this is the initial mousedown event, take a snapshot of curve params
         if (mouseDown && !this.mouseDown) {
-            this.curveParamSnapshots.translateX = this.curve.translation.x;
-            this.curveParamSnapshots.translateY = this.curve.translation.y;
-            this.curveParamSnapshots.scaleX = this.curve.scale.x;
-            this.curveParamSnapshots.scaleY = this.curve.scale.y;
-            this.curveParamSnapshots.rotation = this.curve.rotation;
+
+            this.getParamSnapshots();
+
+            // identify which element is being grabbed
+            if (this.mouseOver.curve.mouseOver) { this.mouseOver.curve.grabbing = true; }
+            if (this.mouseOver.startPoint.mouseOver) { this.mouseOver.startPoint.grabbing = true; }
+            if (this.mouseOver.endPoint.mouseOver) { this.mouseOver.endPoint.grabbing = true; }
+
+        } else if (!mouseDown && this.mouseDown) {
+            // set all grabs to false if this is an initial mouseup event
+            this.mouseOver.curve.grabbing = false;
+            this.mouseOver.startPoint.grabbing = false;
+            this.mouseOver.endPoint.grabbing = false;
         }
 
         this.mouseDown = mouseDown;
@@ -273,11 +292,14 @@ export class HSLChart {
             const yDelta = (this.coords.nyRange[1] - this.coords.nyRange[0]) * (y - sy) / (-1 * this.coords.getHeight());
 
             if (this.mouseOver.startPoint.grabbing) {
-
+                this.onParamChange('scaleX', this.curveParamSnapshots.scaleX - xDelta);
+                this.onParamChange('scaleY', this.curveParamSnapshots.scaleY - yDelta);
+                this.onParamChange('translateX', this.curveParamSnapshots.translateX + xDelta);
+                this.onParamChange('translateY', this.curveParamSnapshots.translateY + yDelta);
             } else if (this.mouseOver.endPoint.grabbing) {
-
+                this.onParamChange('scaleX', this.curveParamSnapshots.scaleX + xDelta);
+                this.onParamChange('scaleY', this.curveParamSnapshots.scaleY + yDelta);
             } else if (this.mouseOver.curve.grabbing) {
-                console.log(xDelta, x, y, sx, sy);
                 this.onParamChange('translateX', this.curveParamSnapshots.translateX + xDelta);
                 this.onParamChange('translateY', this.curveParamSnapshots.translateY + yDelta);
             }
@@ -295,12 +317,10 @@ export class HSLChart {
         // if true update accordingly
         if (status) {
             this.mouseOver[element].mouseOver = status;
-            this.mouseOver[element].grabbing = mouseDown;
 
             // if element goes from true -> false, chart needs an update
         } else if (this.mouseOver[element].mouseOver) {
             this.mouseOver[element].mouseOver = false;
-            this.mouseOver[element].grabbing = mouseDown;
             document.body.style.cursor = 'default';
             this.update();
         }
