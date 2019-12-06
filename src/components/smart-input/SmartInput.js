@@ -217,7 +217,9 @@ function SmartInput(props) {
                     className="reset-input-button"
                     onClick={(e) => {
                         e.preventDefault();
+                        console.log(props.value)
                         props.resetAction && props.resetAction();
+                        console.log(props.value)
                         handleUserInput(props.value);
                     }}
                     style={

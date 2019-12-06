@@ -13,6 +13,24 @@ function Chart(props) {
     const [chartCanvas, setChartCanvas] = useState(null);
     const [hslChart, setHslChart] = useState(null);
 
+    // painful but necessary due to shallow compare of props.curve
+    const [angleStart, setAngleStart] = useState(props.curve.angleStart);
+    const [angleEnd, setAngleEnd] = useState(props.curve.angleEnd);
+    const [angleOffset, setAngleOffset] = useState(props.curve.angleOffset);
+    const [variation, setVariation] = useState(props.curve.variation);
+    const [translateX, setTranslateX] = useState(props.curve.translation.x);
+    const [translateY, setTranslateY] = useState(props.curve.translation.y);
+    const [scaleX, setScaleX] = useState(props.curve.scale.x);
+    const [scaleY, setScaleY] = useState(props.curve.scale.y);
+    const [rotation, setRotation] = useState(props.curve.rotation);
+    const [reverse, setReverse] = useState(props.curve.reverse);
+    const [radius, setRadius] = useState(props.curve.radius);
+    const [overflow, setOverflow] = useState(props.curve.overflow);
+    const [exponent, setExponent] = useState(props.curve.exponent);
+    const [overshoot, setOvershoot] = useState(props.curve.overshoot);
+    const [amplitude, setAmplitude] = useState(props.curve.amplitude);
+    const [period, setPeriod] = useState(props.curve.period);
+
     // always update palette with chart
     const updateCurve = () => {
         hslChart && hslChart.update()
@@ -21,25 +39,23 @@ function Chart(props) {
 
     const onParamChange = (param, value) => {
 
-        console.log('param change', props.curve.type)
-
         switch (param) {
-            case 'angleStart': props.curve.setAngleStart(value); break;
-            case 'angleEnd': props.curve.setAngleEnd(value); break;
-            case 'angleOffset': props.curve.setAngleOffset(value); break;
-            case 'variation': props.curve.setVariation(value); break;
-            case 'translateX': props.curve.setTranslateX(value); break;
-            case 'translateY': props.curve.setTranslateY(value); break;
-            case 'scaleX': props.curve.setScaleX(value); break;
-            case 'scaleY': props.curve.setScaleY(value); break;
-            case 'rotate': props.curve.setRotation(value); break;
-            case 'reverse': props.curve.setReverse(value); break;
-            case 'radius': props.curve.setRadius(value); break;
-            case 'overflow': props.curve.setOverflow(value); break;
-            case 'exponent': props.curve.setExponent(value); break;
-            case 'overshoot': props.curve.setOvershoot(value); break;
-            case 'amplitude': props.curve.setAmplitude(value); break;
-            case 'period': props.curve.setPeriod(value); break;
+            case 'angleStart': props.curve.setAngleStart(value); setAngleStart(value); break;
+            case 'angleEnd': props.curve.setAngleEnd(value); setAngleEnd(value); break;
+            case 'angleOffset': props.curve.setAngleOffset(value); setAngleOffset(value); break;
+            case 'variation': props.curve.setVariation(value); setVariation(value); break;
+            case 'translateX': props.curve.setTranslateX(value); setTranslateX(value); break;
+            case 'translateY': props.curve.setTranslateY(value); setTranslateY(value); break;
+            case 'scaleX': props.curve.setScaleX(value); setScaleX(value); break;
+            case 'scaleY': props.curve.setScaleY(value); setScaleY(value); break;
+            case 'rotate': props.curve.setRotation(value); setRotation(value); break;
+            case 'reverse': props.curve.setReverse(value); setReverse(value); break;
+            case 'radius': props.curve.setRadius(value); setRadius(value); break;
+            case 'overflow': props.curve.setOverflow(value); setOverflow(value); break;
+            case 'exponent': props.curve.setExponent(value); setExponent(value); break;
+            case 'overshoot': props.curve.setOvershoot(value); setOvershoot(value); break;
+            case 'amplitude': props.curve.setAmplitude(value); setAmplitude(value); break;
+            case 'period': props.curve.setPeriod(value); setPeriod(value); break;
             default: break;
         }
 
@@ -75,16 +91,9 @@ function Chart(props) {
                 const mouseUp = (e) => {
                     document.removeEventListener('mousemove', mouseMoveDown);
 
-                    // cleanup previous
-                    // chartCanvas.removeEventListener('mousemove', mouseMoveUp);
-
                     // add new
                     chartCanvas.addEventListener('mousemove', mouseMoveUp);
                 }
-
-                // cleanup previous
-                // document.removeEventListener('mousemove', mouseMoveDown);
-                // document.removeEventListener('mousemove', mouseUp);
 
                 // add new 
                 document.addEventListener('mousemove', mouseMoveDown);
@@ -96,10 +105,6 @@ function Chart(props) {
 
         }
 
-        // cleanup previous
-        // chartCanvas.removeEventListener('mousemove', mouseMoveUp);
-        // chartCanvas.removeEventListener('mousedown', mouseDown);
-
         // add new
         chartCanvas.addEventListener('mousemove', mouseMoveUp);
         chartCanvas.addEventListener('mousedown', mouseDown);
@@ -108,6 +113,8 @@ function Chart(props) {
 
     // create a new chart class for each canvas/curve combination
     useEffect(() => {
+
+        console.log('nechart');
 
         if (chartCanvas) {
             if (!hslChart) {
@@ -123,30 +130,12 @@ function Chart(props) {
 
         }
 
-    }, [chartCanvas, props.curve, onParamChange]);
+    }, [chartCanvas, props.curve]);
 
     // update the chart class and palettes when dependencies change
     useEffect(() => {
         updateCurve();
     }, [updateCurve])
-
-
-    // useEffect(() => {
-
-    //     document.addEventListener('mousemove', updateMousePos);
-
-    //     document.addEventListener('mousedown', (e) => {
-    //         document.removeEventListener('mousemove', updateMousePos);
-    //         const startX = parseFloat(e.clientX);
-    //         const startY = parseFloat(e.clientY);
-    //         onMouseOrTouchDown(startX, startY);
-    //     })
-
-    //     document.addEventListener('mouseup', (e) => {
-    //         document.addEventListener('mousemove', updateMousePos);
-    //     })
-
-    // }, [chartCanvas, updateMousePos])
 
     return (
 
@@ -186,6 +175,22 @@ function Chart(props) {
                     setCurve={props.setCurve}
                     updateCurve={updateCurve}
                     onParamChange={onParamChange}
+                    angleStart={angleStart}
+                    angleEnd={angleEnd}
+                    angleOffset={angleOffset}
+                    variation={variation}
+                    translateX={translateX}
+                    translateY={translateY}
+                    scaleX={scaleX}
+                    scaleY={scaleY}
+                    rotation={rotation}
+                    reverse={reverse}
+                    radius={radius}
+                    overflow={overflow}
+                    exponent={exponent}
+                    overshoot={overshoot}
+                    amplitude={amplitude}
+                    period={period}
                 />
 
             </div>

@@ -259,9 +259,7 @@ export class HSLChart {
 
     updateMousePos(x, y, sx, sy) {
 
-
         const mouseDown = (typeof sx !== 'undefined' && typeof sy !== 'undefined');
-        console.log(x, y, sx, sy, this.curve)
 
         this.updateMouseover('curve', this.isCurveOver(x, y), mouseDown);
         this.updateMouseover('startPoint', this.isStartPointOver(x, y), mouseDown);
@@ -290,6 +288,8 @@ export class HSLChart {
 
             const xDelta = (this.coords.nxRange[1] - this.coords.nxRange[0]) * (x - sx) / this.coords.getWidth();
             const yDelta = (this.coords.nyRange[1] - this.coords.nyRange[0]) * (y - sy) / (-1 * this.coords.getHeight());
+
+            console.log(xDelta);
 
             if (this.mouseOver.startPoint.grabbing) {
                 this.onParamChange('scaleX', this.curveParamSnapshots.scaleX - xDelta);

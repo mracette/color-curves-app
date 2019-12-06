@@ -66,19 +66,15 @@ function Editor(props) {
   // initialize refs
   const paletteWrapper = useRef(null);
 
-  const updateCurveType = useCallback((curve, newType) => {
+  const updateCurveType = ((curve, newType) => {
 
     if (curve === 'hsCurve') {
 
       props.palette.setHsCurve(newType);
 
-      setHsCurve(props.palette.hsCurve);
-
     } else if (curve === 'lCurve') {
 
       props.palette.setLCurve(newType);
-
-      setLCurve(props.palette.lCurve);
 
     }
 
