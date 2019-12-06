@@ -72,9 +72,13 @@ function Editor(props) {
 
       props.palette.setHsCurve(newType);
 
+      setHsCurve(props.palette.hsCurve);
+
     } else if (curve === 'lCurve') {
 
       props.palette.setLCurve(newType);
+
+      setLCurve(props.palette.lCurve);
 
     }
 
