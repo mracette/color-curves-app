@@ -32,11 +32,11 @@ function Chart(props) {
             case 'angleEnd': props.curve.setAngleEnd(value); break;
             case 'angleOffset': props.curve.setAngleOffset(value); break;
             case 'variation': props.curve.setVariation(value); break;
-            case 'translateX': props.curve.setTranslateX(value); setTranslateX(value); break;
-            case 'translateY': props.curve.setTranslateY(value); setTranslateY(value); break;
-            case 'scaleX': props.curve.setScaleX(value); setScaleX(value); break;
-            case 'scaleY': props.curve.setScaleY(value); setScaleY(value); break;
-            case 'rotate': props.curve.setRotation(value); setRotation(value); break;
+            case 'translateX': props.curve.setTranslateX(value); setTranslateX(props.curve.translation.x); break;
+            case 'translateY': props.curve.setTranslateY(value); setTranslateY(props.curve.translation.y); break;
+            case 'scaleX': props.curve.setScaleX(value); setScaleX(props.curve.scale.x); break;
+            case 'scaleY': props.curve.setScaleY(value); setScaleY(props.curve.scale.y); break;
+            case 'rotate': props.curve.setRotation(value); setRotation(props.curve.rotation); break;
             case 'reverse': props.curve.setReverse(value); break;
             case 'radius': props.curve.setRadius(value); break;
             case 'overflow': props.curve.setOverflow(value); break;
@@ -117,7 +117,7 @@ function Chart(props) {
 
         }
 
-    }, [chartCanvas, props.curve, onParamChange]);
+    }, [chartCanvas, onParamChange]);
 
     useEffect(() => {
         if (paletteNeedsUpdate) {
@@ -142,6 +142,15 @@ function Chart(props) {
 
                 </div>
 
+                <ChartControls
+                    section="top"
+                    chartType={props.chartType}
+                    config={props.config}
+                    curve={props.curve}
+                    setCurve={props.setCurve}
+                    onParamChange={onParamChange}
+                />
+
                 <div className='row'>
 
                     <div className='col-md-12'>
@@ -158,11 +167,11 @@ function Chart(props) {
                 </div>
 
                 <ChartControls
+                    section="bottom"
                     chartType={props.chartType}
                     config={props.config}
                     curve={props.curve}
                     setCurve={props.setCurve}
-                    updateCurve={updateCurve}
                     onParamChange={onParamChange}
                     translateX={translateX}
                     translateY={translateY}

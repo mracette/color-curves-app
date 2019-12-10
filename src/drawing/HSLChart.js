@@ -377,12 +377,12 @@ export class HSLChart {
             let xDeltaRot = Math.cos(this.curve.rotation) * xDelta + Math.sin(this.curve.rotation) * yDelta;
             let yDeltaRot = Math.cos(this.curve.rotation) * yDelta - Math.sin(this.curve.rotation) * xDelta;
 
-            if (this.mouseOver.startPoint.grabbing) {
+            if (this.mouseOver.startPoint.grabbing && this.curve.category !== 'geometry') {
                 this.onParamChange('scaleX', this.curveParamSnapshots.scaleX - xDeltaRot);
                 this.onParamChange('scaleY', this.curveParamSnapshots.scaleY - yDeltaRot);
                 this.onParamChange('translateX', this.curveParamSnapshots.translateX + xDeltaRot);
                 this.onParamChange('translateY', this.curveParamSnapshots.translateY + yDeltaRot);
-            } else if (this.mouseOver.endPoint.grabbing) {
+            } else if (this.mouseOver.endPoint.grabbing && this.curve.category !== 'geometry') {
                 this.onParamChange('scaleX', this.curveParamSnapshots.scaleX + xDeltaRot);
                 this.onParamChange('scaleY', this.curveParamSnapshots.scaleY + yDeltaRot);
             } else if (this.mouseOver.curve.grabbing) {

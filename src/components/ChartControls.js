@@ -1,6 +1,5 @@
 // libs
-import React, { useState, useEffect } from 'react';
-import { Curve } from 'color-curves';
+import React from 'react';
 
 // components
 import SmartInput from './smart-input/SmartInput';
@@ -18,7 +17,7 @@ function ChartControls(props) {
         <div id='chart-controls' className='col-12'>
 
             {/* FORM */}
-            <form>
+            {props.section === 'top' && (<form>
 
                 <div className='form-group'>
 
@@ -49,7 +48,6 @@ function ChartControls(props) {
                                 <select
                                     id='variation-select'
                                     className='form-control form-control-sm'
-                                    value={props.curve.variation}
                                     onChange={(e) => {
                                         const value = e.target.value;
                                         props.onParamChange('variation', value);
@@ -162,7 +160,6 @@ function ChartControls(props) {
                             <select
                                 id='overflow-select'
                                 className='form-control form-control-sm'
-                                value={props.curve.overflow}
                                 onChange={(e) => {
                                     const value = e.target.value;
                                     props.onParamChange('overflow', value);
@@ -261,6 +258,10 @@ function ChartControls(props) {
 
                 </div>}
 
+            </form>)}
+
+
+            {props.section === 'bottom' && (<form>
                 <div className='form-group'>
 
                     {/* TRANSLATION */}
@@ -276,6 +277,7 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 value={props.translateX}
                                 resetButton={true}
+                                updateAfterReset={false}
                                 resetAction={() => { props.onParamChange('translateX') }}
                                 handleChange={(value) => props.onParamChange('translateX', value)}
                             />
@@ -289,6 +291,7 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 value={props.translateY}
                                 resetButton={true}
+                                updateAfterReset={false}
                                 resetAction={() => { props.onParamChange('translateY') }}
                                 handleChange={(value) => props.onParamChange('translateY', value)}
                             />
@@ -309,6 +312,7 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 value={props.scaleX}
                                 resetButton={true}
+                                updateAfterReset={false}
                                 resetAction={() => { props.onParamChange('scaleX') }}
                                 handleChange={(value) => props.onParamChange('scaleX', value)}
                             />
@@ -322,6 +326,7 @@ function ChartControls(props) {
                                 maxDecimals={2}
                                 value={props.scaleY}
                                 resetButton={true}
+                                updateAfterReset={false}
                                 resetAction={() => { props.onParamChange('scaleY') }}
                                 handleChange={(value) => props.onParamChange('scaleY', value)}
                             />
@@ -342,6 +347,7 @@ function ChartControls(props) {
                                 conversion={Math.PI}
                                 value={props.rotation / Math.PI}
                                 resetButton={true}
+                                updateAfterReset={false}
                                 resetAction={() => { props.onParamChange('rotate') }}
                                 handleChange={(value) => props.onParamChange('rotate', value)}
                             />
@@ -350,9 +356,9 @@ function ChartControls(props) {
 
                 </div>
 
-            </form>
+            </form>)}
 
-        </div>
+        </div >
 
     );
 
