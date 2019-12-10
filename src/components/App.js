@@ -23,7 +23,6 @@ function App() {
 
   return (<>
 
-
     <nav
       className={`navbar navbar-expand-lg navbar-dark ${nav !== "editor" ? "sticky-top" : ""}`}
       style={{ backgroundColor: '#232F34' }}

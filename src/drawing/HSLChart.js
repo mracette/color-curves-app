@@ -24,9 +24,12 @@ export class HSLChart {
         });
 
         // display settings
+
         this.lineWidth = this.coords.getWidth() / 170;
         this.endPointLineWidth = this.coords.getWidth() / 80;
         this.endPointRadius = this.coords.getWidth() / 60;
+        this.tickLength = this.coords.getWidth() / 50;
+        this.font = `${this.canvas.width * this.padding / 2}px Arial`;
 
         // color wheel parameters
         this.arcCount = 256;
@@ -63,11 +66,12 @@ export class HSLChart {
             translateX: null,
             translateY: null,
             scaleX: null,
-            scaleY: null,
-            rotation: null
+            scaleY: null
         }
 
         this.update();
+
+        window.addEventListener('resize', () => this.updateDisplaySettings())
 
     }
 
@@ -75,6 +79,15 @@ export class HSLChart {
         this.drawBlankChart();
         this.drawCurve();
         this.drawEndpoints();
+        this.drawOrientation();
+    }
+
+    updateDisplaySettings() {
+        this.lineWidth = this.coords.getWidth() / 170;
+        this.endPointLineWidth = this.coords.getWidth() / 80;
+        this.endPointRadius = this.coords.getWidth() / 60;
+        this.tickLength = this.coords.getWidth() / 50;
+        this.font = `${this.canvas.width * this.padding / 2}px Arial`;
     }
 
     setCurve(curve) {
@@ -257,6 +270,78 @@ export class HSLChart {
 
     }
 
+    drawOrientation = () => {
+
+        const rotatePoint = (x, y) => {
+
+            // negative rotation because y orientation is reversed
+            const sin = Math.sin(-this.curve.rotation);
+            const cos = Math.cos(-this.curve.rotation);
+            const cx = this.coords.nx(this.curve.surface.cx);
+            const cy = this.coords.ny(this.curve.surface.cy);
+            const xRot = (x - cx) * cos - (y - cy) * sin + cx;
+            const yRot = (x - cx) * sin + (y - cy) * cos + cy;
+
+            return {
+                x: xRot,
+                y: yRot
+            };
+
+        }
+
+        this.ctx.fillStyle = 'black';
+        this.ctx.strokeStyle = 'black';
+        this.ctx.lineWidth = this.lineWidth;
+        this.ctx.font = this.font;
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+
+        let x, y, text, p0, p1, p2;
+        this.ctx.beginPath();
+
+        text = this.ctx.measureText("+X").width;
+        x = this.coords.nx(this.coords.nxRange[1])
+        y = this.coords.ny(this.curve.surface.cy);
+        p0 = rotatePoint(x - this.tickLength, y);
+        p1 = rotatePoint(x + this.tickLength, y);
+        p2 = rotatePoint(x + text, y);
+        this.ctx.moveTo(p0.x, p0.y);
+        this.ctx.lineTo(p1.x, p1.y);
+        this.ctx.fillText("+X", p2.x, p2.y);
+
+        text = this.ctx.measureText("+X").width;
+        x = this.coords.nx(this.curve.surface.cx)
+        y = this.coords.ny(this.coords.nyRange[1]);
+        p0 = rotatePoint(x, y - this.tickLength);
+        p1 = rotatePoint(x, y + this.tickLength);
+        p2 = rotatePoint(x, y - text);
+        this.ctx.moveTo(p0.x, p0.y);
+        this.ctx.lineTo(p1.x, p1.y);
+        this.ctx.fillText("+Y", p2.x, p2.y);
+
+        text = this.ctx.measureText("+X").width;
+        x = this.coords.nx(this.coords.nxRange[0])
+        y = this.coords.ny(this.curve.surface.cy);
+        p0 = rotatePoint(x - this.tickLength, y);
+        p1 = rotatePoint(x + this.tickLength, y);
+        p2 = rotatePoint(x - text, y);
+        this.ctx.moveTo(p0.x, p0.y);
+        this.ctx.lineTo(p1.x, p1.y);
+        this.ctx.fillText("-X", p2.x, p2.y);
+
+        text = this.ctx.measureText("+X").width;
+        x = this.coords.nx(this.curve.surface.cx)
+        y = this.coords.ny(this.coords.nyRange[0]);
+        p0 = rotatePoint(x, y - this.tickLength);
+        p1 = rotatePoint(x, y + this.tickLength);
+        p2 = rotatePoint(x, y + text);
+        this.ctx.moveTo(p0.x, p0.y);
+        this.ctx.lineTo(p1.x, p1.y);
+        this.ctx.fillText("-Y", p2.x, p2.y);
+
+        this.ctx.stroke();
+    }
+
     updateMousePos(x, y, sx, sy) {
 
         const mouseDown = (typeof sx !== 'undefined' && typeof sy !== 'undefined');
@@ -286,23 +371,25 @@ export class HSLChart {
 
         if (this.mouseDown) {
 
-            const xDelta = (this.coords.nxRange[1] - this.coords.nxRange[0]) * (x - sx) / this.coords.getWidth();
-            const yDelta = (this.coords.nyRange[1] - this.coords.nyRange[0]) * (y - sy) / (-1 * this.coords.getHeight());
+            let xDelta = (this.coords.nxRange[1] - this.coords.nxRange[0]) * (x - sx) / this.coords.getWidth();
+            let yDelta = (this.coords.nyRange[1] - this.coords.nyRange[0]) * (y - sy) / (-1 * this.coords.getHeight());
 
-            console.log(xDelta);
+            let xDeltaRot = Math.cos(this.curve.rotation) * xDelta + Math.sin(this.curve.rotation) * yDelta;
+            let yDeltaRot = Math.cos(this.curve.rotation) * yDelta - Math.sin(this.curve.rotation) * xDelta;
 
             if (this.mouseOver.startPoint.grabbing) {
-                this.onParamChange('scaleX', this.curveParamSnapshots.scaleX - xDelta);
-                this.onParamChange('scaleY', this.curveParamSnapshots.scaleY - yDelta);
-                this.onParamChange('translateX', this.curveParamSnapshots.translateX + xDelta);
-                this.onParamChange('translateY', this.curveParamSnapshots.translateY + yDelta);
+                this.onParamChange('scaleX', this.curveParamSnapshots.scaleX - xDeltaRot);
+                this.onParamChange('scaleY', this.curveParamSnapshots.scaleY - yDeltaRot);
+                this.onParamChange('translateX', this.curveParamSnapshots.translateX + xDeltaRot);
+                this.onParamChange('translateY', this.curveParamSnapshots.translateY + yDeltaRot);
             } else if (this.mouseOver.endPoint.grabbing) {
-                this.onParamChange('scaleX', this.curveParamSnapshots.scaleX + xDelta);
-                this.onParamChange('scaleY', this.curveParamSnapshots.scaleY + yDelta);
+                this.onParamChange('scaleX', this.curveParamSnapshots.scaleX + xDeltaRot);
+                this.onParamChange('scaleY', this.curveParamSnapshots.scaleY + yDeltaRot);
             } else if (this.mouseOver.curve.grabbing) {
-                this.onParamChange('translateX', this.curveParamSnapshots.translateX + xDelta);
-                this.onParamChange('translateY', this.curveParamSnapshots.translateY + yDelta);
+                this.onParamChange('translateX', this.curveParamSnapshots.translateX + xDeltaRot);
+                this.onParamChange('translateY', this.curveParamSnapshots.translateY + yDeltaRot);
             }
+
         }
 
     }

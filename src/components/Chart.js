@@ -1,5 +1,5 @@
 // libs
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 // components
 import ChartControls from './ChartControls';
@@ -10,6 +10,7 @@ import { HSLChart } from '../drawing/HSLChart';
 
 function Chart(props) {
 
+    const [paletteNeedsUpdate, setPaletteNeedsUpdate] = useState(false);
     const [chartCanvas, setChartCanvas] = useState(null);
     const [hslChart, setHslChart] = useState(null);
 
@@ -20,13 +21,11 @@ function Chart(props) {
     const [scaleY, setScaleY] = useState(props.curve.scale.y);
     const [rotation, setRotation] = useState(props.curve.rotation);
 
-    // always update palette with chart
     const updateCurve = () => {
-        hslChart && hslChart.update()
-        props.updatePalettes && props.updatePalettes();
+        hslChart && hslChart.update();
     }
 
-    const onParamChange = (param, value) => {
+    const onParamChange = useCallback((param, value) => {
 
         switch (param) {
             case 'angleStart': props.curve.setAngleStart(value); break;
@@ -52,8 +51,9 @@ function Chart(props) {
         if (props.curve.overflow === 'clamp') props.curve.setClampBounds();
 
         updateCurve();
+        props.updatePalettes();
 
-    };
+    }, [props.updatePalettes, props.curve]);
 
     const setupListeners = (chart) => {
 
@@ -103,8 +103,6 @@ function Chart(props) {
     // create a new chart class for each canvas/curve combination
     useEffect(() => {
 
-        console.log('nechart');
-
         if (chartCanvas) {
             if (!hslChart) {
                 const chart = new HSLChart(chartCanvas, props.curve, props.curve.surface.type, onParamChange)
@@ -119,12 +117,14 @@ function Chart(props) {
 
         }
 
-    }, [chartCanvas, props.curve]);
+    }, [chartCanvas, props.curve, onParamChange]);
 
-    // update the chart class and palettes when dependencies change
     useEffect(() => {
-        updateCurve();
-    }, [updateCurve])
+        if (paletteNeedsUpdate) {
+            props.updatePalettes(props.paletteType);
+            setPaletteNeedsUpdate(false);
+        }
+    }, [paletteNeedsUpdate, props.paletteType, props.updatePalettes])
 
     return (
 
