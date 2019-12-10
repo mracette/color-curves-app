@@ -218,7 +218,7 @@ function SmartInput(props) {
                     onClick={(e) => {
                         e.preventDefault();
                         props.resetAction && props.resetAction();
-                        handleUserInput(props.value);
+                        if (props.updateAfterReset !== false) { handleUserInput(props.value) };
                     }}
                     style={
                         (props.defaultStyles !== false) && {

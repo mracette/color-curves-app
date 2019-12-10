@@ -66,17 +66,27 @@ function Editor(props) {
   // initialize refs
   const paletteWrapper = useRef(null);
 
-  const updateCurveType = useCallback((curve, newType) => {
+  const updateCurveType = ((curve, newType) => {
+
+    let defaults = false;
 
     if (curve === 'hsCurve') {
 
-      props.palette.setHsCurve(newType);
+      if (newType === 'arc' || hsCurve.type === 'arc') {
+        defaults = true
+      }
+
+      props.palette.setHsCurve(newType, defaults);
 
       setHsCurve(props.palette.hsCurve);
 
     } else if (curve === 'lCurve') {
 
-      props.palette.setLCurve(newType);
+      if (newType === 'arc' || lCurve.type === 'arc') {
+        defaults = true
+      }
+
+      props.palette.setLCurve(newType, defaults);
 
       setLCurve(props.palette.lCurve);
 
@@ -84,7 +94,7 @@ function Editor(props) {
 
   })
 
-  const updatePalettes = () => {
+  const updatePalettes = useCallback(() => {
 
     if (paletteType === 'continuous' && paletteCanvas !== null) {
 
@@ -96,11 +106,11 @@ function Editor(props) {
 
     }
 
-  }
+  }, [paletteType, paletteCanvas, props.palette, numStops])
 
   useEffect(() => {
-    updatePalettes()
-  }, [updatePalettes, paletteType, numStops, paletteRange, paletteCanvas])
+    updatePalettes(paletteType);
+  }, [paletteType, updatePalettes])
 
   useEffect(() => {
     setPaletteRange([props.palette.start, props.palette.end])
@@ -238,9 +248,9 @@ function Editor(props) {
         <div className='row'>
           <div className='col-12'>
             <Canvas
-              callback={(canvasRef) => setPaletteCanvas(canvasRef)}
+              onLoad={(canvasRef) => setPaletteCanvas(canvasRef)}
+              onResize={updatePalettes}
               className='palette editor-palette'
-              onResize={() => updatePalettes()}
             />
           </div>
         </div>
