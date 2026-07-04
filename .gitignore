@@ -1,13 +1,13 @@
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+node_modules/
 
-# testing
-/coverage
+# build output
+dist/
+coverage/
 
-# production
-/build
+# test artifacts
+test-results/
+playwright-report/
 
 # misc
 .DS_Store

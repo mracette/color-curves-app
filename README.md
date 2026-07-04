@@ -1,56 +1,70 @@
 <p align="center">
-<img src="https://github.com/mracette/color-curves-app/blob/master/src/img/logo192.png" align="center" width="64px" height="64px">
+<img src="https://github.com/mracette/color-curves-app/blob/master/packages/app/public/logo192.png" align="center" width="64px" height="64px">
 <p>
 
 # Color Curves
 
-Color Curves is an app for making unique color palettes that can enhance data visualization and generative art projects. It provides a UI wrapper around the [color-curves](https://github.com/mracette/color-curves) library, which can be imported into your JS project and used programmatically.
+Color Curves builds color palettes from curves drawn through color space. One spline travels across a hue–chroma wheel, another shapes lightness, and sampling both from start to end yields a continuous palette — or any number of discrete stops. Palettes are made for data visualization and generative art.
 
-Because of the highly visual nature of the Color Curves methodology, it may be easier to design palettes using the app and then import your finished palettes into your projects. 
+The editor is hosted at [colorcurves.app](https://colorcurves.app).
 
-The Color Curves editor is hosted at [colorcurves.app](https://colorcurves.app)
+This repository is a monorepo:
 
-### Examples of palettes created with Color Curves
+| package | what it is |
+| --- | --- |
+| [`packages/color-curves`](packages/color-curves) | The engine — a zero-dependency TypeScript library: splines, OKLCH/HSL color pipeline with sRGB gamut mapping, palette sampling, serialization, contrast + color-vision analysis, and a legacy-format importer. |
+| [`packages/app`](packages/app) | The editor — a Vite + React app around the library: direct-manipulation spline editing, live previews, accessibility checks, a dozen export formats, shareable URLs. |
 
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/beyond-belief-continuous.png" width="100%" height="40px"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/goldfish-deluxe-continuous.png" width="100%" height="40px"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/trix-sky-continuous.png" width="100%" height="40px"><img src="https://github.com/mracette/color-curves-app/blob/master/assets/warm-magma-continuous.png" width="100%" height="40px">
+## How it works
 
-## Methodology
+A palette is two curves:
 
-### The HSL Color Space
+1. **The wheel curve** — a 2D spline on a polar surface where angle is **hue** and radius is **chroma** (OKLCH) or **saturation** (HSL). Center is gray; the rim is maximum color.
+2. **The lightness curve** — a function `y = f(t)` shaping **lightness** across the palette.
 
-HSL (hue, saturation, lightness) is an alternative representation of the RGB color model. It was designed to more closely align with the way human vision perceives color-making attributes.
+Sampling `t ∈ [0, 1]` along both curves produces a color at every point. Palettes default to **OKLCH**, a perceptually uniform space: equal distances along the curve read as equal visual steps, which keeps ramps smooth and data visualizations honest. The dashed contour on the wheel marks the sRGB gamut boundary; out-of-gamut colors are pulled back inside by CSS Color 4 style chroma reduction. Classic HSL is available per palette.
 
-The 3 values that make up an HSL color can be visualized by a color wheel:
-1. **Hue** - Rotation around the color wheel, in radians
-2. **Saturation** - Distance from the center of the color wheel, usually normalized to [0, 1] or [0%, 100%]
-3. **Lightness** - Distance along a secondary axis, usually normalized to [0, 1] or [0%, 100%]
+## The editor
 
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/hsl-diagram.png" width="320px" height="240px">
+- **Direct manipulation** — drag points, drag the curve body to move it, double-click the curve to add a point, double-click a point to remove it, alt-drag to pull out tangent handles, and toggle smooth/corner/auto tangents per point. Starting shapes (arc, circle, wave, spiral, …) bake into editable points.
+- **Live previews** — the palette applied to line/bar/scatter/heatmap charts and a UI mockup, updating as you drag.
+- **Accessibility** — WCAG and APCA contrast matrices, color-vision-deficiency simulation, and ΔE warnings for indistinguishable stops.
+- **Exports** — hex/RGB/OKLCH lists, CSS custom properties and gradients, design tokens, Tailwind config, JS/TS snippets, a d3-style interpolator, SVG swatches, and PNG.
+- **Shareable URLs** — the whole palette lives in the URL fragment; copy a link and it travels with you.
 
-### Plotting Curves
+## Using the library
 
-Color Curves separtes the HSL schema into two distinct parts: Hue-Saturation (HS) and Lightness (L).
+```bash
+npm install color-curves
+```
 
-#### Hue-Saturation (HS)
+```ts
+import { createPalette, shapes, hexAt, stops, cssGradient, interpolator } from 'color-curves';
 
-All possible hue and saturation values are projected onto a **unit circle**, upon which a curve is drawn that traces out the specific HS values for the palette. The length of the curve will always be normalized to 1, such that the starting point of the curve (represented by a green dot) will map to the starting point of the palette. The end of the curve (red dot) will map to the end of the palette. Values in between are given based on the location of the curve at that point.
+const palette = createPalette({
+  wheel: shapes.spiral({ turns: 1.25 }),
+  light: shapes.ease(0.2, 0.9),
+});
 
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/hs-chart.png">  
+hexAt(palette, 0.5);                    // '#8a5cc7'
+stops(palette, 8).map((c) => c.rgb);    // 8 discrete colors
+cssGradient(palette);                   // 'linear-gradient(90deg, …)'
+const f = interpolator(palette);        // d3-style: t → hex
+```
 
-An exponential curve mapped onto the HS space
+Palettes designed in the editor export as code that reconstructs them exactly (`parsePalette` + the palette's JSON), and palettes from the original 2019 app can be imported with `importLegacy`.
 
-#### Lightness (L)
+## Development
 
-All possible lightness values are projected onto a **unit square**, upon which a curve is drawn that traces out the specific lightness values for the palette. This works in much the same way as the HS chart, with the exception that it only maps one value to the palette, which is represented by Y value (height) of the curve. For this reason, the only consideration for the lightness chart is how quickly the curve moves up. Translating the curve along the X-Axis only affects the palette if doing so clips a portion of the curve.
+```bash
+npm install
+npm run dev        # editor at http://localhost:5173
+npm test           # library + app unit tests
+npm run build      # production build in packages/app/dist
+```
 
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/l-chart.png">
+The app compiles the library from source (no build step needed during development). Deploys run from GitHub Actions to GitHub Pages on pushes to `master`.
 
-A linear curve mapped onto the L space
+## License
 
-#### The Resulting Palette
-
-The palette produced by the editor combines the input from the HS and L editors. The curves in the examples above would produce the following palette:
-
-<img src="https://github.com/mracette/color-curves-app/blob/master/assets/example-palette.png" width="100%" height="40px">
-
-Notice how both the HS curve and the resulting palette start with a saturated blue, and move across the purple continuum, finally reaching a saturated orange color. Furthermore, notices how the lightness maps to the L chart. The darkest shade is on the left, and the palette gradually increases in lightness as it moves to the right. 
+GPL-3.0 — see [LICENSE](LICENSE).

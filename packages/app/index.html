@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Color Curves</title>
+    <meta name="description" content="Design color palettes by drawing curves through color space." />
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://colorcurves.app/" />
+    <meta property="og:title" content="Color Curves" />
+    <meta property="og:description" content="Design color palettes by drawing curves through color space." />
+    <meta property="og:image" content="https://colorcurves.app/color-curves-preview.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Color Curves" />
+    <meta name="twitter:description" content="Design color palettes by drawing curves through color space." />
+    <meta name="twitter:image" content="https://colorcurves.app/color-curves-preview.png" />
+
+    <script>
+      // Apply the saved theme before first paint to avoid a flash.
+      try {
+        var prefs = JSON.parse(localStorage.getItem('cc:v1:prefs') || '{}');
+        var theme = prefs.theme === 'light' || prefs.theme === 'dark' ? prefs.theme : null;
+        if (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
+        document.documentElement.dataset.theme = theme || 'light';
+      } catch (e) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
