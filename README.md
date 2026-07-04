@@ -30,7 +30,7 @@ Sampling `t ∈ [0, 1]` along both curves produces a color at every point. Palet
 - **Live previews** — the palette applied to line/bar/scatter/heatmap charts and a UI mockup, updating as you drag.
 - **Accessibility** — WCAG and APCA contrast matrices, color-vision-deficiency simulation, and ΔE warnings for indistinguishable stops.
 - **Exports** — hex/RGB/OKLCH lists, CSS custom properties and gradients, design tokens, Tailwind config, JS/TS snippets, a d3-style interpolator, SVG swatches, and PNG.
-- **Shareable URLs** — the whole palette lives in the URL fragment; copy a link and it travels with you.
+- **Share links** — one click packs the whole palette into a compact URL; opening it restores the exact curves. The editor itself is a scratchpad: refresh for a fresh slate, save to the library to keep something.
 
 ## Using the library
 

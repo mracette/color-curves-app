@@ -45,9 +45,10 @@ export function AboutModal({ onClose }: { onClose(): void }) {
             A set smooth, corner, or automatic tangents.
           </p>
           <p>
-            Everything lives in the URL — copy a share link and the whole palette travels with it.
-            The <code>color-curves</code> library that powers this editor is open source, with the
-            same palettes reproducible in code.
+            The editor is a scratchpad: refreshing gives you a fresh slate. To keep a palette, hit{' '}
+            <strong>Share</strong> — the link carries the whole palette — or save it to your
+            library. The <code>color-curves</code> library that powers this editor is open source,
+            with the same palettes reproducible in code.
           </p>
           <p className="modal__fine">
             Inspired by the gradient work behind d3-scale-chromatic. Built by{' '}

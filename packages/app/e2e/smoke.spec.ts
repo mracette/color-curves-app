@@ -28,9 +28,10 @@ test('shape a palette end to end', async ({ page }) => {
   await page.mouse.move(p0[0]! + 60, p0[1]! - 80, { steps: 8 });
   await page.mouse.up();
 
-  // Preview bar repainted and the palette landed in the URL.
+  // Preview bar repainted; plain editing never touches the URL.
   await expect.poll(barPixels).not.toBe(before);
-  await expect.poll(() => page.url()).toContain('#p=');
+  await page.waitForTimeout(400);
+  expect(page.url()).not.toContain('#p=');
 
   // Undo restores and keeps working.
   await page.keyboard.press('ControlOrMeta+z');
@@ -43,9 +44,10 @@ test('shape a palette end to end', async ({ page }) => {
   const clip = await page.evaluate(() => navigator.clipboard.readText());
   expect(clip).toMatch(/^#[0-9a-f]{6}\n/);
 
-  // Share link round-trips into a fresh page.
+  // Share writes the URL and the link round-trips into a fresh page.
   await page.getByRole('button', { name: 'Share' }).click();
   const url = page.url();
+  expect(url).toContain('#p=');
   const page2 = await page.context().newPage();
   await page2.goto(url);
   const pts = await page2.evaluate(() => window.__cc!.getState().doc.wheel.points.length);

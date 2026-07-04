@@ -8,7 +8,7 @@ import { PaletteBar } from './components/PaletteBar';
 import { StopControls } from './components/StopControls';
 import { InspectorPanel } from './components/InspectorPanel';
 import { LibraryPanel } from './components/LibraryPanel';
-import { initPersistence, loadDraft, loadLibrary } from './state/persist';
+import { initPersistence, loadLibrary } from './state/persist';
 import { saveCurrentPalette } from './state/actions';
 import { A11yPanel } from './components/A11yPanel';
 import { ExportPanel } from './components/ExportPanel';
@@ -33,14 +33,16 @@ export function App() {
     toastTimer.current = setTimeout(() => setToast(null), 2200);
   };
 
-  // Boot once: theme pref, saved library, then palette from the URL
-  // fragment, falling back to the autosaved draft.
+  // Boot once: theme pref, saved library, and — only if the user arrived
+  // via a share link — the palette from the URL fragment. Plain editing
+  // never writes the URL or storage, so a refresh gives a fresh slate.
   useEffect(() => {
     try {
       const prefs = JSON.parse(localStorage.getItem('cc:v1:prefs') ?? '{}') as { theme?: string };
       if (prefs.theme === 'light' || prefs.theme === 'dark') {
         useAppStore.getState().setTheme(prefs.theme);
       }
+      localStorage.removeItem('cc:v1:draft'); // retired autosave key
     } catch {
       // ignore unreadable prefs
     }
@@ -52,12 +54,6 @@ export function App() {
         useAppStore.setState({ doc: decodePaletteUrl(p[1]!), revision: 1 });
       } catch {
         showToast('Could not read the shared palette link');
-      }
-    } else {
-      const draft = loadDraft();
-      if (draft) {
-        useAppStore.setState({ doc: draft.doc, revision: 1 });
-        useAppStore.getState().setDisplay(draft.display);
       }
     }
     const m = location.hash.match(/[#&]m=(d|c)/);
@@ -107,24 +103,6 @@ export function App() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
-  // URL writeback: debounced, commits only (never during drags).
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    const unsub = useAppStore.subscribe((s, prev) => {
-      const committed = prev.transientBase !== null && s.transientBase === null;
-      if (s.doc === prev.doc && s.display === prev.display && !committed) return;
-      if (s.transientBase !== null) return;
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => {
-        history.replaceState(null, '', currentHash());
-      }, 300);
-    });
-    return () => {
-      unsub();
-      if (timer) clearTimeout(timer);
-    };
   }, []);
 
   const share = () => {
