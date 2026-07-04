@@ -67,9 +67,11 @@ export interface AppState {
 }
 
 export function defaultDoc(): Palette {
+  // A semicircle hugging the left half of the wheel: bottom center → left →
+  // top center.
   return createPalette({
     space: 'hsl',
-    wheel: shapes.arc({ radius: 0.62, startAngle: Math.PI * 0.85, endAngle: Math.PI * 0.1 }),
+    wheel: shapes.arc({ radius: 0.62, startAngle: -Math.PI / 2, endAngle: -Math.PI * 1.5 }),
     light: shapes.ramp(0.25, 0.9),
   });
 }

@@ -1,6 +1,0 @@
-[  535098ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5199/src/components/TopBar.tsx?t=1783168588625:0
-[  535098ms] [ERROR] [vite] Failed to reload /src/components/TopBar.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:5199/@vite/client:881
-[  579056ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:5199/node_modules/.vite/deps/react-dom_client.js?v=f52a03cf:20100
-[  579094ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:5199/node_modules/.vite/deps/react-dom_client.js?v=f52a03cf:20100
-[  627220ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:5199/node_modules/.vite/deps/react-dom_client.js?v=f52a03cf:20100
-[  627271ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:5199/node_modules/.vite/deps/react-dom_client.js?v=f52a03cf:20100
