@@ -76,7 +76,15 @@ export function SurfaceEditor({ surface }: { surface: Surface }) {
         const [cx, cy] = mapping.toScreen(0, 0);
         bctx.imageSmoothingEnabled = true;
         bctx.imageSmoothingQuality = 'high';
+        // Clip to an exact vector circle: the raster paints opaque color a
+        // few pixels past the rim, so the visible edge is this crisp clip,
+        // not the bitmap's scaled anti-aliased fade.
+        bctx.save();
+        bctx.beginPath();
+        bctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        bctx.clip();
         bctx.drawImage(raster, cx - radius, cy - radius, radius * 2, radius * 2);
+        bctx.restore();
 
         if (state.doc.space === 'oklch') {
           const contourKey = `${displayL}`;

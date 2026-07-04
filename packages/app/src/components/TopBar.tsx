@@ -39,18 +39,18 @@ export function TopBar({ onShare, onAbout }: { onShare(): void; onAbout(): void 
 
       <div className="segmented" role="group" aria-label="Color space">
         <button
-          className={space === 'oklch' ? 'is-active' : ''}
-          title="OKLCH — perceptually uniform (default)"
-          onClick={() => state().updateDoc((d) => ({ ...d, space: 'oklch' }))}
-        >
-          OKLCH
-        </button>
-        <button
           className={space === 'hsl' ? 'is-active' : ''}
-          title="HSL — classic wheel"
+          title="HSL — classic wheel (default)"
           onClick={() => state().updateDoc((d) => ({ ...d, space: 'hsl' }))}
         >
           HSL
+        </button>
+        <button
+          className={space === 'oklch' ? 'is-active' : ''}
+          title="OKLCH — perceptually uniform, gamut-aware"
+          onClick={() => state().updateDoc((d) => ({ ...d, space: 'oklch' }))}
+        >
+          OKLCH
         </button>
       </div>
 

@@ -68,6 +68,7 @@ export interface AppState {
 
 export function defaultDoc(): Palette {
   return createPalette({
+    space: 'hsl',
     wheel: shapes.arc({ radius: 0.62, startAngle: Math.PI * 0.85, endAngle: Math.PI * 0.1 }),
     light: shapes.ramp(0.25, 0.9),
   });

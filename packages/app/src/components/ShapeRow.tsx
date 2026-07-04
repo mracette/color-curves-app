@@ -88,8 +88,14 @@ function WheelTransforms() {
       title: 'Rotate hues 15° counter-clockwise (or alt-drag the curve)',
       icon: (
         <>
-          <path d="M6.2 4.4 4 6.6l2.2 2.2" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M4.6 6.6h6a4.2 4.2 0 0 1 0 8.4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path
+            d="M2.9 10a7.1 7.1 0 1 0 2.1-5L2.9 7.1"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <path d="M2.9 2.9v4.2h4.2" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </>
       ),
       apply: () => state.updateDoc((d) => rotateWheelCurve(d, ROTATE_STEP)),
@@ -99,8 +105,14 @@ function WheelTransforms() {
       title: 'Rotate hues 15° clockwise (or alt-drag the curve)',
       icon: (
         <>
-          <path d="m13.8 4.4 2.2 2.2-2.2 2.2" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M15.4 6.6h-6a4.2 4.2 0 0 0 0 8.4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path
+            d="M17.1 10a7.1 7.1 0 1 1-2.1-5l2.1 2.1"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <path d="M17.1 2.9v4.2h-4.2" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </>
       ),
       apply: () => state.updateDoc((d) => rotateWheelCurve(d, -ROTATE_STEP)),
@@ -110,8 +122,9 @@ function WheelTransforms() {
       title: 'Scale the curve down — less chroma (or shift-drag the curve)',
       icon: (
         <>
-          <circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2.5" />
-          <circle cx="10" cy="10" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M3.3 11.7h5v5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16.7 8.3h-5v-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="m11.7 8.3 5.4-5.4M2.9 17.1l5.4-5.4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </>
       ),
       apply: () => state.updateDoc((d) => scaleWheelCurve(d, 1 / SCALE_STEP)),
@@ -121,8 +134,9 @@ function WheelTransforms() {
       title: 'Scale the curve up — more chroma (or shift-drag the curve)',
       icon: (
         <>
-          <circle cx="10" cy="10" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" />
-          <circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M12.5 2.9h4.6v4.6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M7.5 17.1H2.9v-4.6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M17.1 2.9l-5.8 5.8M2.9 17.1l5.8-5.8" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </>
       ),
       apply: () => state.updateDoc((d) => scaleWheelCurve(d, SCALE_STEP)),

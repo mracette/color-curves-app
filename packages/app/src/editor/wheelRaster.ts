@@ -61,7 +61,11 @@ export function wheelBackground(params: WheelRasterParams): HTMLCanvasElement {
     }
   }
 
-  const edge = 1.5 / half; // ~1.5px anti-aliased rim
+  // Paint fully opaque color a few pixels past the nominal rim; the editor
+  // clips the drawn image to an exact vector circle, so the boundary stays
+  // crisp at device resolution instead of inheriting this bitmap's scaled,
+  // anti-aliased edge.
+  const overscan = 4 / half;
 
   for (let y = 0; y < raster; y++) {
     const dy = (half - (y + 0.5)) / half; // y-up
@@ -69,22 +73,23 @@ export function wheelBackground(params: WheelRasterParams): HTMLCanvasElement {
       const dx = (x + 0.5 - half) / half;
       const r = Math.hypot(dx, dy);
       const idx = (y * raster + x) * 4;
-      if (r > 1 + edge) {
+      if (r > 1 + overscan) {
         data[idx + 3] = 0;
         continue;
       }
       let h = (Math.atan2(dy, dx) * 180) / Math.PI;
       if (h < 0) h += 360;
 
+      const rc = Math.min(r, 1);
       let rgb: RGB;
       let dim = false;
       if (params.space === 'hsl') {
-        rgb = hslToRgb(h, Math.min(r, 1), L);
+        rgb = hslToRgb(h, rc, L);
       } else {
         const hueIdx = Math.min(HUE_STEPS - 1, Math.round((h / 360) * HUE_STEPS));
         const rMax = maxR[hueIdx]!;
-        if (r <= rMax) {
-          rgb = clampRgb(oklchToRgb(L, r * MAX_CHROMA, h));
+        if (rc <= rMax) {
+          rgb = clampRgb(oklchToRgb(L, rc * MAX_CHROMA, h));
         } else {
           // Out-of-gamut territory: show the boundary color, pulled toward
           // gray so clipped regions read as muted, not more vivid.
@@ -93,11 +98,10 @@ export function wheelBackground(params: WheelRasterParams): HTMLCanvasElement {
         }
       }
       const mix = dim ? 0.55 : 0;
-      const alpha = r > 1 ? Math.max(0, 1 - (r - 1) / edge) : 1;
       data[idx] = Math.round(255 * (rgb.r * (1 - mix) + gray.r * mix));
       data[idx + 1] = Math.round(255 * (rgb.g * (1 - mix) + gray.g * mix));
       data[idx + 2] = Math.round(255 * (rgb.b * (1 - mix) + gray.b * mix));
-      data[idx + 3] = Math.round(255 * alpha);
+      data[idx + 3] = 255;
     }
   }
   ctx.putImageData(img, 0, 0);
