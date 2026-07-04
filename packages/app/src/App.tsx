@@ -9,7 +9,7 @@ import { StopControls } from './components/StopControls';
 import { InspectorPanel } from './components/InspectorPanel';
 import { LibraryPanel } from './components/LibraryPanel';
 import { initPersistence, loadLibrary } from './state/persist';
-import { saveCurrentPalette } from './state/actions';
+import { newPalette, saveCurrentPalette } from './state/actions';
 import { A11yPanel } from './components/A11yPanel';
 import { ExportPanel } from './components/ExportPanel';
 import { AboutModal } from './components/AboutModal';
@@ -115,7 +115,14 @@ export function App() {
 
   return (
     <div className="app">
-      <TopBar onShare={share} onAbout={() => setAboutOpen(true)} />
+      <TopBar
+        onShare={share}
+        onAbout={() => setAboutOpen(true)}
+        onReset={() => {
+          newPalette();
+          showToast('New palette');
+        }}
+      />
       <div className="app-body">
         <LibraryPanel onToast={showToast} />
         <main className="editor-column">

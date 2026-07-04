@@ -1,7 +1,15 @@
 import { useAppStore } from '../state/store';
 import { useThrottledStore } from '../state/useThrottled';
 
-export function TopBar({ onShare, onAbout }: { onShare(): void; onAbout(): void }) {
+export function TopBar({
+  onShare,
+  onAbout,
+  onReset,
+}: {
+  onShare(): void;
+  onAbout(): void;
+  onReset(): void;
+}) {
   const name = useThrottledStore((s) => s.doc.name ?? '', 100);
   const space = useThrottledStore((s) => s.doc.space, 100);
   const canUndo = useAppStore((s) => s.past.length > 0);
@@ -12,7 +20,7 @@ export function TopBar({ onShare, onAbout }: { onShare(): void; onAbout(): void 
   return (
     <header className="topbar">
       <div className="topbar__left">
-        <div className="topbar__brand">
+        <button className="topbar__brand" title="Start a new palette" onClick={onReset}>
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
             <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
             <path
@@ -24,7 +32,7 @@ export function TopBar({ onShare, onAbout }: { onShare(): void; onAbout(): void 
             />
           </svg>
           <span>Color Curves</span>
-        </div>
+        </button>
 
         <input
           className="topbar__name"

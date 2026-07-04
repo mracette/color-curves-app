@@ -39,6 +39,13 @@
   gap: 8px;
   font-weight: 600;
   white-space: nowrap;
+  padding: 4px 8px;
+  margin-left: -8px;
+  border-radius: var(--radius-sm);
+}
+
+.topbar__brand:hover {
+  background: var(--bg-hover);
 }
 
 .topbar__name {

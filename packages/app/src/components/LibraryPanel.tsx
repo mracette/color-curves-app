@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { importLegacy, presets, type Palette } from 'color-curves';
-import { defaultDoc, useAppStore } from '../state/store';
+import { useAppStore } from '../state/store';
 import { useThrottledStore } from '../state/useThrottled';
 import { docGradient } from '../state/selectors';
-import { saveCurrentPalette } from '../state/actions';
+import { newPalette, saveCurrentPalette } from '../state/actions';
 
 function PaletteTile({
   name,
@@ -105,7 +105,7 @@ export function LibraryPanel({ onToast }: { onToast(msg: string): void }) {
         className="button library__save"
         title="Start over with the default palette (undoable)"
         onClick={() => {
-          state().loadDoc(defaultDoc());
+          newPalette();
           onToast('New palette');
         }}
       >
