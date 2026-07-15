@@ -269,7 +269,10 @@ export function attachSurfaceInteractions(
   };
 
   const onDoubleClick = (e: MouseEvent) => {
-    if (!(e.target instanceof HTMLCanvasElement)) return;
+    // Pointer capture retargets the second pointerup to the wrapper, which
+    // makes the dblclick target the wrapper too — hit-test the coordinates
+    // instead so overlaid DOM (the point toolbar) still wins.
+    if (!(document.elementFromPoint(e.clientX, e.clientY) instanceof HTMLCanvasElement)) return;
     const [px, py] = localPoint(e);
     handleDoubleActivate(px, py, false);
   };
