@@ -3,6 +3,17 @@
   "version": "1.0.0-beta.0",
   "description": "Design color palettes by drawing curves through color space.",
   "author": "Mark Racette",
+  "license": "GPL-3.0",
+  "homepage": "https://colorcurves.app",
+  "keywords": [
+    "color",
+    "palette",
+    "oklch",
+    "color-scheme",
+    "gradient",
+    "data-visualization",
+    "generative-art"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/mracette/color-curves-app.git",
