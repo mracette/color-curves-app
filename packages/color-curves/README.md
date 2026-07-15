@@ -32,7 +32,7 @@ The easiest way to design a palette is the [editor](https://colorcurves.app) —
 
 ## Note on versions
 
-Versions `0.0.x` are the original 2019 library and are unrelated to this API. Start at `1.0.0-beta.0`.
+Versions `0.0.x` are the original 2019 library and are unrelated to this API. Start at `1.0.0`.
 
 ## License
 
