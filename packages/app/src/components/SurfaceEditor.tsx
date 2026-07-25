@@ -61,11 +61,13 @@ export function SurfaceEditor({ surface }: { surface: Surface }) {
 
       if (surface === 'wheel') {
         const radius = diskRadiusPx(w, h);
-        // Quantize display lightness while dragging so the raster cache
-        // hits; render exact on commit.
+        // Quantize display lightness while a drag is changing the lightness
+        // curve so the raster cache hits; render exact otherwise. Gestures
+        // that leave the curve untouched (reference-equal) must render exact,
+        // or the gamut contour visibly shifts on pointer-down.
         const median = medianLightness(state.doc);
         const displayL =
-          state.transientBase !== null
+          state.transientBase !== null && state.doc.light !== state.transientBase.light
             ? quantizeLightness(median)
             : Math.round(median * 200) / 200;
         const raster = wheelBackground({
