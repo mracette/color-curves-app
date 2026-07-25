@@ -420,8 +420,34 @@
   color: var(--accent-text);
 }
 
-.point-toolbar__delete:disabled {
+.point-menu {
+  position: absolute;
+  z-index: 3;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  padding: 2px;
+}
+
+.point-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.point-menu button:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.point-menu button:disabled {
   opacity: 0.35;
+  cursor: default;
 }
 
 /* ---- shape rows ---- */

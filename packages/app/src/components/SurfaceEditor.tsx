@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppStore, type Surface } from '../state/store';
 import { useThrottledStore } from '../state/useThrottled';
 import { diskMapping, diskRadiusPx, stripMapping, type SurfaceMapping } from '../editor/mapping';
@@ -32,6 +32,7 @@ export function SurfaceEditor({ surface }: { surface: Surface }) {
   const contourRef = useRef<{ key: string; contour: Float32Array } | null>(null);
   const rafRef = useRef(0);
   const sizeRef = useRef<[number, number]>([0, 0]);
+  const [menu, setMenu] = useState<{ index: number; x: number; y: number } | null>(null);
 
   useEffect(() => {
     const wrap = wrapRef.current!;
@@ -147,6 +148,9 @@ export function SurfaceEditor({ surface }: { surface: Surface }) {
         wrap.style.cursor = cursorFor(hit, dragging);
         scheduleDraw();
       },
+      onPointMenu(index, x, y) {
+        setMenu({ index, x, y });
+      },
     });
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -237,6 +241,7 @@ export function SurfaceEditor({ surface }: { surface: Surface }) {
       <canvas ref={fgRef} className="surface-editor__canvas" />
       {surface === 'wheel' && <WheelLightnessLabel />}
       <PointToolbar surface={surface} />
+      <PointMenu surface={surface} menu={menu} onClose={() => setMenu(null)} />
     </div>
   );
 }
@@ -281,16 +286,53 @@ function PointToolbar({ surface }: { surface: Surface }) {
       >
         corner
       </button>
+      <button className="point-toolbar__close" title="Close (Esc)" onClick={() => state.select(null)}>
+        ✕
+      </button>
+    </div>
+  );
+}
+
+/** Right-click menu on a point: delete (also on ⌫ and double-click). */
+function PointMenu({
+  surface,
+  menu,
+  onClose,
+}: {
+  surface: Surface;
+  menu: { index: number; x: number; y: number } | null;
+  onClose: () => void;
+}) {
+  const selection = useAppStore((s) => s.selection);
+  const doc = useAppStore((s) => s.doc);
+  const ref = useRef<HTMLDivElement>(null);
+  const open =
+    menu !== null && selection?.surface === surface && selection.index === menu.index;
+  useEffect(() => {
+    // Close when the selection moves off the point (Esc, Tab, delete, undo)
+    // so a stale menu can't reappear if the same index is selected later.
+    if (menu !== null && !open) onClose();
+    if (!open) return;
+    const close = (e: PointerEvent) => {
+      if (ref.current?.contains(e.target as Node)) return;
+      onClose();
+    };
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
+  }, [menu, open, onClose]);
+  if (!open) return null;
+  const state = useAppStore.getState();
+  return (
+    <div ref={ref} className="point-menu" style={{ left: menu.x, top: menu.y }}>
       <button
-        className="point-toolbar__delete"
-        title="Delete point (⌫)"
-        disabled={!canRemove(doc, surface, selection.index)}
+        disabled={!canRemove(doc, surface, menu.index)}
         onClick={() => {
+          onClose();
           state.select(null);
-          state.updateDoc((d) => removeAt(d, surface, selection.index));
+          state.updateDoc((d) => removeAt(d, surface, menu.index));
         }}
       >
-        ✕
+        Delete point
       </button>
     </div>
   );

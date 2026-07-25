@@ -36,6 +36,7 @@ export interface SurfaceInteractionOptions {
   surface: Surface;
   getMapping(): SurfaceMapping;
   onHover(hit: HitTarget | null, dragging: boolean): void;
+  onPointMenu(index: number, px: number, py: number): void;
 }
 
 /**
@@ -277,12 +278,23 @@ export function attachSurfaceInteractions(
     handleDoubleActivate(px, py, false);
   };
 
+  const onContextMenu = (e: MouseEvent) => {
+    if (!(e.target instanceof HTMLCanvasElement)) return;
+    const [px, py] = localPoint(e);
+    const hit = doHitTest(px, py, false);
+    if (hit?.type !== 'point') return;
+    e.preventDefault();
+    store.getState().select({ surface, index: hit.index });
+    opts.onPointMenu(hit.index, px, py);
+  };
+
   el.addEventListener('pointerdown', onPointerDown);
   el.addEventListener('pointermove', onPointerMove);
   el.addEventListener('pointerup', onPointerUp);
   el.addEventListener('pointercancel', onPointerCancel);
   el.addEventListener('pointerleave', onPointerLeave);
   el.addEventListener('dblclick', onDoubleClick);
+  el.addEventListener('contextmenu', onContextMenu);
 
   return () => {
     el.removeEventListener('pointerdown', onPointerDown);
@@ -291,5 +303,6 @@ export function attachSurfaceInteractions(
     el.removeEventListener('pointercancel', onPointerCancel);
     el.removeEventListener('pointerleave', onPointerLeave);
     el.removeEventListener('dblclick', onDoubleClick);
+    el.removeEventListener('contextmenu', onContextMenu);
   };
 }
