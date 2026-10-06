@@ -21,7 +21,7 @@ function PaletteTile({
   return (
     <div className="palette-tile">
       <button className="palette-tile__main" onClick={onOpen} title={`Open ${name}`}>
-        <span className="palette-tile__swatch" style={{ background: docGradient(doc) }} />
+        <span className="palette-tile__swatch" style={{ backgroundImage: docGradient(doc) }} />
         <span className="palette-tile__meta">
           <span className="palette-tile__name">{name}</span>
           {author && <span className="palette-tile__author">by {author}</span>}
